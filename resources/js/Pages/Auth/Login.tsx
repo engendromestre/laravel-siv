@@ -1,11 +1,39 @@
 import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { GoogleIcon, MicrosoftIcon } from '@/Components/CustonIcons';
+import Layout from '@/Layouts/Layout';
+import { Head, Link as InertiaLink, useForm } from '@inertiajs/react';
+import {
+    Box,
+    Button,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Card as MuiCard,
+    Link as MuiLink,
+    styled,
+    TextField,
+} from '@mui/material';
 import { FormEventHandler } from 'react';
+
+const Card = styled(MuiCard)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'center',
+    width: '100%',
+    padding: theme.spacing(4),
+    gap: theme.spacing(2),
+    margin: 'auto',
+    [theme.breakpoints.up('sm')]: {
+        maxWidth: '450px',
+    },
+    boxShadow:
+        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+    ...theme.applyStyles('dark', {
+        boxShadow:
+            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+    }),
+}));
 
 export default function Login({
     status,
@@ -29,79 +57,118 @@ export default function Login({
     };
 
     return (
-        <GuestLayout>
+        <Layout>
             <Head title="Log in" />
+            <Card variant="outlined">
+                {status && (
+                    <div className="mb-4 text-sm font-medium text-green-600">
+                        {status}
+                    </div>
+                )}
 
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
+                <Box
+                    component="form"
+                    onSubmit={submit}
+                    noValidate
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%',
+                        gap: 2,
+                    }}
+                >
+                    <FormControl>
+                        <FormLabel htmlFor="email">E-mail</FormLabel>
+                        <TextField
+                            error={!!errors.email}
+                            helperText={errors.email}
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            // value={data.email}
+                            className="mt-1 block w-full"
+                            autoComplete="username"
+                            autoFocus
+                            required
+                            fullWidth
+                            variant="outlined"
+                            onChange={(e) => setData('email', e.target.value)}
+                            color={errors.email ? 'error' : 'primary'}
                         />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
+                    </FormControl>
 
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+                    <FormControl>
+                        <FormLabel htmlFor="password">Senha</FormLabel>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
+                        <TextField
+                            error={!!errors.password}
+                            helperText={errors.password}
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="••••••"
+                            // value={data.password}
+                            required
+                            fullWidth
+                            variant="outlined"
+                            autoComplete="current-password"
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
+                            color={errors.password ? 'error' : 'primary'}
+                        />
+                    </FormControl>
+
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Lembrar-me"
+                        sx={{
+                            '& .MuiTypography-root': {
+                                marginLeft: '8px', // Define um espaçamento explícito entre a caixa e o texto
+                            },
+                        }}
+                        labelPlacement="end"
+                    />
+
+                    <MuiLink
+                        href={route('password.request')}
+                        component={InertiaLink}
+                        variant="body2"
+                        sx={{ alignSelf: 'center' }}
+                    >
+                        Esqueceu a senha?
+                    </MuiLink>
+
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        disabled={processing}
+                    >
+                        Entrar
+                    </Button>
+                </Box>
+                <Divider>ou</Divider>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={() => alert('Entrar com Google')}
+                        startIcon={<GoogleIcon />}
+                    >
+                        Entrar com Google
+                    </Button>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={() => alert('Entrar com Microsoft')}
+                        startIcon={<MicrosoftIcon />}
+                    >
+                        Entrar com Microsoft
+                    </Button>
+                </Box>
+            </Card>
+        </Layout>
     );
 }
