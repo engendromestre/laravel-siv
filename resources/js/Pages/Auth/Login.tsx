@@ -86,7 +86,7 @@ export default function Login({
                             type="email"
                             name="email"
                             placeholder="seu@email.com"
-                            // value={data.email}
+                            value={data.email}
                             className="mt-1 block w-full"
                             autoComplete="username"
                             autoFocus
