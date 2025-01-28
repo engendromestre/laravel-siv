@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { darkTheme, lightTheme } from "../config/theme";
 import { useLocalStorage } from "./useLocalStorage";
+import { darkTheme, lightTheme } from "@/Config/theme";
 
 export function useAppTheme() {
     const [theme, setTheme] = useState(darkTheme);
