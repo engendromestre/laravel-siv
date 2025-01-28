@@ -31,7 +31,6 @@ export function Header({ toggle, theme, handleDrawerToggle }: HeaderProps) {
                         <Brightness4Icon />
                     )}
                 </IconButton>
-
                 <Button color="inherit" onClick={() => console.log('logout')}>
                     Sair
                 </Button>

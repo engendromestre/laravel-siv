@@ -1,12 +1,22 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
+import CardProj from '@/Components/CardProj';
+import { useAppTheme } from '@/Hooks/useAppTheme';
+import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+    Box,
+    FormControl,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    OutlinedInput,
+    TextField,
+    Typography,
+} from '@mui/material';
+import React, { FormEventHandler } from 'react';
 
 export default function Register() {
+    const [currentTheme, toggleCurrentTheme] = useAppTheme();
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -22,11 +32,204 @@ export default function Register() {
         });
     };
 
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (
+        event: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+        event.preventDefault();
+    };
+
+    const handleMouseUpPassword = (
+        event: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+        event.preventDefault();
+    };
+
     return (
-        <GuestLayout>
+        <Layout>
             <Head title="Register" />
 
-            <form onSubmit={submit}>
+            <CardProj
+                variant="outlined"
+                sx={{
+                    maxWidth: '100%',
+                    [currentTheme.breakpoints.up('sm')]: { maxWidth: '650px' },
+                }}
+            >
+                <Typography
+                    variant="h4"
+                    gutterBottom
+                    sx={{
+                        mb: 4,
+                        fontWeight: 'bold',
+                        color: currentTheme.palette.primary.main,
+                    }}
+                >
+                    Registro
+                </Typography>
+
+                <Box
+                    component="form"
+                    onSubmit={submit}
+                    noValidate
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%',
+                        gap: 2,
+                    }}
+                >
+                    <FormControl>
+                        <TextField
+                            label="Nome Completo"
+                            error={!!errors.name}
+                            helperText={errors.name}
+                            id="name"
+                            name="name"
+                            placeholder="Seu Nome"
+                            value={data.name}
+                            className="mt-1 block w-full"
+                            autoComplete="username"
+                            required
+                            fullWidth
+                            variant="outlined"
+                            onChange={(e) => setData('name', e.target.value)}
+                            color={errors.name ? 'error' : 'primary'}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField
+                            label="E-mail"
+                            error={!!errors.email}
+                            helperText={errors.email}
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            value={data.email}
+                            className="mt-1 block w-full"
+                            autoComplete="username"
+                            required
+                            fullWidth
+                            variant="outlined"
+                            onChange={(e) => setData('email', e.target.value)}
+                            color={errors.email ? 'error' : 'primary'}
+                        />
+                    </FormControl>
+                    <FormControl variant="outlined">
+                        <InputLabel htmlFor="password" error={!!errors.password}>Senha *</InputLabel>
+                        <OutlinedInput
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={data.password}
+                            required
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
+                            error={!!errors.password}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label={
+                                            showPassword
+                                                ? 'hide the password'
+                                                : 'display the password'
+                                        }
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        onMouseUp={handleMouseUpPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? (
+                                            <VisibilityOff />
+                                        ) : (
+                                            <Visibility />
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label="Password"
+                        />
+                    </FormControl>
+                    <FormControl variant="outlined">
+                        <InputLabel htmlFor="password_confirmation">
+                            Confirme a Senha *
+                        </InputLabel>
+                        <OutlinedInput
+                            id="password_confirmation"
+                            type={showPassword ? 'text' : 'password'}
+                            value={data.password_confirmation}
+                            required
+                            onChange={(e) =>
+                                setData('password_confirmation', e.target.value)
+                            }
+                            error={!!errors.password_confirmation}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label={
+                                            showPassword
+                                                ? 'hide the password'
+                                                : 'display the password'
+                                        }
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        onMouseUp={handleMouseUpPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? (
+                                            <VisibilityOff />
+                                        ) : (
+                                            <Visibility />
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label="Confirme a Senha"
+                        />
+                    </FormControl>
+                    <Box
+                        sx={{
+                            mt: 4,
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Link
+                            href={route('login')}
+                            style={{
+                                textDecoration: 'none',
+                                color: currentTheme.palette.text.secondary,
+                                marginRight: '16px',
+                            }}
+                        >
+                            Já registrado?
+                        </Link>
+
+                        <Box component="button" disabled={processing} sx={{
+                            backgroundColor: currentTheme.palette.primary.main,
+                            color: currentTheme.palette.primary.contrastText,
+                            padding: '8px 16px',
+                            borderRadius: '4px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            '&:disabled': {
+                                backgroundColor: currentTheme.palette.action.disabledBackground,
+                                color: currentTheme.palette.action.disabled,
+                                cursor: 'not-allowed',
+                            },
+                        }}>
+                            Registrar
+                        </Box>
+                    </Box>
+                </Box>
+            </CardProj>
+
+            {/* <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -115,7 +318,7 @@ export default function Register() {
                         Register
                     </PrimaryButton>
                 </div>
-            </form>
-        </GuestLayout>
+            </form> */}
+        </Layout>
     );
 }

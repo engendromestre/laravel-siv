@@ -1,5 +1,7 @@
+import CardProj from '@/Components/CardProj';
 import Checkbox from '@/Components/Checkbox';
 import { GoogleIcon, MicrosoftIcon } from '@/Components/CustonIcons';
+import { useAppTheme } from '@/Hooks/useAppTheme';
 import Layout from '@/Layouts/Layout';
 import { Head, Link as InertiaLink, useForm } from '@inertiajs/react';
 import {
@@ -9,31 +11,11 @@ import {
     FormControl,
     FormControlLabel,
     FormLabel,
-    Card as MuiCard,
     Link as MuiLink,
-    styled,
     TextField,
+    Typography,
 } from '@mui/material';
 import { FormEventHandler } from 'react';
-
-const Card = styled(MuiCard)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'center',
-    width: '100%',
-    padding: theme.spacing(4),
-    gap: theme.spacing(2),
-    margin: 'auto',
-    [theme.breakpoints.up('sm')]: {
-        maxWidth: '450px',
-    },
-    boxShadow:
-        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-    ...theme.applyStyles('dark', {
-        boxShadow:
-            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-    }),
-}));
 
 export default function Login({
     status,
@@ -42,10 +24,11 @@ export default function Login({
     status?: string;
     canResetPassword: boolean;
 }) {
+    const [currentTheme, toggleCurrentTheme] = useAppTheme();
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
-        remember: false,
+        remember: false as boolean,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -59,7 +42,18 @@ export default function Login({
     return (
         <Layout>
             <Head title="Log in" />
-            <Card variant="outlined">
+            <CardProj variant="outlined">
+                <Typography
+                    variant="h4"
+                    gutterBottom
+                    sx={{
+                        mb: 4,
+                        fontWeight: 'bold',
+                        color: currentTheme.palette.primary.main,
+                    }}
+                >
+                    Login
+                </Typography>
                 {status && (
                     <div className="mb-4 text-sm font-medium text-green-600">
                         {status}
@@ -108,7 +102,7 @@ export default function Login({
                             type="password"
                             name="password"
                             placeholder="••••••"
-                            // value={data.password}
+                            value={data.password}
                             required
                             fullWidth
                             variant="outlined"
@@ -121,11 +115,19 @@ export default function Login({
                     </FormControl>
 
                     <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
+                        control={
+                            <Checkbox
+                                checked={data.remember}
+                                onChange={(e) =>
+                                    setData('remember', e.target.checked)
+                                }
+                                color="primary"
+                            />
+                        }
                         label="Lembrar-me"
                         sx={{
                             '& .MuiTypography-root': {
-                                marginLeft: '8px', // Define um espaçamento explícito entre a caixa e o texto
+                                marginLeft: '8px',
                             },
                         }}
                         labelPlacement="end"
@@ -168,7 +170,7 @@ export default function Login({
                         Entrar com Microsoft
                     </Button>
                 </Box>
-            </Card>
+            </CardProj>
         </Layout>
     );
 }
