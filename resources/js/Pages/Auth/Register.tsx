@@ -6,6 +6,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
     Box,
     FormControl,
+    FormHelperText,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -119,17 +120,21 @@ export default function Register() {
                             color={errors.email ? 'error' : 'primary'}
                         />
                     </FormControl>
-                    <FormControl variant="outlined">
-                        <InputLabel htmlFor="password" error={!!errors.password}>Senha *</InputLabel>
+                    <FormControl
+                        variant="outlined"
+                        error={!!errors.password}
+                        fullWidth
+                    >
+                        <InputLabel htmlFor="password">Senha *</InputLabel>
                         <OutlinedInput
                             id="password"
+                            name="password"
                             type={showPassword ? 'text' : 'password'}
                             value={data.password}
                             required
                             onChange={(e) =>
                                 setData('password', e.target.value)
                             }
-                            error={!!errors.password}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -153,27 +158,34 @@ export default function Register() {
                             }
                             label="Password"
                         />
+                        {errors.password && (
+                            <FormHelperText>{errors.password}</FormHelperText>
+                        )}
                     </FormControl>
-                    <FormControl variant="outlined">
-                        <InputLabel htmlFor="password_confirmation">
-                            Confirme a Senha *
+                    <FormControl
+                        variant="outlined"
+                        error={!!errors.password_confirmation}
+                        fullWidth
+                    >
+                        <InputLabel htmlFor="password">
+                            Confirmar Senha *
                         </InputLabel>
                         <OutlinedInput
                             id="password_confirmation"
+                            name="password_confirmation"
                             type={showPassword ? 'text' : 'password'}
                             value={data.password_confirmation}
                             required
                             onChange={(e) =>
                                 setData('password_confirmation', e.target.value)
                             }
-                            error={!!errors.password_confirmation}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
                                         aria-label={
                                             showPassword
-                                                ? 'hide the password'
-                                                : 'display the password'
+                                                ? 'hide the password confirmation'
+                                                : 'display the password confirmation'
                                         }
                                         onClick={handleClickShowPassword}
                                         onMouseDown={handleMouseDownPassword}
@@ -188,8 +200,13 @@ export default function Register() {
                                     </IconButton>
                                 </InputAdornment>
                             }
-                            label="Confirme a Senha"
+                            label="Confirmaçã de Senha"
                         />
+                        {errors.password_confirmation && (
+                            <FormHelperText>
+                                {errors.password_confirmation}
+                            </FormHelperText>
+                        )}
                     </FormControl>
                     <Box
                         sx={{
@@ -210,115 +227,32 @@ export default function Register() {
                             Já registrado?
                         </Link>
 
-                        <Box component="button" disabled={processing} sx={{
-                            backgroundColor: currentTheme.palette.primary.main,
-                            color: currentTheme.palette.primary.contrastText,
-                            padding: '8px 16px',
-                            borderRadius: '4px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            '&:disabled': {
-                                backgroundColor: currentTheme.palette.action.disabledBackground,
-                                color: currentTheme.palette.action.disabled,
-                                cursor: 'not-allowed',
-                            },
-                        }}>
+                        <Box
+                            component="button"
+                            disabled={processing}
+                            sx={{
+                                backgroundColor:
+                                    currentTheme.palette.primary.main,
+                                color: currentTheme.palette.primary
+                                    .contrastText,
+                                padding: '8px 16px',
+                                borderRadius: '4px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                '&:disabled': {
+                                    backgroundColor:
+                                        currentTheme.palette.action
+                                            .disabledBackground,
+                                    color: currentTheme.palette.action.disabled,
+                                    cursor: 'not-allowed',
+                                },
+                            }}
+                        >
                             Registrar
                         </Box>
                     </Box>
                 </Box>
             </CardProj>
-
-            {/* <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
-            </form> */}
         </Layout>
     );
 }

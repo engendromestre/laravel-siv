@@ -1,6 +1,7 @@
 import CardProj from '@/Components/CardProj';
+import { useAppTheme } from '@/Hooks/useAppTheme';
 import Layout from '@/Layouts/Layout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import {
     Box,
     Button,
@@ -10,7 +11,6 @@ import {
     Typography,
 } from '@mui/material';
 import { FormEventHandler } from 'react';
-import { useAppTheme } from '../../../hooks/useAppTheme';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -33,13 +33,14 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     variant="h4"
                     gutterBottom
                     sx={{
-                        mb: 4,
                         fontWeight: 'bold',
                         color: currentTheme.palette.primary.main,
+                        ml: 2,
                     }}
                 >
                     Recuperar senha
                 </Typography>
+
                 <Box
                     component="form"
                     onSubmit={submit}
@@ -73,19 +74,46 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     </FormControl>
                     <Box
                         sx={{
+                            mt: 4,
                             display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
                         }}
                     >
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
+                        <Link
+                            href={route('login')}
+                            style={{
+                                textDecoration: 'none',
+                                color: currentTheme.palette.text.secondary,
+                                marginRight: '16px',
+                            }}
+                        >
+                            Voltar para o Login
+                        </Link>
+
+                        <Box
+                            component="button"
                             disabled={processing}
+                            sx={{
+                                backgroundColor:
+                                    currentTheme.palette.primary.main,
+                                color: currentTheme.palette.primary
+                                    .contrastText,
+                                padding: '8px 16px',
+                                borderRadius: '4px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                '&:disabled': {
+                                    backgroundColor:
+                                        currentTheme.palette.action
+                                            .disabledBackground,
+                                    color: currentTheme.palette.action.disabled,
+                                    cursor: 'not-allowed',
+                                },
+                            }}
                         >
                             Enviar
-                        </Button>
+                        </Box>
                     </Box>
                 </Box>
             </CardProj>
