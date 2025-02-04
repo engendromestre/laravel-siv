@@ -1,4 +1,5 @@
 import CardProj from '@/Components/CardProj';
+import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
 import { useAppTheme } from '@/Hooks/useAppTheme';
 import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -7,6 +8,7 @@ import {
     Box,
     FormControl,
     FormHelperText,
+    FormLabel,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -120,6 +122,7 @@ export default function Register() {
                             color={errors.email ? 'error' : 'primary'}
                         />
                     </FormControl>
+
                     <FormControl
                         variant="outlined"
                         error={!!errors.password}
@@ -130,6 +133,7 @@ export default function Register() {
                             id="password"
                             name="password"
                             type={showPassword ? 'text' : 'password'}
+                            placeholder="********"
                             value={data.password}
                             required
                             onChange={(e) =>
@@ -156,12 +160,15 @@ export default function Register() {
                                     </IconButton>
                                 </InputAdornment>
                             }
-                            label="Password"
+                            label="Senha"
                         />
                         {errors.password && (
                             <FormHelperText>{errors.password}</FormHelperText>
                         )}
                     </FormControl>
+
+                    <PasswordStrengthMeter password={data.password} />
+
                     <FormControl
                         variant="outlined"
                         error={!!errors.password_confirmation}
@@ -174,6 +181,7 @@ export default function Register() {
                             id="password_confirmation"
                             name="password_confirmation"
                             type={showPassword ? 'text' : 'password'}
+                            placeholder="********"
                             value={data.password_confirmation}
                             required
                             onChange={(e) =>
@@ -200,7 +208,7 @@ export default function Register() {
                                     </IconButton>
                                 </InputAdornment>
                             }
-                            label="Confirmaçã de Senha"
+                            label="Confirmação de Senha"
                         />
                         {errors.password_confirmation && (
                             <FormHelperText>
@@ -208,6 +216,7 @@ export default function Register() {
                             </FormHelperText>
                         )}
                     </FormControl>
+
                     <Box
                         sx={{
                             mt: 4,

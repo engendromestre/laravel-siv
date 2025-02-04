@@ -11,11 +11,17 @@
 			"extensions": [
 				// "mikestead.dotenv",
 				// "onecentlin.laravel-blade"
+				"formulahendry.docker-explorer",
+				"m1guelpf.better-pest",
+				"naumovs.color-highlight",
+				"vivaxy.vscode-conventional-commits",
 				"amiralizadeh9480.laravel-extra-intellisense",
+				"mehedidracula.php-namespace-resolver",
 				"ryannaddy.laravel-artisan",
 				"onecentlin.laravel5-snippets",
 				"vscodeshift.mui-snippets",
 				"esbenp.prettier-vscode",
+				"humao.rest-client",
 				"github.copilot"
 			],
 			"settings": {}

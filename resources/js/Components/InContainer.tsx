@@ -1,8 +1,4 @@
-import AppTheme from '@/theme/AppTheme';
-import { CssBaseline, Stack, styled } from '@mui/material';
-import { useState } from 'react';
-
-const drawerWidth = 0;
+import { Stack, styled } from "@mui/material";
 
 const InContainer = styled(Stack)(({ theme }) => ({
     height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
@@ -27,16 +23,4 @@ const InContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-export default function Layout(
-    { children }: { children: React.ReactNode },
-    props: { disableCustomTheme?: boolean },
-) {
-    const [mobileOpen, setMobileOpen] = useState(false);
-
-    return (
-        <AppTheme {...props}>
-            <CssBaseline />
-            {children}
-        </AppTheme>
-    );
-}
+export default InContainer;

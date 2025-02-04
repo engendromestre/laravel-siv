@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\Auth\PasswordValidationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,7 @@ class PasswordController extends Controller
     {
         $validated = $request->validate([
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+            'password' =>  PasswordValidationService::rules(),
         ]);
 
         $request->user()->update([
@@ -25,5 +26,11 @@ class PasswordController extends Controller
         ]);
 
         return back();
+    }
+
+    public function getPasswordRules()
+    {
+        $rules = json_decode(PasswordValidationService::jsonRules());
+        return response()->json($rules);
     }
 }
