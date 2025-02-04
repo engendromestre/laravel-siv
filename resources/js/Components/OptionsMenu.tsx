@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import { dividerClasses } from '@mui/material/Divider';
 import { listClasses } from '@mui/material/List';
@@ -55,12 +56,38 @@ export default function OptionsMenu() {
                     },
                 }}
             >
-                <MenuItem>
+                <MenuItem
+                    onClick={handleClose}
+                    sx={{
+                        [`& .${listItemIconClasses.root}`]: {
+                            ml: 'auto',
+                            minWidth: 0,
+                        },
+                    }}
+                >
                     <Link
                         href={route('profile.edit')}
-                        style={{ textDecoration: 'none', color: 'inherit' }}
+                        method="get"
+                        as="button"
+                        style={{
+                            textDecoration: 'none',
+                            color: 'inherit',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            width: '100%',
+                        }}
                     >
-                        Editar Perfil
+                        <ListItemIcon
+                            sx={{
+                                justifyContent: 'flex-start',
+                                minWidth: 'auto',
+                                marginRight: '8px',
+                            }}
+                        >
+                            <AccountCircleRoundedIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Editar Perfil</ListItemText>
                     </Link>
                 </MenuItem>
                 <MenuItem

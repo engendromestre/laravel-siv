@@ -1,6 +1,5 @@
 import CardProj from '@/Components/CardProj';
 import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
-import { useAppTheme } from '@/Hooks/useAppTheme';
 import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -8,18 +7,18 @@ import {
     Box,
     FormControl,
     FormHelperText,
-    FormLabel,
     IconButton,
     InputAdornment,
     InputLabel,
     OutlinedInput,
     TextField,
-    Typography,
+    Typography
 } from '@mui/material';
 import React, { FormEventHandler } from 'react';
 
-export default function Register() {
-    const [currentTheme, toggleCurrentTheme] = useAppTheme();
+import { Theme } from '@mui/material/styles';
+
+export default function Register({ theme }: { theme: Theme }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -59,7 +58,7 @@ export default function Register() {
                 variant="outlined"
                 sx={{
                     maxWidth: '100%',
-                    [currentTheme.breakpoints.up('sm')]: { maxWidth: '650px' },
+                    [theme.breakpoints.up('sm')]: { maxWidth: '650px' },
                 }}
             >
                 <Typography
@@ -68,7 +67,7 @@ export default function Register() {
                     sx={{
                         mb: 4,
                         fontWeight: 'bold',
-                        color: currentTheme.palette.primary.main,
+                        color: theme.palette.primary.main,
                     }}
                 >
                     Registro
@@ -229,7 +228,7 @@ export default function Register() {
                             href={route('login')}
                             style={{
                                 textDecoration: 'none',
-                                color: currentTheme.palette.text.secondary,
+                                color: theme.palette.text.secondary,
                                 marginRight: '16px',
                             }}
                         >
@@ -241,8 +240,8 @@ export default function Register() {
                             disabled={processing}
                             sx={{
                                 backgroundColor:
-                                    currentTheme.palette.primary.main,
-                                color: currentTheme.palette.primary
+                                    theme.palette.primary.main,
+                                color: theme.palette.primary
                                     .contrastText,
                                 padding: '8px 16px',
                                 borderRadius: '4px',
@@ -250,9 +249,9 @@ export default function Register() {
                                 cursor: 'pointer',
                                 '&:disabled': {
                                     backgroundColor:
-                                        currentTheme.palette.action
+                                        theme.palette.action
                                             .disabledBackground,
-                                    color: currentTheme.palette.action.disabled,
+                                    color: theme.palette.action.disabled,
                                     cursor: 'not-allowed',
                                 },
                             }}

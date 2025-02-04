@@ -1,7 +1,9 @@
+import CardProj from '@/Components/CardProj';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
-import DeleteUserForm from './Partials/DeleteUserForm';
+import { Box } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
@@ -10,28 +12,21 @@ export default function Edit({
     status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
     return (
-        <AuthenticatedLayout header={<span>Profile</span>}>
-            <Head title="Profile" />
-
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
+        <AuthenticatedLayout header={<span>Perfil</span>}>
+            <Head title="Perfil" />
+            <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
+                <Grid container spacing={2} columns={12}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
-                            className="max-w-xl"
                         />
-                    </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <DeleteUserForm className="max-w-xl" />
-                    </div>
-                </div>
-            </div>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <UpdatePasswordForm />
+                    </Grid>
+                </Grid>
+            </Box>
         </AuthenticatedLayout>
     );
 }
