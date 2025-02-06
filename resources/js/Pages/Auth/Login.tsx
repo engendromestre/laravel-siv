@@ -1,6 +1,6 @@
 import CardProj from '@/Components/CardProj';
 import Checkbox from '@/Components/Checkbox';
-import { GoogleIcon, MicrosoftIcon } from '@/Components/CustonIcons';
+import { GoogleIcon } from '@/Components/CustonIcons';
 import InContainer from '@/Components/InContainer';
 import SideCustomLive from '@/Components/SideCustomLive';
 import Layout from '@/Layouts/Layout';
@@ -164,18 +164,17 @@ export default function Login({
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert('Entrar com Google')}
+                            onClick={() => {
+                                window.location.href = route(
+                                    'social.redirect',
+                                    {
+                                        provider: 'google',
+                                    },
+                                );
+                            }}
                             startIcon={<GoogleIcon />}
                         >
                             Entrar com Google
-                        </Button>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            onClick={() => alert('Entrar com Microsoft')}
-                            startIcon={<MicrosoftIcon />}
-                        >
-                            Entrar com Microsoft
                         </Button>
                     </Box>
                 </CardProj>

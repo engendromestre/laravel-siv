@@ -1,5 +1,7 @@
 import DarkModeIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeIcon from '@mui/icons-material/LightModeRounded';
+import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
+import { ListItemIcon, ListItemText } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton, { IconButtonOwnProps } from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -78,19 +80,28 @@ export default function ColorModeIconDropdown(props: IconButtonOwnProps) {
                     selected={mode === 'system'}
                     onClick={handleMode('system')}
                 >
-                    System
+                    <ListItemIcon>
+                        <SettingsBrightnessIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Tema do Sistema</ListItemText>
                 </MenuItem>
                 <MenuItem
                     selected={mode === 'light'}
                     onClick={handleMode('light')}
                 >
-                    Light
+                    <ListItemIcon>
+                        <LightModeIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Claro</ListItemText>
                 </MenuItem>
                 <MenuItem
                     selected={mode === 'dark'}
                     onClick={handleMode('dark')}
                 >
-                    Dark
+                    <ListItemIcon>
+                        <DarkModeIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Escuro</ListItemText>
                 </MenuItem>
             </Menu>
         </React.Fragment>

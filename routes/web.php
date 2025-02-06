@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialiteProviderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordController;
 use Illuminate\Foundation\Application;
@@ -15,6 +16,14 @@ Route::get('/', function () {
     ]);
 });
 
+Route::prefix('auth')->group(function () {
+    Route::get('/{provider}/redirect', [SocialiteProviderController::class, 'redirect'])
+        ->name('social.redirect');
+
+    Route::get('/{provider}/callback', [SocialiteProviderController::class, 'callback'])
+        ->name('social.callback');
+});
+
 Route::get('/password-rules', [PasswordController::class, 'getPasswordRules'])->name('password.rules');
 
 Route::get('/dashboard', function () {
@@ -27,4 +36,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -11,21 +11,26 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 
 const mainListItems = [
-    { text: 'Home', icon: <HomeRoundedIcon /> },
-    { text: 'Analytics', icon: <AnalyticsRoundedIcon /> },
-    { text: 'Clients', icon: <PeopleRoundedIcon /> },
-    { text: 'Tasks', icon: <AssignmentRoundedIcon /> },
+    { text: 'Home', icon: HomeRoundedIcon },
+    { text: 'Analytics', icon: AnalyticsRoundedIcon },
+    { text: 'Clients', icon: PeopleRoundedIcon },
+    { text: 'Tasks', icon: AssignmentRoundedIcon },
 ];
 
 const secondaryListItems = [
-    { text: 'Configurações', icon: <SettingsRoundedIcon /> },
-    { text: 'Sobre', icon: <InfoRoundedIcon /> },
-    { text: 'Feedback', icon: <HelpRoundedIcon /> },
+    { text: 'Configurações', icon: SettingsRoundedIcon },
+    { text: 'Sobre', icon: InfoRoundedIcon },
+    { text: 'Feedback', icon: HelpRoundedIcon },
 ];
 
-export default function MenuContent() {
+interface MenuContentProps {
+    open: boolean;
+}
+
+export default function MenuContent({ open }: MenuContentProps) {
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
             <List dense>
@@ -35,10 +40,30 @@ export default function MenuContent() {
                         disablePadding
                         sx={{ display: 'block' }}
                     >
-                        <ListItemButton selected={index === 0}>
-                            <ListItemIcon>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.text} />
-                        </ListItemButton>
+                        <Tooltip
+                            title={!open ? item.text : ''}
+                            placement="right"
+                        >
+                            <ListItemButton
+                                selected={index === 0}
+                                sx={{
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: open ? 2.5 : 1.5,
+                                    transition: 'all 0.3s ease',
+                                }}
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                        transition: 'all 0.3s ease',
+                                    }}
+                                >
+                                    <item.icon sx={{ fontSize: open ? 24 : 36 }} />
+                                </ListItemIcon>
+                                {open && <ListItemText primary={item.text} />}
+                            </ListItemButton>
+                        </Tooltip>
                     </ListItem>
                 ))}
             </List>
@@ -49,10 +74,29 @@ export default function MenuContent() {
                         disablePadding
                         sx={{ display: 'block' }}
                     >
-                        <ListItemButton>
-                            <ListItemIcon>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.text} />
-                        </ListItemButton>
+                        <Tooltip
+                            title={!open ? item.text : ''}
+                            placement="right"
+                        >
+                            <ListItemButton
+                                sx={{
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: open ? 2.5 : 1.5,
+                                    transition: 'all 0.3s ease',
+                                }}
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        justifyContent: 'center',
+                                        transition: 'all 0.3s ease',
+                                    }}
+                                >
+                                    <item.icon sx={{ fontSize: open ? 24 : 36 }} />
+                                </ListItemIcon>
+                                {open && <ListItemText primary={item.text} />}
+                            </ListItemButton>
+                        </Tooltip>
                     </ListItem>
                 ))}
             </List>
