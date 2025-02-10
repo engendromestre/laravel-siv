@@ -1,6 +1,5 @@
-import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
+import { Link as InertiaLink } from '@inertiajs/react';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
@@ -14,16 +13,15 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 
 const mainListItems = [
-    { text: 'Home', icon: HomeRoundedIcon },
-    { text: 'Analytics', icon: AnalyticsRoundedIcon },
-    { text: 'Clients', icon: PeopleRoundedIcon },
+    { text: 'Início', icon: HomeRoundedIcon, link: '/dashboard' },
+    { text: 'Pacientes', icon: PeopleRoundedIcon },
     { text: 'Tasks', icon: AssignmentRoundedIcon },
 ];
 
 const secondaryListItems = [
     { text: 'Configurações', icon: SettingsRoundedIcon },
     { text: 'Sobre', icon: InfoRoundedIcon },
-    { text: 'Feedback', icon: HelpRoundedIcon },
+    // { text: 'Feedback', icon: HelpRoundedIcon },
 ];
 
 interface MenuContentProps {
@@ -44,25 +42,33 @@ export default function MenuContent({ open }: MenuContentProps) {
                             title={!open ? item.text : ''}
                             placement="right"
                         >
-                            <ListItemButton
-                                selected={index === 0}
-                                sx={{
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: open ? 2.5 : 1.5,
-                                    transition: 'all 0.3s ease',
-                                }}
-                            >
-                                <ListItemIcon
+                            <InertiaLink href={item.link || '#'}>
+                                <ListItemButton
+                                    selected={index === 0}
                                     sx={{
-                                        minWidth: 0,
-                                        justifyContent: 'center',
+                                        justifyContent: open
+                                            ? 'initial'
+                                            : 'center',
+                                        px: open ? 2.5 : 1.5,
                                         transition: 'all 0.3s ease',
                                     }}
                                 >
-                                    <item.icon sx={{ fontSize: open ? 24 : 36 }} />
-                                </ListItemIcon>
-                                {open && <ListItemText primary={item.text} />}
-                            </ListItemButton>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            justifyContent: 'center',
+                                            transition: 'all 0.3s ease',
+                                        }}
+                                    >
+                                        <item.icon
+                                            sx={{ fontSize: open ? 24 : 36 }}
+                                        />
+                                    </ListItemIcon>
+                                    {open && (
+                                        <ListItemText primary={item.text} />
+                                    )}
+                                </ListItemButton>
+                            </InertiaLink>
                         </Tooltip>
                     </ListItem>
                 ))}
@@ -92,7 +98,9 @@ export default function MenuContent({ open }: MenuContentProps) {
                                         transition: 'all 0.3s ease',
                                     }}
                                 >
-                                    <item.icon sx={{ fontSize: open ? 24 : 36 }} />
+                                    <item.icon
+                                        sx={{ fontSize: open ? 24 : 36 }}
+                                    />
                                 </ListItemIcon>
                                 {open && <ListItemText primary={item.text} />}
                             </ListItemButton>

@@ -1,10 +1,12 @@
+// resources/js/Layouts/AuthenticatedLayout.tsx
 import AppNavbar from '@/Components/AppNavBar';
 import Header from '@/Components/Header';
 import SideMenu from '@/Components/SideMenu';
+import { router } from '@inertiajs/react';
 import { alpha, Box, Stack } from '@mui/material';
+import { SnackbarProvider } from 'notistack';
 import { PropsWithChildren, ReactNode } from 'react';
 import Layout from './Layout';
-import { SnackbarProvider } from 'notistack';
 
 export default function Authenticated({
     header,
@@ -40,7 +42,6 @@ export default function Authenticated({
                             }}
                         >
                             <Header header={header} />
-                            {/* <MainGrid /> */}
                             <main>{children}</main>
                         </Stack>
                     </Box>

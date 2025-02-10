@@ -59,7 +59,7 @@ export default function SideMenuMobile({
                 </Stack>
                 <Divider />
                 <Stack sx={{ flexGrow: 1 }}>
-                    <MenuContent />
+                    <MenuContent open={false} />
                     <Divider />
                 </Stack>
                 <CardAlert />

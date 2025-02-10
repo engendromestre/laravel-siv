@@ -1,13 +1,13 @@
 import CardProj from '@/Components/CardProj';
-import { useAppTheme } from '@/Hooks/useAppTheme';
 import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Alert, Box, Typography } from '@mui/material';
 import { FormEventHandler } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 export default function VerifyEmail({ status }: { status?: string }) {
-     const [currentTheme, toggleCurrentTheme] = useAppTheme();
     const { post, processing } = useForm({});
+    const currentTheme = useTheme();
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

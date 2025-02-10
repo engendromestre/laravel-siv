@@ -1,7 +1,6 @@
 import CardProj from '@/Components/CardProj';
 import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
 import RedefinitionPasswordTimer from '@/Components/RedefinitionPasswordTimer';
-import { useAppTheme } from '@/Hooks/useAppTheme';
 import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -17,8 +16,8 @@ import {
     OutlinedInput,
     TextField,
     Typography,
+    useTheme,
 } from '@mui/material';
-import axios from 'axios';
 import React, { FormEventHandler, useEffect, useState } from 'react';
 
 export default function ResetPassword({
@@ -28,7 +27,7 @@ export default function ResetPassword({
     token: string;
     email: string;
 }) {
-    const [currentTheme, toggleCurrentTheme] = useAppTheme();
+   const currentTheme = useTheme();
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
         email: email,
