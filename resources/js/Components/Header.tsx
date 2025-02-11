@@ -1,40 +1,36 @@
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Box, Button, IconButton, Toolbar } from '@mui/material';
+import ColorModeIconDropdown from '@/theme/ColorModelIconDropdown';
+import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
+import Stack from '@mui/material/Stack';
+import { PropsWithChildren, ReactNode } from 'react';
+import MenuButton from './MenuButton';
+import NavbarBreadcrumbs from './NavbarBreadcrumbs';
+import Search from './Search';
 
-type HeaderProps = {
-    toggle: () => void;
-    theme: string;
-    handleDrawerToggle?: () => void;
-};
-
-export function Header({ toggle, theme, handleDrawerToggle }: HeaderProps) {
+export default function Header({
+    header,
+}: PropsWithChildren<{ header?: ReactNode }>): JSX.Element {
     return (
-        <Box>
-            <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    onClick={handleDrawerToggle}
-                    sx={{ mr: 2, display: { sm: 'none' } }}
-                >
-                    <MenuIcon />
-                </IconButton>
-                <Box sx={{ flexGrow: 1 }} />
-                <IconButton sx={{ ml: 1 }} onClick={toggle} color="inherit">
-                    {theme === 'dark' ? (
-                        <Brightness7Icon />
-                    ) : (
-                        <Brightness4Icon />
-                    )}
-                </IconButton>
-                <Button color="inherit" onClick={() => console.log('logout')}>
-                    Sair
-                </Button>
-            </Toolbar>
-        </Box>
+        <Stack
+            direction="row"
+            sx={{
+                display: { xs: 'none', md: 'flex' },
+                width: '100%',
+                alignItems: { xs: 'flex-start', md: 'center' },
+                justifyContent: 'space-between',
+                maxWidth: { sm: '100%', md: '1700px' },
+                pt: 1.5,
+            }}
+            spacing={2}
+        >
+            <NavbarBreadcrumbs header={header} />
+            <Stack direction="row" sx={{ gap: 1 }}>
+                <Search />
+                {/* <CustomDatePicker /> */}
+                <MenuButton showBadge aria-label="Open notifications">
+                    <NotificationsRoundedIcon />
+                </MenuButton>
+                <ColorModeIconDropdown />
+            </Stack>
+        </Stack>
     );
 }

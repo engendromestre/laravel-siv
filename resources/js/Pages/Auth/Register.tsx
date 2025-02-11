@@ -1,5 +1,5 @@
 import CardProj from '@/Components/CardProj';
-import { useAppTheme } from '@/Hooks/useAppTheme';
+import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
 import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -12,12 +12,13 @@ import {
     InputLabel,
     OutlinedInput,
     TextField,
-    Typography,
+    Typography
 } from '@mui/material';
 import React, { FormEventHandler } from 'react';
 
-export default function Register() {
-    const [currentTheme, toggleCurrentTheme] = useAppTheme();
+import { Theme } from '@mui/material/styles';
+
+export default function Register({ theme }: { theme: Theme }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -57,7 +58,7 @@ export default function Register() {
                 variant="outlined"
                 sx={{
                     maxWidth: '100%',
-                    [currentTheme.breakpoints.up('sm')]: { maxWidth: '650px' },
+                    [theme.breakpoints.up('sm')]: { maxWidth: '650px' },
                 }}
             >
                 <Typography
@@ -66,7 +67,7 @@ export default function Register() {
                     sx={{
                         mb: 4,
                         fontWeight: 'bold',
-                        color: currentTheme.palette.primary.main,
+                        color: theme.palette.primary.main,
                     }}
                 >
                     Registro
@@ -120,6 +121,7 @@ export default function Register() {
                             color={errors.email ? 'error' : 'primary'}
                         />
                     </FormControl>
+
                     <FormControl
                         variant="outlined"
                         error={!!errors.password}
@@ -130,6 +132,7 @@ export default function Register() {
                             id="password"
                             name="password"
                             type={showPassword ? 'text' : 'password'}
+                            placeholder="********"
                             value={data.password}
                             required
                             onChange={(e) =>
@@ -156,12 +159,15 @@ export default function Register() {
                                     </IconButton>
                                 </InputAdornment>
                             }
-                            label="Password"
+                            label="Senha"
                         />
                         {errors.password && (
                             <FormHelperText>{errors.password}</FormHelperText>
                         )}
                     </FormControl>
+
+                    <PasswordStrengthMeter password={data.password} />
+
                     <FormControl
                         variant="outlined"
                         error={!!errors.password_confirmation}
@@ -174,6 +180,7 @@ export default function Register() {
                             id="password_confirmation"
                             name="password_confirmation"
                             type={showPassword ? 'text' : 'password'}
+                            placeholder="********"
                             value={data.password_confirmation}
                             required
                             onChange={(e) =>
@@ -200,7 +207,7 @@ export default function Register() {
                                     </IconButton>
                                 </InputAdornment>
                             }
-                            label="Confirmaçã de Senha"
+                            label="Confirmação de Senha"
                         />
                         {errors.password_confirmation && (
                             <FormHelperText>
@@ -208,6 +215,7 @@ export default function Register() {
                             </FormHelperText>
                         )}
                     </FormControl>
+
                     <Box
                         sx={{
                             mt: 4,
@@ -220,7 +228,7 @@ export default function Register() {
                             href={route('login')}
                             style={{
                                 textDecoration: 'none',
-                                color: currentTheme.palette.text.secondary,
+                                color: theme.palette.text.secondary,
                                 marginRight: '16px',
                             }}
                         >
@@ -232,8 +240,8 @@ export default function Register() {
                             disabled={processing}
                             sx={{
                                 backgroundColor:
-                                    currentTheme.palette.primary.main,
-                                color: currentTheme.palette.primary
+                                    theme.palette.primary.main,
+                                color: theme.palette.primary
                                     .contrastText,
                                 padding: '8px 16px',
                                 borderRadius: '4px',
@@ -241,9 +249,9 @@ export default function Register() {
                                 cursor: 'pointer',
                                 '&:disabled': {
                                     backgroundColor:
-                                        currentTheme.palette.action
+                                        theme.palette.action
                                             .disabledBackground,
-                                    color: currentTheme.palette.action.disabled,
+                                    color: theme.palette.action.disabled,
                                     cursor: 'not-allowed',
                                 },
                             }}

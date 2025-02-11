@@ -1,15 +1,5 @@
-import { Header } from '@/Components/Header';
-import { useAppTheme } from '@/Hooks/useAppTheme';
-import {
-    AppBar,
-    Box,
-    Container,
-    CssBaseline,
-    Stack,
-    styled,
-    ThemeProvider,
-} from '@mui/material';
-import { SnackbarProvider } from 'notistack';
+import AppTheme from '@/theme/AppTheme';
+import { CssBaseline, Stack, styled } from '@mui/material';
 import { useState } from 'react';
 
 const drawerWidth = 0;
@@ -37,50 +27,16 @@ const InContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout(
+    { children }: { children: React.ReactNode },
+    props: { disableCustomTheme?: boolean },
+) {
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [currentTheme, toggleCurrentTheme] = useAppTheme();
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     return (
-        <ThemeProvider theme={currentTheme}>
+        <AppTheme {...props}>
             <CssBaseline />
-            <InContainer direction="column" justifyContent="space-between">
-                <Box sx={{ display: 'flex' }}>
-                    <AppBar
-                        position="fixed"
-                        sx={{
-                            width: { sm: `calc(100% - ${drawerWidth}px)` },
-                            ml: { sm: `${drawerWidth}px` },
-                        }}
-                    >
-                        <Header
-                            handleDrawerToggle={handleDrawerToggle}
-                            toggle={toggleCurrentTheme}
-                            theme={
-                                currentTheme.palette.mode === 'dark'
-                                    ? 'dark'
-                                    : 'light'
-                            }
-                        />
-                    </AppBar>
-
-                    <SnackbarProvider
-                        autoHideDuration={2000}
-                        maxSnack={3}
-                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    >
-                        <Container
-                            maxWidth="lg"
-                            sx={{ color: 'white', my: 12 }}
-                        >
-                            {children}
-                        </Container>
-                    </SnackbarProvider>
-                </Box>
-            </InContainer>
-        </ThemeProvider>
+            {children}
+        </AppTheme>
     );
 }
