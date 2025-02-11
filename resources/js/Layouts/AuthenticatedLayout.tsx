@@ -2,7 +2,7 @@
 import AppNavbar from '@/Components/AppNavBar';
 import Header from '@/Components/Header';
 import SideMenu from '@/Components/SideMenu';
-import { router } from '@inertiajs/react';
+import IdleWarning from '@/Internals/Components/IdleWarning';
 import { alpha, Box, Stack } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { PropsWithChildren, ReactNode } from 'react';
@@ -43,6 +43,7 @@ export default function Authenticated({
                         >
                             <Header header={header} />
                             <main>{children}</main>
+                            <IdleWarning />
                         </Stack>
                     </Box>
                 </Box>

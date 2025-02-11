@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\SocialiteProviderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -35,5 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/keep-alive', function () {
+    Session::put('last_activity', now()); // Atualiza a sessão
+
+    // // Retorna uma resposta Inertia para evitar o erro
+    // return Inertia::location(route('dashboard')); // Redireciona para a mesma página
+})->middleware('auth')->name('keep-alive');
 
 require __DIR__ . '/auth.php';
