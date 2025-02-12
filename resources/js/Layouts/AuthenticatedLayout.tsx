@@ -42,7 +42,7 @@ export default function Authenticated({
                             }}
                         >
                             <Header header={header} />
-                            <main>{children}</main>
+                            {children}
                             <IdleWarning />
                         </Stack>
                     </Box>

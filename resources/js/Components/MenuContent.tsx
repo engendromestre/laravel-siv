@@ -13,8 +13,16 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 
 const mainListItems = [
-    { text: 'Início', icon: HomeRoundedIcon, link: '/dashboard' },
-    { text: 'Pacientes', icon: PeopleRoundedIcon },
+    {
+        text: 'Início',
+        icon: HomeRoundedIcon,
+        link: route('dashboard'),
+    },
+    {
+        text: 'Pacientes',
+        icon: PeopleRoundedIcon,
+        link: route('patient.index'),
+    },
     { text: 'Tasks', icon: AssignmentRoundedIcon },
 ];
 

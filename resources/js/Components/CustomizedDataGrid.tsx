@@ -1,47 +1,196 @@
-import { DataGrid } from '@mui/x-data-grid';
-import { rows, columns } from '../Internals/Data/grid.Data';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Avatar, Box, IconButton, Menu, MenuItem } from '@mui/material';
+import {
+    DataGrid,
+    GridColDef,
+    GridRenderCellParams,
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarExport,
+    GridToolbarFilterButton,
+} from '@mui/x-data-grid';
+import { MouseEvent, useState } from 'react';
+
+const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 90 },
+    {
+        field: 'firstName',
+        headerName: 'First name',
+        flex: 1,
+        editable: true,
+    },
+    { field: 'lastName', headerName: 'Last name', flex: 1, editable: true },
+    {
+        field: 'age',
+        headerName: 'Age',
+        type: 'number',
+        flex: 0.3,
+        headerAlign: 'center',
+        editable: true,
+    },
+
+    {
+        field: 'photo',
+        headerName: 'Photo',
+        flex: 1,
+        headerAlign: 'center',
+        renderCell: (params: GridRenderCellParams) => (
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                    height: '100%',
+                }}
+            >
+                <Avatar
+                    src={params.row.photo}
+                    alt={params.row.firstName}
+                    sx={{ width: 50, height: 50 }}
+                />
+            </Box>
+        ),
+    },
+    {
+        field: 'actions',
+        headerName: '',
+        flex: 0.5,
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        align: 'right',
+        renderHeader: () => (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} />
+        ),
+        renderCell: (params: GridRenderCellParams) => (
+            <ActionsMenu row={params.row} />
+        ),
+    },
+];
+
+const ActionsMenu = ({ row }: { row: Record<string, unknown> }) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    return (
+        <Box>
+            <IconButton onClick={handleClick}>
+                <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                <MenuItem onClick={() => console.log('view', row.id)}>
+                    <VisibilityIcon sx={{ mr: 1 }} /> View
+                </MenuItem>
+                <MenuItem onClick={() => console.log('edit', row.id)}>
+                    <EditIcon sx={{ mr: 1 }} /> Edit
+                </MenuItem>
+                <MenuItem onClick={() => console.log('delete', row.id)}>
+                    <DeleteIcon sx={{ mr: 1 }} /> Delete
+                </MenuItem>
+            </Menu>
+        </Box>
+    );
+};
+
+const rows = [
+    {
+        id: 1,
+        lastName: 'Snow',
+        firstName: 'Jon',
+        age: 14,
+        photo: 'https://picsum.photos/200',
+    },
+    {
+        id: 2,
+        lastName: 'Lannister',
+        firstName: 'Cersei',
+        age: 31,
+        photo: 'https://picsum.photos/200',
+    },
+    {
+        id: 3,
+        lastName: 'Lannister',
+        firstName: 'Jaime',
+        age: 31,
+        photo: 'https://picsum.photos/200',
+    },
+    {
+        id: 4,
+        lastName: 'Stark',
+        firstName: 'Arya',
+        age: 11,
+        photo: 'https://picsum.photos/200',
+    },
+    {
+        id: 5,
+        lastName: 'Targaryen',
+        firstName: 'Daenerys',
+        age: null,
+        photo: 'https://picsum.photos/100',
+    },
+];
+
+function CustomToolbar() {
+    return (
+        <GridToolbarContainer sx={{ margin: 0.5 }}>
+            <GridToolbarColumnsButton />
+            <GridToolbarFilterButton />
+            <Box sx={{ flexGrow: 1 }} />
+            <GridToolbarExport
+                slotProps={{
+                    tooltip: { title: 'Exportar Dados' },
+                    button: { variant: 'text' },
+                }}
+            />
+        </GridToolbarContainer>
+    );
+}
 
 export default function CustomizedDataGrid() {
+    const [paginationModel, setPaginationModel] = useState({
+        pageSize: 5,
+        page: 0,
+    });
+
     return (
-        <DataGrid
-            checkboxSelection
-            rows={rows}
-            columns={columns}
-            getRowClassName={(params) =>
-                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-            }
-            initialState={{
-                pagination: { paginationModel: { pageSize: 20 } },
-            }}
-            pageSizeOptions={[10, 20, 50]}
-            disableColumnResize
-            density="compact"
-            slotProps={{
-                filterPanel: {
-                    filterFormProps: {
-                        logicOperatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
+        <Box sx={{ height: '60vh', width: '100%' }}>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+                checkboxSelection
+                disableRowSelectionOnClick
+                autoPageSize
+                slots={{ toolbar: CustomToolbar }}
+                initialState={{ density: 'comfortable' }}
+                sx={{
+                    '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
+                        {
+                            outline: 'none', // Remove a borda azul ao focar na célula
                         },
-                        columnInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { mt: 'auto' },
+                    '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
+                        {
+                            outline: 'none', // Remove a borda azul ao focar no cabeçalho
                         },
-                        operatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { mt: 'auto' },
-                        },
-                        valueInputProps: {
-                            InputComponentProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                            },
-                        },
+                    '& .Mui-selected': {
+                        outline: 'none !important', // Remove o destaque da seleção
                     },
-                },
-            }}
-        />
+                }}
+            />
+        </Box>
     );
 }

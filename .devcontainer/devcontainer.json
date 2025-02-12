@@ -21,8 +21,10 @@
                 "vscodeshift.mui-snippets",
                 "esbenp.prettier-vscode",
                 "humao.rest-client",
-				"sourcegraph.cody-ai"
-                // "codeium.codeium"
+                "dbaeumer.vscode-eslint",
+                // "tabnine.tabnine-vscode"
+				// "sourcegraph.cody-ai"
+                "codeium.codeium"
                 // "github.copilot"
             ],
             "settings": {}
