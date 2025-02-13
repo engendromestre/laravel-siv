@@ -15,27 +15,11 @@ import {
 import { MouseEvent, useState } from 'react';
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-        field: 'firstName',
-        headerName: 'First name',
-        flex: 1,
-        editable: true,
-    },
-    { field: 'lastName', headerName: 'Last name', flex: 1, editable: true },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        flex: 0.3,
-        headerAlign: 'center',
-        editable: true,
-    },
-
+    { field: 'id', headerName: 'ID', flex: 0.1 },
     {
         field: 'photo',
         headerName: 'Photo',
-        flex: 1,
+        flex: 0.2,
         headerAlign: 'center',
         renderCell: (params: GridRenderCellParams) => (
             <Box
@@ -54,6 +38,22 @@ const columns: GridColDef[] = [
                 />
             </Box>
         ),
+    },
+    {
+        field: 'firstName',
+        headerName: 'First name',
+        flex: 1,
+        editable: true,
+    },
+
+    { field: 'lastName', headerName: 'Last name', flex: 1, editable: true },
+    {
+        field: 'age',
+        headerName: 'Age',
+        type: 'number',
+        flex: 0.3,
+        headerAlign: 'center',
+        editable: true,
     },
     {
         field: 'actions',
@@ -107,38 +107,45 @@ const ActionsMenu = ({ row }: { row: Record<string, unknown> }) => {
 const rows = [
     {
         id: 1,
+        photo: 'https://randomuser.me/api/portraits/men/1.jpg',
         lastName: 'Snow',
         firstName: 'Jon',
         age: 14,
-        photo: 'https://picsum.photos/200',
     },
     {
         id: 2,
+        photo: 'https://randomuser.me/api/portraits/women/2.jpg',
         lastName: 'Lannister',
         firstName: 'Cersei',
         age: 31,
-        photo: 'https://picsum.photos/200',
     },
     {
         id: 3,
+        photo: 'https://randomuser.me/api/portraits/men/3.jpg',
         lastName: 'Lannister',
         firstName: 'Jaime',
         age: 31,
-        photo: 'https://picsum.photos/200',
     },
     {
         id: 4,
+        photo: 'https://randomuser.me/api/portraits/women/4.jpg',
         lastName: 'Stark',
         firstName: 'Arya',
         age: 11,
-        photo: 'https://picsum.photos/200',
     },
     {
         id: 5,
+        photo: 'https://randomuser.me/api/portraits/women/5.jpg',
         lastName: 'Targaryen',
         firstName: 'Daenerys',
         age: null,
-        photo: 'https://picsum.photos/100',
+    },
+    {
+        id: 6,
+        photo: 'https://randomuser.me/api/portraits/women/6.jpg',
+        lastName: 'Test',
+        firstName: 'Test',
+        age: null,
     },
 ];
 
@@ -168,6 +175,7 @@ export default function CustomizedDataGrid() {
         <Box sx={{ height: '60vh', width: '100%' }}>
             <DataGrid
                 rows={rows}
+                // rowCount={rows.length}
                 columns={columns}
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}

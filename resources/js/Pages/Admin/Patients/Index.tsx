@@ -3,12 +3,19 @@ import CustomizedDataGrid from '@/Components/CustomizedDataGrid';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
+import HomeIcon from '@mui/icons-material/Home';
+import PeopleIcon from '@mui/icons-material/People';
 import { Button, Stack, useTheme } from '@mui/material';
+
+const breadcrumb = [
+    { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
+    { label: 'Paciente', icon: PeopleIcon },
+];
 
 export default function Index() {
     const theme = useTheme();
     return (
-        <AuthenticatedLayout header={<span> Listar Pacientes</span>}>
+        <AuthenticatedLayout header={breadcrumb}>
             <Head title="Listar Pacientes" />
             <CardProj
                 variant="outlined"
@@ -24,7 +31,7 @@ export default function Index() {
                 >
                     <Button
                         variant="contained"
-                        // href={route('admin.patients.create')}
+                        href={route('patient.create')}
                         startIcon={<AddCircle />}
                     >
                         Novo Paciente

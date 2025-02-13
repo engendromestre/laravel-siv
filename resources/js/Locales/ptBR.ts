@@ -9,13 +9,11 @@ const ptBR = {
                     errorOverlayDefaultLabel: 'Ocorreu um erro.',
 
                     // Paginação
-                    MuiTablePagination: {
-                        labelRowsPerPage: 'Linhas por página:',
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        //@ts-expect-error
-                        labelDisplayedRows: ({ from, to, count }) =>
-                            `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`,
-                    },
+                    labelRowsPerPage: 'Linhas por página:',
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    //@ts-expect-error
+                    labelDisplayedRows: ({ from, to, count }) =>
+                        `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`,
 
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     //@ts-expect-error

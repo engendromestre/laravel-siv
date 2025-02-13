@@ -44,7 +44,6 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/keep-alive', function () {
     Session::put('last_activity', now()); // Atualiza a sessão
-
     // // Retorna uma resposta Inertia para evitar o erro
     // return Inertia::location(route('dashboard')); // Redireciona para a mesma página
 })->middleware('auth')->name('keep-alive');
