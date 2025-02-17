@@ -7,10 +7,9 @@ import {
     DataGrid,
     GridColDef,
     GridRenderCellParams,
-    GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarExport,
-    GridToolbarFilterButton,
+    GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import { MouseEvent, useState } from 'react';
 
@@ -91,13 +90,13 @@ const ActionsMenu = ({ row }: { row: Record<string, unknown> }) => {
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                 <MenuItem onClick={() => console.log('view', row.id)}>
-                    <VisibilityIcon sx={{ mr: 1 }} /> View
+                    <VisibilityIcon sx={{ mr: 1 }} /> Visualizar
                 </MenuItem>
                 <MenuItem onClick={() => console.log('edit', row.id)}>
-                    <EditIcon sx={{ mr: 1 }} /> Edit
+                    <EditIcon sx={{ mr: 1 }} /> Editar
                 </MenuItem>
                 <MenuItem onClick={() => console.log('delete', row.id)}>
-                    <DeleteIcon sx={{ mr: 1 }} /> Delete
+                    <DeleteIcon sx={{ mr: 1 }} /> Apagar
                 </MenuItem>
             </Menu>
         </Box>
@@ -152,8 +151,9 @@ const rows = [
 function CustomToolbar() {
     return (
         <GridToolbarContainer sx={{ margin: 0.5 }}>
-            <GridToolbarColumnsButton />
-            <GridToolbarFilterButton />
+            {/* <GridToolbarColumnsButton /> */}
+            {/* <GridToolbarFilterButton /> */}
+            <GridToolbarQuickFilter />
             <Box sx={{ flexGrow: 1 }} />
             <GridToolbarExport
                 slotProps={{
@@ -174,6 +174,7 @@ export default function CustomizedDataGrid() {
     return (
         <Box sx={{ height: '60vh', width: '100%' }}>
             <DataGrid
+                ignoreDiacritics
                 rows={rows}
                 // rowCount={rows.length}
                 columns={columns}
@@ -202,3 +203,4 @@ export default function CustomizedDataGrid() {
         </Box>
     );
 }
+// refatorar os componentes

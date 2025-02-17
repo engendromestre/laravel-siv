@@ -1,11 +1,11 @@
 import CardProj from '@/Components/CardProj';
-import CustomizedDataGrid from '@/Components/CustomizedDataGrid';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import { Button, Stack, useTheme } from '@mui/material';
+import PatientDatagrid from './Components/PatientDatagrid';
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
@@ -37,7 +37,7 @@ export default function Index() {
                         Novo Paciente
                     </Button>
                 </Stack>
-                <CustomizedDataGrid />
+                <PatientDatagrid />
             </CardProj>
         </AuthenticatedLayout>
     );

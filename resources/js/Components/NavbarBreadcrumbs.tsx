@@ -1,6 +1,6 @@
 import { SvgIconComponent } from '@mui/icons-material';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import { Link, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs';
 import { styled } from '@mui/material/styles';
 import React from 'react';
@@ -49,7 +49,9 @@ export default function NavbarBreadcrumbs({
                                 sx: { mr: 0.5 },
                                 fontSize: 'inherit',
                             })}
-                        {item.label}
+                        <Box component="span" sx={{ mx: 0.5 }}>
+                            {item.label}
+                        </Box>
                     </Typography>
                 ) : (
                     <Link
@@ -59,11 +61,16 @@ export default function NavbarBreadcrumbs({
                         color="inherit"
                         href={route(item.href as string)}
                     >
-                        {item.icon &&
-                            React.createElement(item.icon, {
-                                fontSize: 'small',
-                            })}
-                        {item.label}
+                        {item.icon && (
+                            <>
+                                {React.createElement(item.icon, {
+                                    fontSize: 'small',
+                                })}
+                            </>
+                        )}
+                        <Box component="span" sx={{ mx: 0.5 }}>
+                            {item.label}
+                        </Box>
                     </Link>
                 );
             })}

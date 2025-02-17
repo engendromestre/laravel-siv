@@ -3,6 +3,7 @@ const ptBR = {
         MuiDataGrid: {
             defaultProps: {
                 localeText: {
+                    toolbarQuickFilterPlaceholder: 'Pesquisar',
                     // Traduções padrão
                     noRowsLabel: 'Nenhuma linha',
                     noResultsOverlayLabel: 'Nenhum resultado encontrado.',
@@ -10,21 +11,18 @@ const ptBR = {
 
                     // Paginação
                     labelRowsPerPage: 'Linhas por página:',
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    //@ts-expect-error
-                    labelDisplayedRows: ({ from, to, count }) =>
+                    labelDisplayedRows: ({ from = 0, to = 0, count = 0 }) =>
                         `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`,
 
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    //@ts-expect-error
-                    footerRowSelected: (count) =>
+                    footerRowSelected: (count = 0) =>
                         count !== 1
                             ? `${count.toLocaleString()} linhas selecionadas`
                             : `${count.toLocaleString()} linha selecionada`,
-                    footerTotalRows: 'Total de linhas:',
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    //@ts-expect-error
-                    footerTotalVisibleRows: (visibleCount, totalCount) =>
+                    footerTotalRows: (count = 0) => `Total de linhas: ${count}`,
+                    footerTotalVisibleRows: (
+                        visibleCount = 0,
+                        totalCount = 0,
+                    ) =>
                         `${visibleCount.toLocaleString()} de ${totalCount.toLocaleString()} linhas`,
 
                     // Toolbar
