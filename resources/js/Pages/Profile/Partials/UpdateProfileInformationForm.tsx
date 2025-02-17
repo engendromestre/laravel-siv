@@ -15,6 +15,7 @@ export default function UpdateProfileInformation({
     const user = usePage().props.auth.user;
     const theme = useTheme();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             name: user.name,

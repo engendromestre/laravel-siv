@@ -1,5 +1,7 @@
 import CardProj from '@/Components/CardProj';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { PageProps } from '@/types';
+import { PatientList } from '@/types/Patients';
 import { Head } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -12,7 +14,15 @@ const breadcrumb = [
     { label: 'Paciente', icon: PeopleIcon },
 ];
 
-export default function Index() {
+export default function Index({
+    patientList,
+    mustVerifyEmail,
+    status,
+}: PageProps<{
+    patientList: PatientList;
+    mustVerifyEmail: boolean;
+    status?: string;
+}>) {
     const theme = useTheme();
     return (
         <AuthenticatedLayout header={breadcrumb}>
@@ -37,7 +47,11 @@ export default function Index() {
                         Novo Paciente
                     </Button>
                 </Stack>
-                <PatientDatagrid />
+                <PatientDatagrid
+                    patientList={patientList}
+                    mustVerifyEmail={mustVerifyEmail}
+                    status={status}
+                />
             </CardProj>
         </AuthenticatedLayout>
     );

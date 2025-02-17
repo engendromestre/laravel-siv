@@ -5,7 +5,7 @@ import {
     GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 
-export function CustomToolbar() {
+export function DatagridCustomToolbar() {
     return (
         <GridToolbarContainer sx={{ margin: 0.5 }}>
             <GridToolbarQuickFilter />

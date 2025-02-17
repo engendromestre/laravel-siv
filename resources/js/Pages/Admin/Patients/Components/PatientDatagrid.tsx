@@ -1,79 +1,152 @@
 import { ActionsMenu } from '@/Components/ActionsMenu';
-import { DataGridTable } from '@/Components/DatagridTable';
-import { Avatar, Box } from '@mui/material';
-import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
+import { Patient, PatientList } from '@/types/Patients';
+import { Box } from '@mui/material';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import dayjs from 'dayjs';
+import PatientPhotoAvatar from './PatientPhotoAvatar';
+import PatientStatusCell from './PatientStatusDatagrid';
 
-const rows = [
-    {
-        id: 1,
-        photo: 'https://randomuser.me/api/portraits/men/1.jpg',
-        lastName: 'Snow',
-        firstName: 'Jon',
-        age: 14,
-    },
-    {
-        id: 2,
-        photo: 'https://randomuser.me/api/portraits/women/2.jpg',
-        lastName: 'Lannister',
-        firstName: 'Cersei',
-        age: 31,
-    },
-];
+export default function PatientDatagrid({
+    patientList,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    mustVerifyEmail,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    status,
+}: {
+    patientList: PatientList | undefined;
+    mustVerifyEmail: boolean;
+    status?: string;
+}) {
+    const mapDataToGridRows = (list: PatientList) => {
+        const { data } = list;
 
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', flex: 0.1 },
-    {
-        field: 'photo',
-        headerName: 'Photo',
-        flex: 0.2,
-        headerAlign: 'center',
-        renderCell: (params: GridRenderCellParams) => (
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    height: '100%',
-                }}
-            >
-                <Avatar
-                    src={params.row.photo}
-                    alt={params.row.firstName}
-                    sx={{ width: 50, height: 50 }}
+        console.log(data);
+        return data.map((patient: Patient) => {
+            return {
+                id: patient.id,
+                name: patient.name,
+                motherName: patient.motherName,
+                birthDate: patient.birthDate,
+                status: patient.status,
+                photos: patient.photos,
+            };
+        });
+    };
+
+    const rows = patientList ? mapDataToGridRows(patientList) : [];
+
+    const columns: GridColDef[] = [
+        { field: 'id', headerName: 'ID', flex: 0.1 },
+        {
+            field: 'photos',
+            headerName: 'Imagem',
+            flex: 0.5,
+            headerAlign: 'center',
+            renderCell: (params: GridRenderCellParams) => {
+                const photosArray = JSON.parse(params.row.photos); // Converte a string JSON em um array
+                const firstPhoto = photosArray[0]; // Pega o primeiro item do array
+
+                return (
+                    <PatientPhotoAvatar
+                        urlPhoto={firstPhoto}
+                        name={params.row.name}
+                    />
+                );
+            },
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+
+        {
+            field: 'motherName',
+            headerName: 'Mãe',
+            flex: 1,
+        },
+        {
+            field: 'birthDate',
+            headerName: 'Nascimento',
+            flex: 1,
+            valueFormatter: (params: GridRenderCellParams) => {
+                // Se params.value for uma string, você precisa garantir que é um formato de data válido.
+                const birthDate = dayjs(params.value);
+
+                // Formatar a data com dayjs
+                return birthDate.isValid()
+                    ? birthDate.format('DD/MM/YYYY')
+                    : '-'; // Retorna '-' se a data não for válida
+            },
+        },
+        {
+            field: 'status',
+            headerName: 'Status',
+            flex: 1,
+            renderCell: (params: GridRenderCellParams) => (
+                <PatientStatusCell status={params.value} />
+            ),
+        },
+        {
+            field: 'actions',
+            headerName: '',
+            flex: 0.5,
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            align: 'right',
+            renderHeader: () => (
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} />
+            ),
+            renderCell: (params: GridRenderCellParams) => (
+                <ActionsMenu
+                    rowId={params.row.id}
+                    onView={() => {
+                        console.log('view', params.row.id);
+                    }}
+                    onEdit={() => {
+                        console.log('edit', params.row.id);
+                    }}
+                    onDelete={() => {
+                        console.log('delete', params.row.id);
+                    }}
                 />
-            </Box>
-        ),
-    },
-    { field: 'firstName', headerName: 'First name', flex: 1, editable: true },
-    { field: 'lastName', headerName: 'Last name', flex: 1, editable: true },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        flex: 0.3,
-        headerAlign: 'center',
-        editable: true,
-    },
-    {
-        field: 'actions',
-        headerName: 'Ações',
-        flex: 0.5,
-        sortable: false,
-        filterable: false,
-        disableColumnMenu: true,
-        align: 'right',
-        renderCell: (params: GridRenderCellParams) => (
-            <ActionsMenu
-                rowId={params.row.id}
-                onView={(id) => console.log('Visualizar', id)}
-                onEdit={(id) => console.log('Editar', id)}
-                onDelete={(id) => console.log('Apagar', id)}
-            />
-        ),
-    },
-];
+            ),
+        },
+    ];
 
-export default function CustomizedDataGrid() {
-    return <DataGridTable columns={columns} rows={rows} />;
+    return (
+        <Box sx={{ height: '60vh', width: '100%' }}>
+            <DataGrid
+                ignoreDiacritics
+                filterMode="server"
+                rows={rows}
+                columns={columns}
+                // paginationModel={paginationModel}
+                // onPaginationModelChange={setPaginationModel}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+                checkboxSelection={false}
+                disableRowSelectionOnClick
+                disableColumnFilter={true}
+                disableColumnSelector={true}
+                autoPageSize
+                slots={{ toolbar: DatagridCustomToolbar }}
+                initialState={{ density: 'comfortable' }}
+                sx={{
+                    '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
+                        {
+                            outline: 'none',
+                        },
+                    '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
+                        {
+                            outline: 'none',
+                        },
+                    '& .Mui-selected': {
+                        outline: 'none !important',
+                    },
+                }}
+            />
+        </Box>
+    );
 }
