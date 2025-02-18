@@ -16,16 +16,21 @@ class PatientFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['m', 'f']);
+        $name = $gender === 'm' ? $this->faker->name('male') : $this->faker->name('female');
+
+        $imageId = rand(1, 99);
+        $photoUrl = $gender === 'm'
+            ? "https://randomuser.me/api/portraits/men/{$imageId}.jpg"
+            : "https://randomuser.me/api/portraits/women/{$imageId}.jpg";
         return [
-            'name' => $this->faker->name(),
+            'register' => $this->faker->randomNumber(9),
+            'name' => $name,
+            'gender' => $gender,
             'birthDate' => $this->faker->date(),
             'motherName' => $this->faker->name('female'),
             'status' => $this->faker->randomElement(['a', 'i']),
-            'photos' => json_encode([
-                $this->faker->randomElement([
-                    'https://i.pravatar.cc/150?img=' . rand(1, 70)
-                ]),
-            ]),
+            'photos' => json_encode([$photoUrl]),
         ];
     }
 }

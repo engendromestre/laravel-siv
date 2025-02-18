@@ -16,21 +16,27 @@ const breadcrumb = [
 ];
 
 export default function Edit({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mustVerifyEmail,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Perfil" />
-            <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
-                <Grid container spacing={2} columns={12}>
-                    <Grid size={{ xs: 12, md: 6 }}>
+            <Box sx={{ width: '58%', maxWidth: { sm: '90%', md: '1700px' } }}>
+                <Grid
+                    container
+                    spacing={{ xs: 2, md: 1 }}
+                    columns={{ xs: 4, sm: 8, md: 6 }}
+                >
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
                         />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <UpdatePasswordForm />
                     </Grid>
                 </Grid>

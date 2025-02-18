@@ -38,7 +38,7 @@ const ptBR = {
                     toolbarFiltersTooltipShow: 'Mostrar filtros',
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     //@ts-ignore
-                    toolbarFiltersTooltipActive: (count) =>
+                    toolbarFiltersTooltipActive: (count = 0) =>
                         count !== 1
                             ? `${count} filtros ativos`
                             : `${count} filtro ativo`,

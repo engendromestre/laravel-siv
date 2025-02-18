@@ -16,23 +16,12 @@ import { useTheme } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
 import React, { FormEventHandler, useRef } from 'react';
 
-export default function UpdatePasswordForm({
-    className = '',
-}: {
-    className?: string;
-}) {
+export default function UpdatePasswordForm() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
     const theme = useTheme();
 
-    const {
-        data,
-        setData,
-        errors,
-        put,
-        reset,
-        processing,
-    } = useForm({
+    const { data, setData, errors, put, reset, processing } = useForm({
         current_password: '',
         password: '',
         password_confirmation: '',
@@ -85,7 +74,7 @@ export default function UpdatePasswordForm({
     };
 
     return (
-        <CardProj variant="outlined" >
+        <CardProj variant="outlined">
             <Typography
                 component="p"
                 variant="body1"

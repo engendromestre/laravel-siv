@@ -1,11 +1,15 @@
 import CardProj from '@/Components/CardProj';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { Box, FormControl, TextField, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useSnackbar } from 'notistack';
+import {
+    Box,
+    FormControl,
+    TextField,
+    Typography,
+    useTheme,
+} from '@mui/material';
 import { FormEventHandler } from 'react';
 
-export default function UpdateProfileInformation({
+export default function CreatePatientInformationForm({
     mustVerifyEmail,
     status,
 }: {
@@ -18,26 +22,12 @@ export default function UpdateProfileInformation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            name: user.name,
-            email: user.email,
+            name: '',
+            email: '',
         });
 
-    const { enqueueSnackbar } = useSnackbar();
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        patch(route('profile.update'), {
-            onSuccess: () => {
-                enqueueSnackbar('Perfil atualizado com sucesso!', {
-                    variant: 'success',
-                });
-            },
-            onError: () => {
-                enqueueSnackbar('Erro ao atualizar o perfil!', {
-                    variant: 'error',
-                });
-            },
-        });
     };
 
     return (
@@ -52,8 +42,7 @@ export default function UpdateProfileInformation({
                     color: theme.palette.primary.main,
                 }}
             >
-                Atualize as informações do perfil e o endereço de e-mail da sua
-                conta.
+                Insira as informações do Paciente.
             </Typography>
 
             <Box
