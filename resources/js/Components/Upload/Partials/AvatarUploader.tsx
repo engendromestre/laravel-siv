@@ -1,6 +1,8 @@
+import { gray } from '@/theme/themePrimitives';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Avatar, Box, IconButton } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useRef } from 'react';
 
 interface AvatarUploaderProps {
@@ -12,6 +14,8 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
     onImageChange,
     selectedImage,
 }) => {
+    const theme = useTheme();
+
     const inputRef = useRef<HTMLInputElement | null>(null);
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -47,8 +51,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
                     padding: 1,
                     borderRadius: '50%',
                     boxShadow: 3,
-                    // textAlign: 'center',
-                    bgcolor: '#f0f0f0',
+                    bgcolor: theme.palette.primary.light,
                 }}
             >
                 <Box
@@ -58,13 +61,13 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        border: '2px solid #fff',
+                        border: `2px solid ${gray[100]}`,
                         borderRadius: '50%',
                         width: 160,
                         height: 160,
                         cursor: 'pointer',
                         margin: 'auto',
-                        '&:hover': { backgroundColor: '#f0f0f0' },
+                        '&:hover': { backgroundColor: '#fff' },
                     }}
                 >
                     <Avatar

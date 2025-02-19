@@ -5,7 +5,7 @@ import CardProj from '../CardProj';
 import AvatarUploader from './Partials/AvatarUploader';
 import PhotoCaptureDialog from './Partials/PhotoCaptureDialog';
 
-const UploadPhotoComponent: React.FC = () => {
+const UploadPhoto: React.FC = () => {
     // const [emailVerified, setEmailVerified] = useState<boolean>(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [openCamera, setOpenCamera] = useState<boolean>(false);
@@ -52,4 +52,4 @@ const UploadPhotoComponent: React.FC = () => {
     );
 };
 
-export default UploadPhotoComponent;
+export default UploadPhoto;

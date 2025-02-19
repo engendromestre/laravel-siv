@@ -1,29 +1,35 @@
 import CardProj from '@/Components/CardProj';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import {
     Box,
     FormControl,
+    FormControlLabel,
+    FormLabel,
+    Radio,
+    RadioGroup,
     TextField,
     Typography,
     useTheme,
 } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { FormEventHandler } from 'react';
 
-export default function CreatePatientInformationForm({
-    mustVerifyEmail,
-    status,
-}: {
-    mustVerifyEmail: boolean;
-    status?: string;
-}) {
-    const user = usePage().props.auth.user;
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br'; // Importa a localização
+
+export default function CreatePatientInformationForm() {
+    // const user = usePage().props.auth.user;
     const theme = useTheme();
+    // const { enqueueSnackbar } = useSnackbar();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
+            register: '',
             name: '',
-            email: '',
+            gender: '' as 'm' | 'f',
         });
 
     const submit: FormEventHandler = (e) => {
@@ -58,6 +64,35 @@ export default function CreatePatientInformationForm({
             >
                 <FormControl>
                     <TextField
+                        label="Registro"
+                        error={!!errors.register}
+                        helperText={errors.register}
+                        id="register"
+                        type="text"
+                        name="register"
+                        placeholder="123456789"
+                        value={data.register}
+                        className="mt-1 block w-full"
+                        autoComplete="off"
+                        required
+                        fullWidth
+                        variant="outlined"
+                        onChange={(e) =>
+                            setData(
+                                'register',
+                                e.target.value.replace(/\D+/g, '').slice(0, 9),
+                            )
+                        }
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 9,
+                            },
+                        }}
+                        color={errors.register ? 'error' : 'primary'}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
                         label="Nome Completo"
                         error={!!errors.name}
                         helperText={errors.name}
@@ -76,58 +111,35 @@ export default function CreatePatientInformationForm({
                 </FormControl>
 
                 <FormControl>
-                    <TextField
-                        label="E-mail"
-                        error={!!errors.email}
-                        helperText={errors.email}
-                        id="email"
-                        type="email"
-                        name="email"
-                        placeholder="seu@email.com"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        required
-                        fullWidth
-                        variant="outlined"
-                        onChange={(e) => setData('email', e.target.value)}
-                        color={errors.email ? 'error' : 'primary'}
-                    />
+                    <FormLabel id="gender-controlled-radio-buttons-group">
+                        Gênero
+                    </FormLabel>
+                    <RadioGroup
+                        row
+                        aria-labelledby="gender-radio-buttons-group-label"
+                        defaultValue="female"
+                        name="gender"
+                        value={data.gender}
+                        onChange={(e) =>
+                            setData('gender', e.target.value as 'm' | 'f')
+                        }
+                    >
+                        <FormControlLabel
+                            value="female"
+                            control={<Radio />}
+                            label="Feminino"
+                        />
+                        <FormControlLabel
+                            value="male"
+                            control={<Radio />}
+                            label="Masculino"
+                        />
+                    </RadioGroup>
                 </FormControl>
 
-                {mustVerifyEmail && user.email_verified_at === null && (
-                    <Box>
-                        <Typography
-                            variant="body2"
-                            sx={{ mt: 2, color: 'text.primary' }}
-                        >
-                            Seu endereço de e-mail não está verificado.
-                            <Link
-                                href={route('verification.send')}
-                                method="post"
-                                as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                            >
-                                Clique aqui para reenviar o e-mail de
-                                verificação.
-                            </Link>
-                        </Typography>
-
-                        {status === 'verification-link-sent' && (
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    mt: 2,
-                                    fontWeight: 'medium',
-                                    color: 'success.main',
-                                }}
-                            >
-                                Um novo link de verificação foi enviado para o
-                                seu endereço de e-mail.
-                            </Typography>
-                        )}
-                    </Box>
-                )}
+                <FormControl>
+                    <CustomDatePicker />
+                </FormControl>
 
                 <Box
                     sx={{
@@ -159,5 +171,21 @@ export default function CreatePatientInformationForm({
                 </Box>
             </Box>
         </CardProj>
+    );
+}
+
+export function CustomDatePicker() {
+    dayjs.locale('pt-br');
+    return (
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+            <DatePicker
+                label="Data de Nascimento"
+                slotProps={{
+                    textField: {
+                        helperText: 'DD/MM/YYYY',
+                    },
+                }}
+            />
+        </LocalizationProvider>
     );
 }

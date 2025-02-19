@@ -36,6 +36,7 @@
         "vite": "^6.0"
     },
     "dependencies": {
+        "@date-io/dayjs": "^3.2.0",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
         "@fontsource/roboto": "^5.1.1",

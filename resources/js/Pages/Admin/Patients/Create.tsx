@@ -1,4 +1,4 @@
-import UploadPhotoComponent from '@/Components/Upload/ UploadPhotoComponent';
+import UploadPhoto from '@/Components/Upload/ UploadPhoto';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import HomeIcon from '@mui/icons-material/Home';
@@ -24,7 +24,7 @@ export default function Create() {
             motherName: '',
             status: '',
         });
-    // const { enqueueSnackbar } = useSnackbar();
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Inserir Pacientes" />
@@ -35,10 +35,10 @@ export default function Create() {
                     columns={{ xs: 4, sm: 8, md: 6 }}
                 >
                     <Grid size={{ xs: 12, md: 3 }}>
-                        <UploadPhotoComponent />
+                        <UploadPhoto />
                     </Grid>
                     <Grid size={{ xs: 12, md: 3 }}>
-                        <CreatePatientInformationForm mustVerifyEmail={false} />
+                        <CreatePatientInformationForm />
                     </Grid>
                 </Grid>
             </Box>

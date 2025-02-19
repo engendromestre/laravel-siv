@@ -2,7 +2,7 @@ import CardProj from '@/Components/CardProj';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { PatientList } from '@/types/Patients';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react'; // Importação do router para requisições dinâmicas
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
@@ -24,6 +24,22 @@ export default function Index({
     status?: string;
 }>) {
     const theme = useTheme();
+
+    // Função para buscar pacientes ao mudar a página ou o tamanho da página
+    const fetchPatients = (page: number, pageSize: number) => {
+        router.get(
+            route('patient.index'),
+            {
+                page,
+                per_page: pageSize,
+            },
+            {
+                preserveState: true, // Mantém a navegação sem recarregar a página
+                replace: true, // Substitui a URL para refletir os novos parâmetros
+            },
+        );
+    };
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Listar Pacientes" />
@@ -51,6 +67,7 @@ export default function Index({
                     patientList={patientList}
                     mustVerifyEmail={mustVerifyEmail}
                     status={status}
+                    fetchPatients={fetchPatients} // Passando a função para o DataGrid
                 />
             </CardProj>
         </AuthenticatedLayout>
