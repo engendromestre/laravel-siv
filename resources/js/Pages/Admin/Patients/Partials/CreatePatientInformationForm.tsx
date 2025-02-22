@@ -1,9 +1,8 @@
-import CardProj from '@/Components/CardProj';
-import { useForm } from '@inertiajs/react';
 import {
     Box,
     FormControl,
     FormControlLabel,
+    FormHelperText,
     FormLabel,
     Radio,
     RadioGroup,
@@ -11,33 +10,29 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { FormEventHandler } from 'react';
 
-import dayjs from 'dayjs';
+import { PatientFormData } from '@/types/Patients';
 import 'dayjs/locale/pt-br'; // Importa a localização
+import { CustomBirthDatePicker } from '../Components/PatientCustomBirthDatePicker';
+import { ControlledCheckbox } from '../Components/PatientCustomControlledCheckbox';
 
-export default function CreatePatientInformationForm() {
+type FormErrors = Partial<Record<keyof PatientFormData, string | string[]>>;
+type SetDataFunction = (field: keyof PatientFormData, value: string) => void;
+
+export default function CreatePatientInformationForm({
+    errors,
+    data,
+    setData,
+}: {
+    errors: FormErrors;
+    data: PatientFormData;
+    setData: SetDataFunction;
+}) {
     // const user = usePage().props.auth.user;
     const theme = useTheme();
-    // const { enqueueSnackbar } = useSnackbar();
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            register: '',
-            name: '',
-            gender: '' as 'm' | 'f',
-        });
-
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-    };
 
     return (
-        <CardProj variant="outlined">
+        <Box>
             <Typography
                 component="p"
                 variant="body1"
@@ -52,9 +47,6 @@ export default function CreatePatientInformationForm() {
             </Typography>
 
             <Box
-                component="form"
-                onSubmit={submit}
-                noValidate
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -109,15 +101,14 @@ export default function CreatePatientInformationForm() {
                         color={errors.name ? 'error' : 'primary'}
                     />
                 </FormControl>
-
-                <FormControl>
+                <FormControl error={!!errors.gender}>
                     <FormLabel id="gender-controlled-radio-buttons-group">
                         Gênero
                     </FormLabel>
                     <RadioGroup
                         row
                         aria-labelledby="gender-radio-buttons-group-label"
-                        defaultValue="female"
+                        defaultValue="f"
                         name="gender"
                         value={data.gender}
                         onChange={(e) =>
@@ -125,67 +116,62 @@ export default function CreatePatientInformationForm() {
                         }
                     >
                         <FormControlLabel
-                            value="female"
+                            value="f"
                             control={<Radio />}
                             label="Feminino"
                         />
                         <FormControlLabel
-                            value="male"
+                            value="m"
                             control={<Radio />}
                             label="Masculino"
                         />
                     </RadioGroup>
+                    {errors.gender && (
+                        <FormHelperText>{errors.gender}</FormHelperText>
+                    )}
                 </FormControl>
 
                 <FormControl>
-                    <CustomDatePicker />
+                    <CustomBirthDatePicker
+                        value={data.birthDate}
+                        onChange={(value) => setData('birthDate', value)}
+                        error={!!errors.birthDate}
+                    />
                 </FormControl>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                    }}
-                >
-                    <Box
-                        component="button"
-                        disabled={processing}
-                        sx={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
-                            padding: '8px 16px',
-                            borderRadius: '4px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            '&:disabled': {
-                                backgroundColor:
-                                    theme.palette.action.disabledBackground,
-                                color: theme.palette.action.disabled,
-                                cursor: 'not-allowed',
-                            },
-                        }}
-                    >
-                        Salvar
-                    </Box>
-                </Box>
-            </Box>
-        </CardProj>
-    );
-}
+                <FormControl>
+                    <TextField
+                        label="Nome da Mãe"
+                        error={!!errors.motherName}
+                        helperText={errors.motherName}
+                        id="motherName"
+                        name="motherName"
+                        placeholder="Nome da Mãe"
+                        value={data.motherName}
+                        className="mt-1 block w-full"
+                        autoComplete="off"
+                        required
+                        fullWidth
+                        variant="outlined"
+                        onChange={(e) => setData('motherName', e.target.value)}
+                        color={errors.motherName ? 'error' : 'primary'}
+                    />
+                </FormControl>
 
-export function CustomDatePicker() {
-    dayjs.locale('pt-br');
-    return (
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
-            <DatePicker
-                label="Data de Nascimento"
-                slotProps={{
-                    textField: {
-                        helperText: 'DD/MM/YYYY',
-                    },
-                }}
-            />
-        </LocalizationProvider>
+                <FormControl>
+                    <FormControlLabel
+                        label="Ativo"
+                        control={
+                            <ControlledCheckbox
+                                checked={data.status === 'a'}
+                                onChange={(checked) =>
+                                    setData('status', checked ? 'a' : 'i')
+                                }
+                            />
+                        }
+                    />
+                </FormControl>
+            </Box>
+        </Box>
     );
 }

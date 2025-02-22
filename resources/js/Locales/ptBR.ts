@@ -18,7 +18,7 @@ const ptBR = {
                         count !== 1
                             ? `${count.toLocaleString()} linhas selecionadas`
                             : `${count.toLocaleString()} linha selecionada`,
-                    footerTotalRows: (count = 0) => `Total de linhas: ${count}`,
+                    footerTotalRows: '{count} linhas',
                     footerTotalVisibleRows: (
                         visibleCount = 0,
                         totalCount = 0,

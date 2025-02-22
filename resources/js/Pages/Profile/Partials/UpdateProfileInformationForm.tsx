@@ -1,3 +1,4 @@
+import ButtonForm from '@/Components/ButtonForm';
 import CardProj from '@/Components/CardProj';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Box, FormControl, TextField, Typography } from '@mui/material';
@@ -147,26 +148,7 @@ export default function UpdateProfileInformation({
                         gap: 2,
                     }}
                 >
-                    <Box
-                        component="button"
-                        disabled={processing}
-                        sx={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
-                            padding: '8px 16px',
-                            borderRadius: '4px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            '&:disabled': {
-                                backgroundColor:
-                                    theme.palette.action.disabledBackground,
-                                color: theme.palette.action.disabled,
-                                cursor: 'not-allowed',
-                            },
-                        }}
-                    >
-                        Salvar
-                    </Box>
+                    <ButtonForm disabled={processing}>Salvar</ButtonForm>
                 </Box>
             </Box>
         </CardProj>

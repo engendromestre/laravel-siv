@@ -8,17 +8,17 @@ import PatientStatusCell from './PatientStatusDatagrid';
 const patientColumns: GridColDef[] = [
     { field: 'id', headerName: 'ID', flex: 0.1 },
     {
-        field: 'photos',
+        field: 'photo',
         headerName: 'Imagem',
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
         flex: 0.5,
         headerAlign: 'center',
         renderCell: (params: GridRenderCellParams) => {
-            const photosArray = JSON.parse(params.row.photos); // Converte a string JSON em um array
-            const firstPhoto = photosArray[0]; // Pega o primeiro item do array
-
             return (
                 <PatientPhotoAvatar
-                    urlPhoto={firstPhoto}
+                    urlPhoto={params.row.photo}
                     name={params.row.name}
                 />
             );

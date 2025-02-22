@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/patient', [PatientController::class, 'index'])->name('patient.index');
     Route::get('/patient/create', [PatientController::class, 'create'])->name('patient.create');
+    Route::resource('patient', PatientController::class);
 });
 
 Route::post('/keep-alive', function () {

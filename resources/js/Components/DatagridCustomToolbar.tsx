@@ -8,7 +8,7 @@ import {
 export function DatagridCustomToolbar() {
     return (
         <GridToolbarContainer sx={{ margin: 0.5 }}>
-            <GridToolbarQuickFilter />
+            <GridToolbarQuickFilter debounceMs={500} />
             <Box sx={{ flexGrow: 1 }} />
             <GridToolbarExport
                 slotProps={{

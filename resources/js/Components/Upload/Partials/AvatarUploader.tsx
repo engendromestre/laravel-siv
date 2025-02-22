@@ -5,14 +5,22 @@ import { Avatar, Box, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRef } from 'react';
 
+// interface PatientFormData {
+//     photo: string;
+// }
+
+// type FormErrors = Partial<Record<keyof PatientFormData, string | string[]>>;
+
 interface AvatarUploaderProps {
-    onImageChange: (image: string | null) => void;
-    selectedImage: string | null;
+    onImageChange: (image: File | null) => void;
+    selectedImage: File | null;
+    error: string | undefined;
 }
 
 const AvatarUploader: React.FC<AvatarUploaderProps> = ({
     onImageChange,
     selectedImage,
+    error,
 }) => {
     const theme = useTheme();
 
@@ -20,13 +28,15 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file && file.size <= 3 * 1024 * 1024) {
+            onImageChange(null);
+            error = undefined;
             const reader = new FileReader();
             reader.onload = (e) => {
                 if (e.target?.result) {
-                    onImageChange(e.target.result as string); // Atualiza a imagem no componente pai
+                    onImageChange(file); // 🔥 Passamos o `File` real para o componente pai
                 }
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // 📌 Gera preview da imagem
         } else {
             alert('O arquivo deve ter no máximo 3MB.');
         }
@@ -51,7 +61,9 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
                     padding: 1,
                     borderRadius: '50%',
                     boxShadow: 3,
-                    bgcolor: theme.palette.primary.light,
+                    bgcolor: error
+                        ? theme.palette.error.light
+                        : theme.palette.primary.light,
                 }}
             >
                 <Box
@@ -79,7 +91,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
                     >
                         {selectedImage ? (
                             <img
-                                src={selectedImage}
+                                src={URL.createObjectURL(selectedImage)} // 🔥 Usa preview real do arquivo
                                 alt="Selected"
                                 style={{
                                     width: '100%',

@@ -1,9 +1,15 @@
-export enum PatientStatus {
-    ACTIVE = 'a',
-    INACTIVE = 'i',
+export interface Patient {
+    id: number;
+    register: string;
+    name: string;
+    gender: 'm' | 'f';
+    motherName: string;
+    birthDate: string;
+    status: 'a' | 'i';
+    photo: string | null;
 }
 
-export interface PatientList {
+export interface Results {
     current_page: number;
     data: Patient[];
     first_page_url: string;
@@ -17,13 +23,5 @@ export interface PatientList {
     prev_page_url: string;
     to: number;
     total: number;
-}
-
-export interface Patient {
-    id: number;
-    name: string;
-    motherName: string;
-    birthDate: Date;
-    status: PatientStatus;
-    photos: { url: string };
+    search?: string;
 }

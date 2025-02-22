@@ -8,7 +8,7 @@ import { SnackbarProvider } from 'notistack';
 import { PropsWithChildren } from 'react';
 import Layout from './Layout';
 
-export default function Authenticated({
+export default function AuthenticatedLayout({
     header = [],
     children,
 }: PropsWithChildren<{ header?: Array<Record<string, unknown>> }>) {

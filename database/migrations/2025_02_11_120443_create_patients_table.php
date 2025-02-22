@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('birthDate');
             $table->string('motherName');
             $table->enum('status', ['a', 'i'])->default('a');
-            $table->json('photos')->nullable(); // Armazenar URLs ou caminhos das fotos
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }
