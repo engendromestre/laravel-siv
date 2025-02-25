@@ -1,12 +1,12 @@
 export interface Patient {
-    id: number;
+    id?: number;
     register: string;
     name: string;
     gender: 'm' | 'f';
     motherName: string;
     birthDate: string;
     status: 'a' | 'i';
-    photo: string | null;
+    photo: string | File | null;
 }
 
 export interface Results {

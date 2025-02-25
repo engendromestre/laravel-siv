@@ -11,13 +11,13 @@ import {
     useTheme,
 } from '@mui/material';
 
-import { PatientFormData } from '@/types/Patients';
+import { Patient } from '@/types/Patients';
 import 'dayjs/locale/pt-br'; // Importa a localização
 import { CustomBirthDatePicker } from '../Components/PatientCustomBirthDatePicker';
 import { ControlledCheckbox } from '../Components/PatientCustomControlledCheckbox';
 
-type FormErrors = Partial<Record<keyof PatientFormData, string | string[]>>;
-type SetDataFunction = (field: keyof PatientFormData, value: string) => void;
+type FormErrors = Partial<Record<keyof Patient, string | string[]>>;
+type SetDataFunction = (field: keyof Patient, value: string) => void;
 
 export default function CreatePatientInformationForm({
     errors,
@@ -25,7 +25,7 @@ export default function CreatePatientInformationForm({
     setData,
 }: {
     errors: FormErrors;
-    data: PatientFormData;
+    data: Patient;
     setData: SetDataFunction;
 }) {
     // const user = usePage().props.auth.user;
@@ -43,7 +43,7 @@ export default function CreatePatientInformationForm({
                     color: theme.palette.primary.main,
                 }}
             >
-                Insira as informações do Paciente.
+                Atualize as informações do Paciente.
             </Typography>
 
             <Box
@@ -69,17 +69,7 @@ export default function CreatePatientInformationForm({
                         required
                         fullWidth
                         variant="outlined"
-                        onChange={(e) =>
-                            setData(
-                                'register',
-                                e.target.value.replace(/\D+/g, '').slice(0, 9),
-                            )
-                        }
-                        slotProps={{
-                            htmlInput: {
-                                maxLength: 9,
-                            },
-                        }}
+                        onChange={(e) => setData('register', e.target.value)}
                         color={errors.register ? 'error' : 'primary'}
                     />
                 </FormControl>

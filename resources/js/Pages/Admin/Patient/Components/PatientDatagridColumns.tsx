@@ -1,11 +1,20 @@
 import { ActionsMenu } from '@/Components/ActionsMenu';
+import { router } from '@inertiajs/react';
 import { Box } from '@mui/material';
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import PatientPhotoAvatar from './PatientPhotoAvatar';
 import PatientStatusCell from './PatientStatusDatagrid';
 
-const patientColumns: GridColDef[] = [
+interface PatientColumnProps {
+    setSelectedPatientId: (id: number) => void;
+    setOpenDialog: (open: boolean) => void;
+}
+
+const patientColumns = ({
+    setSelectedPatientId,
+    setOpenDialog,
+}: PatientColumnProps): GridColDef[] => [
     { field: 'id', headerName: 'ID', flex: 0.1 },
     {
         field: 'photo',
@@ -73,10 +82,13 @@ const patientColumns: GridColDef[] = [
                     console.log('view', params.row.id);
                 }}
                 onEdit={() => {
-                    console.log('edit', params.row.id);
+                    const patientId = params.row.id;
+                    const editUrl = route('patient.edit', { id: patientId });
+                    router.get(editUrl);
                 }}
                 onDelete={() => {
-                    console.log('delete', params.row.id);
+                    setSelectedPatientId(params.row.id); // Passando o ID para o setSelectedPatientId
+                    setOpenDialog(true); // Abre o diálogo de confirmação
                 }}
             />
         ),

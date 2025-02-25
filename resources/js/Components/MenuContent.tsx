@@ -1,4 +1,4 @@
-import { Link as InertiaLink } from '@inertiajs/react';
+import { Link as InertiaLink, usePage } from '@inertiajs/react';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
@@ -37,6 +37,18 @@ interface MenuContentProps {
 }
 
 export default function MenuContent({ open }: MenuContentProps) {
+    const { url } = usePage();
+
+    const getPathFromUrl = (link: string | undefined) => {
+        if (!link) return ''; // Retorna uma string vazia se o link for undefined
+        try {
+            const urlObj = new URL(link);
+            return urlObj.pathname;
+        } catch (error) {
+            return link;
+        }
+    };
+
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
             <List dense>
@@ -52,7 +64,10 @@ export default function MenuContent({ open }: MenuContentProps) {
                         >
                             <InertiaLink href={item.link || '#'}>
                                 <ListItemButton
-                                    selected={index === 0}
+                                    selected={
+                                        getPathFromUrl(url) ===
+                                        getPathFromUrl(item.link)
+                                    }
                                     sx={{
                                         justifyContent: open
                                             ? 'initial'

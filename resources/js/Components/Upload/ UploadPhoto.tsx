@@ -8,7 +8,7 @@ import AvatarUploader from './Partials/AvatarUploader';
 import PhotoCaptureDialog from './Partials/PhotoCaptureDialog';
 
 interface PatientFormData {
-    photo: string;
+    photoFile: string;
 }
 
 type FormErrors = Partial<Record<keyof PatientFormData, string | string[]>>;
@@ -16,7 +16,8 @@ type FormErrors = Partial<Record<keyof PatientFormData, string | string[]>>;
 const UploadPhoto: React.FC<{
     onImageChange: (image: File | null) => void;
     errors: FormErrors;
-}> = ({ onImageChange, errors }) => {
+    initialImage?: string;
+}> = ({ onImageChange, errors, initialImage }) => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [hasCamera, setHasCamera] = useState<boolean | null>(null);
     const [openCamera, setOpenCamera] = useState<boolean>(false);
@@ -46,6 +47,35 @@ const UploadPhoto: React.FC<{
     useEffect(() => {
         checkCameraAvailability();
     }, []);
+
+    useEffect(() => {
+        const imageUrl = `/${initialImage}`;
+        if (initialImage) {
+            fetch(imageUrl)
+                .then((response) => {
+                    if (response.ok) {
+                        return response.blob();
+                    } else if (response.status === 403) {
+                        setSelectedImage(null);
+                        onImageChange(null);
+                        return null;
+                    } else {
+                        throw new Error(
+                            `Erro ao carregar a imagem: ${response.statusText}`,
+                        );
+                    }
+                })
+                .then((blob) => {
+                    if (blob) {
+                        const file = new File([blob], 'photo.jpg', {
+                            type: blob.type,
+                        });
+                        setSelectedImage(file);
+                        onImageChange(file);
+                    }
+                });
+        }
+    }, [initialImage, onImageChange]);
 
     const gerarNomeUnico = () => {
         return `${uuidv4()}.jpg`;
@@ -85,12 +115,12 @@ const UploadPhoto: React.FC<{
             <AvatarUploader
                 selectedImage={selectedImage}
                 onImageChange={handleImageChange}
-                error={errors?.photo as string | undefined}
+                error={errors?.photoFile as string | undefined}
             />
 
-            {errors.photo && (
+            {errors.photoFile && (
                 <Typography variant="body2" color="error" textAlign="center">
-                    {errors.photo}
+                    {errors.photoFile}
                 </Typography>
             )}
 
@@ -115,6 +145,7 @@ const UploadPhoto: React.FC<{
                         variant="body2"
                         color="error"
                         textAlign="center"
+                        sx={{ width: '100%' }}
                     >
                         Nenhuma câmera detectada ou permissão negada. Verifique
                         as configurações do navegador.
@@ -126,6 +157,7 @@ const UploadPhoto: React.FC<{
                     startIcon={<RefreshIcon />}
                     onClick={checkCameraAvailability}
                     disabled={loading}
+                    sx={{ py: 4 }}
                 >
                     {loading ? 'Verificando...' : 'Reverificar Câmera'}
                 </Button>

@@ -15,8 +15,10 @@ import {
     GridSortModel,
 } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
+import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import patientColumns from './Components/PatientDatagridColumns';
+import DialogDelete from './Components/PatientDialogDelete';
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
@@ -76,7 +78,24 @@ export default function Index({
         }
     };
 
-    const columns = patientColumns;
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
+        null,
+    );
+    const columns = patientColumns({ setSelectedPatientId, setOpenDialog });
+    const handleDeletePatient = (patientId: number) => {
+        router.delete(route('patient.destroy', { id: patientId }), {
+            onSuccess: () => {
+                enqueueSnackbar('Paciente excluido com sucesso!', {
+                    variant: 'success',
+                });
+                setOpenDialog(false); // Fecha o diálogo após a exclusão
+            },
+            onError: () => {
+                console.error('Erro ao excluir paciente');
+            },
+        });
+    };
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Listar Pacientes" />
@@ -136,6 +155,14 @@ export default function Index({
                     }}
                 />
             </CardProj>
+            {openDialog && (
+                <DialogDelete
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    patientId={selectedPatientId}
+                    onDelete={handleDeletePatient}
+                />
+            )}
         </AuthenticatedLayout>
     );
 }

@@ -40,7 +40,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/patient', [PatientController::class, 'index'])->name('patient.index');
     Route::get('/patient/create', [PatientController::class, 'create'])->name('patient.create');
-    Route::resource('patient', PatientController::class);
+    Route::get('/patient/edit/{id}', [PatientController::class, 'edit'])->name('patient.edit');
+
+    Route::post('/patient/uploadPhoto', [PatientController::class, 'uploadPhoto'])->name('patient.uploadPhoto');
+    Route::post('/patient', [PatientController::class, 'store'])->name('patient.store');
+    Route::put('/patient/{id}', [PatientController::class, 'update'])->name('patient.update');
+    Route::delete('/patient/{id}', [PatientController::class, 'destroy'])->name('patient.destroy');
 });
 
 Route::post('/keep-alive', function () {
