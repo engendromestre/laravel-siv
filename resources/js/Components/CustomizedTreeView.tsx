@@ -104,6 +104,7 @@ interface CustomLabelProps {
 
 function CustomLabel({
     color,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expandable,
     children,
     ...other

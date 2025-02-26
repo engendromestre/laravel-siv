@@ -3,11 +3,10 @@ import { chipClasses } from '@mui/material/Chip';
 import { iconButtonClasses } from '@mui/material/IconButton';
 import { alpha, Components, Theme } from '@mui/material/styles';
 import { svgIconClasses } from '@mui/material/SvgIcon';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { typographyClasses } from '@mui/material/Typography';
 import { gray, green, red } from '../themePrimitives';
-import type {} from '@mui/material/themeCssVarsAugmentation';
 
-/* eslint-disable import/prefer-default-export */
 export const dataDisplayCustomizations: Components<Theme> = {
     MuiList: {
         styleOverrides: {

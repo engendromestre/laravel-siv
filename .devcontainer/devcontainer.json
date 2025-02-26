@@ -21,10 +21,12 @@
                 "vscodeshift.mui-snippets",
                 "esbenp.prettier-vscode",
                 "humao.rest-client",
-				"sourcegraph.cody-ai"
-                // "codeium.codeium"
-                // "github.copilot"
+                "dbaeumer.vscode-eslint",
+                "codeium.codeium"
+                // "ms-python.python", // Extensão para suporte a Python (se necessário)
+                // "ms-azuretools.vscode-docker" // Extensão para Docker
             ],
+            // "postCreateCommand": "pip install deepseek",
             "settings": {}
         }
     },

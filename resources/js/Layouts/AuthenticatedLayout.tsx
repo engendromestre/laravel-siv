@@ -5,13 +5,13 @@ import SideMenu from '@/Components/SideMenu';
 import IdleWarning from '@/Internals/Components/IdleWarning';
 import { alpha, Box, Stack } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
 import Layout from './Layout';
 
-export default function Authenticated({
-    header,
+export default function AuthenticatedLayout({
+    header = [],
     children,
-}: PropsWithChildren<{ header?: ReactNode }>) {
+}: PropsWithChildren<{ header?: Array<Record<string, unknown>> }>) {
     return (
         <SnackbarProvider
             autoHideDuration={2000}
@@ -42,7 +42,7 @@ export default function Authenticated({
                             }}
                         >
                             <Header header={header} />
-                            <main>{children}</main>
+                            {children}
                             <IdleWarning />
                         </Stack>
                     </Box>

@@ -1,4 +1,5 @@
 import { Config } from 'ziggy-js';
+import Patient from './Patients';
 
 export interface User {
     id: number;
@@ -12,6 +13,7 @@ export type PageProps<
 > = T & {
     auth: {
         user: User;
+        patient: Patient;
     };
     ziggy: Config & { location: string };
 };

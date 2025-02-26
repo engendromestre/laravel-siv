@@ -11,7 +11,7 @@ import {
     FieldSection,
 } from '@mui/x-date-pickers/models';
 import dayjs, { Dayjs } from 'dayjs';
-import * as React from 'react';
+import { useState } from 'react';
 
 interface ButtonFieldProps
     extends UseDateFieldProps<Dayjs, false>,
@@ -53,8 +53,8 @@ function ButtonField(props: ButtonFieldProps) {
 }
 
 export default function CustomDatePicker() {
-    const [value, setValue] = React.useState<Dayjs | null>(dayjs());
-    const [open, setOpen] = React.useState(false);
+    const [value, setValue] = useState<Dayjs | null>(dayjs());
+    const [open, setOpen] = useState(false);
 
     return (
         <LocalizationProvider
@@ -70,6 +70,7 @@ export default function CustomDatePicker() {
                 onChange={(newValue) => setValue(newValue)}
                 slots={{ field: ButtonField }}
                 slotProps={{
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     field: { setOpen } as any,
                     nextIconButton: { size: 'small' },
                     previousIconButton: { size: 'small' },

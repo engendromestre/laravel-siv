@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import { dividerClasses } from '@mui/material/Divider';
 import { listClasses } from '@mui/material/List';

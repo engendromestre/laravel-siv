@@ -1,14 +1,16 @@
 import ColorModeIconDropdown from '@/theme/ColorModelIconDropdown';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import Stack from '@mui/material/Stack';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
 import MenuButton from './MenuButton';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs';
 import Search from './Search';
 
 export default function Header({
     header,
-}: PropsWithChildren<{ header?: ReactNode }>): JSX.Element {
+}: PropsWithChildren<{
+    header?: Array<Record<string, unknown>>;
+}>): JSX.Element {
     return (
         <Stack
             direction="row"

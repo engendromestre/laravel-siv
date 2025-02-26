@@ -46,8 +46,16 @@ export default function SideMenu() {
     };
 
     return (
-        <Drawer variant="permanent" open={open}>
-            {/* Cabeçalho */}
+        <Drawer
+            open={open}
+            variant="permanent"
+            sx={{
+                display: { xs: 'none', md: 'block' },
+                [`& .${drawerClasses.paper}`]: {
+                    backgroundColor: 'background.paper',
+                },
+            }}
+        >
             <Box
                 sx={{
                     display: 'flex',

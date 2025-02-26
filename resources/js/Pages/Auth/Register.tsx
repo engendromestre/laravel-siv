@@ -12,7 +12,7 @@ import {
     InputLabel,
     OutlinedInput,
     TextField,
-    Typography
+    Typography,
 } from '@mui/material';
 import React, { FormEventHandler } from 'react';
 
@@ -239,18 +239,15 @@ export default function Register({ theme }: { theme: Theme }) {
                             component="button"
                             disabled={processing}
                             sx={{
-                                backgroundColor:
-                                    theme.palette.primary.main,
-                                color: theme.palette.primary
-                                    .contrastText,
+                                backgroundColor: theme.palette.primary.main,
+                                color: theme.palette.primary.contrastText,
                                 padding: '8px 16px',
                                 borderRadius: '4px',
                                 border: 'none',
                                 cursor: 'pointer',
                                 '&:disabled': {
                                     backgroundColor:
-                                        theme.palette.action
-                                            .disabledBackground,
+                                        theme.palette.action.disabledBackground,
                                     color: theme.palette.action.disabled,
                                     cursor: 'not-allowed',
                                 },

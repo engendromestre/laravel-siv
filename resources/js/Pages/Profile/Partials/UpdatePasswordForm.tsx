@@ -1,3 +1,4 @@
+import ButtonForm from '@/Components/ButtonForm';
 import CardProj from '@/Components/CardProj';
 import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
 import { useForm } from '@inertiajs/react';
@@ -16,23 +17,12 @@ import { useTheme } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
 import React, { FormEventHandler, useRef } from 'react';
 
-export default function UpdatePasswordForm({
-    className = '',
-}: {
-    className?: string;
-}) {
+export default function UpdatePasswordForm() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
     const theme = useTheme();
 
-    const {
-        data,
-        setData,
-        errors,
-        put,
-        reset,
-        processing,
-    } = useForm({
+    const { data, setData, errors, put, reset, processing } = useForm({
         current_password: '',
         password: '',
         password_confirmation: '',
@@ -85,7 +75,7 @@ export default function UpdatePasswordForm({
     };
 
     return (
-        <CardProj variant="outlined" >
+        <CardProj variant="outlined">
             <Typography
                 component="p"
                 variant="body1"
@@ -257,26 +247,7 @@ export default function UpdatePasswordForm({
                         gap: 2,
                     }}
                 >
-                    <Box
-                        component="button"
-                        disabled={processing}
-                        sx={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
-                            padding: '8px 16px',
-                            borderRadius: '4px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            '&:disabled': {
-                                backgroundColor:
-                                    theme.palette.action.disabledBackground,
-                                color: theme.palette.action.disabled,
-                                cursor: 'not-allowed',
-                            },
-                        }}
-                    >
-                        Salvar
-                    </Box>
+                    <ButtonForm disabled={processing}>Salvar</ButtonForm>
                 </Box>
             </Box>
         </CardProj>

@@ -1,9 +1,8 @@
-import { Link as InertiaLink } from '@inertiajs/react';
+import { Link as InertiaLink, usePage } from '@inertiajs/react';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -13,13 +12,21 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 
 const mainListItems = [
-    { text: 'Início', icon: HomeRoundedIcon, link: '/dashboard' },
-    { text: 'Pacientes', icon: PeopleRoundedIcon },
+    {
+        text: 'Início',
+        icon: HomeRoundedIcon,
+        link: route('dashboard'),
+    },
+    {
+        text: 'Pacientes',
+        icon: PeopleRoundedIcon,
+        link: route('patient.index'),
+    },
     { text: 'Tasks', icon: AssignmentRoundedIcon },
 ];
 
 const secondaryListItems = [
-    { text: 'Configurações', icon: SettingsRoundedIcon },
+    // { text: 'Configurações', icon: SettingsRoundedIcon },
     { text: 'Sobre', icon: InfoRoundedIcon },
     // { text: 'Feedback', icon: HelpRoundedIcon },
 ];
@@ -29,6 +36,18 @@ interface MenuContentProps {
 }
 
 export default function MenuContent({ open }: MenuContentProps) {
+    const { url } = usePage();
+
+    const getPathFromUrl = (link: string | undefined) => {
+        if (!link) return ''; // Retorna uma string vazia se o link for undefined
+        try {
+            const urlObj = new URL(link);
+            return urlObj.pathname;
+        } catch (error) {
+            return link;
+        }
+    };
+
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
             <List dense>
@@ -44,7 +63,10 @@ export default function MenuContent({ open }: MenuContentProps) {
                         >
                             <InertiaLink href={item.link || '#'}>
                                 <ListItemButton
-                                    selected={index === 0}
+                                    selected={
+                                        getPathFromUrl(url) ===
+                                        getPathFromUrl(item.link)
+                                    }
                                     sx={{
                                         justifyContent: open
                                             ? 'initial'

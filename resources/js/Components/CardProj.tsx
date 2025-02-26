@@ -1,7 +1,4 @@
-import {
-    Card as MuiCard,
-    styled,
-} from '@mui/material';
+import { Card as MuiCard, styled } from '@mui/material';
 
 const CardProj = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
