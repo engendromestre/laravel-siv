@@ -15,9 +15,9 @@ interface PatientProfileProps {
 }
 
 const PatientProfile: React.FC<PatientProfileProps> = ({ patient }) => {
-    const { name, birthDate, gender, status, photo } = patient;
+    const { name, birth_date, gender, status, photo } = patient;
     const photoPath = photo as string;
-    const birthDateObj = new Date(birthDate);
+    const birthDateObj = new Date(birth_date);
 
     const today = new Date();
     let age = today.getFullYear() - birthDateObj.getFullYear();

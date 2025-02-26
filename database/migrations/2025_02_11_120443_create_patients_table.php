@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('register');
             $table->enum('gender', ['m', 'f']);
             $table->string('name');
-            $table->date('birthDate');
-            $table->string('motherName');
+            $table->date('birth_date');
+            $table->string('mother_name');
             $table->enum('status', ['a', 'i'])->default('a');
             $table->string('photo')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

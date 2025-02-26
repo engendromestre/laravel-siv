@@ -39,7 +39,7 @@ class PatientService
             $query->where(function ($q) use ($search) {
                 $q->where('register', 'like', "%$search%")
                     ->orWhere('name', 'like', "%$search%")
-                    ->orWhere('motherName', 'like', "%$search%")
+                    ->orWhere('mother_name', 'like', "%$search%")
                     ->orWhere('status', 'like', "%$search%");
             });
         }
@@ -56,8 +56,8 @@ class PatientService
         $validated = $request->validate([
             'register'   => 'required|string|max:9|unique:patients,register',
             'name'       => 'required|string|max:255',
-            'birthDate'  => 'required|date',
-            'motherName' => 'required|string|max:255',
+            'birth_date'  => 'required|date',
+            'mother_name' => 'required|string|max:255',
             'gender'     => 'required|in:m,f',
             'status'     => 'required|in:a,i',
             'photo'      => 'nullable|string',
@@ -91,8 +91,8 @@ class PatientService
                 Rule::unique('patients', 'register')->ignore($id),
             ],
             'name'       => 'required|string|max:255',
-            'birthDate'  => 'required|date',
-            'motherName' => 'required|string|max:255',
+            'birth_date'  => 'required|date',
+            'mother_name' => 'required|string|max:255',
             'gender'     => 'required|in:m,f',
             'status'     => 'required|in:a,i',
             'photo'      => 'required|string',

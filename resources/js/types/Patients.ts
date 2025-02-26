@@ -3,8 +3,8 @@ export interface Patient {
     register: string;
     name: string;
     gender: 'm' | 'f';
-    motherName: string;
-    birthDate: string;
+    mother_name: string;
+    birth_date: string;
     status: 'a' | 'i';
     photo: string | File | null;
 }

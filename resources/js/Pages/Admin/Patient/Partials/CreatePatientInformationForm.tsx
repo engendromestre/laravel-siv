@@ -133,28 +133,28 @@ export default function CreatePatientInformationForm({
 
                 <FormControl>
                     <CustomBirthDatePicker
-                        value={data.birthDate}
-                        onChange={(value) => setData('birthDate', value)}
-                        error={!!errors.birthDate}
+                        value={data.birth_date}
+                        onChange={(value) => setData('birth_date', value)}
+                        error={!!errors.birth_date}
                     />
                 </FormControl>
 
                 <FormControl>
                     <TextField
                         label="Nome da Mãe"
-                        error={!!errors.motherName}
-                        helperText={errors.motherName}
-                        id="motherName"
-                        name="motherName"
+                        error={!!errors.mother_name}
+                        helperText={errors.mother_name}
+                        id="mother_name"
+                        name="mother_name"
                         placeholder="Nome da Mãe"
-                        value={data.motherName}
+                        value={data.mother_name}
                         className="mt-1 block w-full"
                         autoComplete="off"
                         required
                         fullWidth
                         variant="outlined"
-                        onChange={(e) => setData('motherName', e.target.value)}
-                        color={errors.motherName ? 'error' : 'primary'}
+                        onChange={(e) => setData('mother_name', e.target.value)}
+                        color={errors.mother_name ? 'error' : 'primary'}
                     />
                 </FormControl>
 

@@ -94,7 +94,7 @@ export default function Index({
     });
     const formattedData = data.data.map((p) => ({
         ...p,
-        birthDate: dayjs(p.birthDate).startOf('day').toDate(),
+        birth_date: dayjs(p.birth_date).startOf('day').toDate(),
     }));
     const handleDeletePatient = (patientId: number) => {
         router.delete(route('patient.destroy', { id: patientId }), {
