@@ -44,6 +44,12 @@ class PatientController extends Controller
         ]);
     }
 
+    public function show(Request $request): JsonResponse
+    {
+        $patient = $this->patientRepository->findPatientById($request->route('id'));
+        return response()->json($patient);
+    }
+
 
     public function store(Request $request)
     {

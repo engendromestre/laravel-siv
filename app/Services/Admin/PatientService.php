@@ -131,6 +131,7 @@ class PatientService
                 PatientService::deletePhoto($patient->photo);
             }
 
+            // Deleta o paciente usando o soft delete (vai marcar a data no campo deleted_at)
             $patient->delete();
         } catch (\Exception $e) {
             throw new \Exception('Erro ao deletar paciente');

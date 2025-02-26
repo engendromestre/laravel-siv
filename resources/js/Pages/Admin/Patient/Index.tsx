@@ -15,10 +15,14 @@ import {
     GridSortModel,
 } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
+import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import patientColumns from './Components/PatientDatagridColumns';
 import DialogDelete from './Components/PatientDialogDelete';
+import DialogView from './Components/PatientDialogView';
+
+dayjs.locale('pt-br');
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
@@ -78,18 +82,27 @@ export default function Index({
         }
     };
 
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogDelete, setOpenDialogDelete] = useState(false);
+    const [openDialogView, setOpenDialogView] = useState(false);
     const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
         null,
     );
-    const columns = patientColumns({ setSelectedPatientId, setOpenDialog });
+    const columns = patientColumns({
+        setSelectedPatientId,
+        setOpenDialogDelete,
+        setOpenDialogView,
+    });
+    const formattedData = data.data.map((p) => ({
+        ...p,
+        birthDate: dayjs(p.birthDate).startOf('day').toDate(),
+    }));
     const handleDeletePatient = (patientId: number) => {
         router.delete(route('patient.destroy', { id: patientId }), {
             onSuccess: () => {
                 enqueueSnackbar('Paciente excluido com sucesso!', {
                     variant: 'success',
                 });
-                setOpenDialog(false); // Fecha o diálogo após a exclusão
+                setOpenDialogDelete(false); // Fecha o diálogo após a exclusão
             },
             onError: () => {
                 console.error('Erro ao excluir paciente');
@@ -128,7 +141,7 @@ export default function Index({
                     localeText={
                         ptBR.components.MuiDataGrid.defaultProps.localeText
                     }
-                    rows={data.data}
+                    rows={formattedData}
                     columns={columns}
                     rowCount={data.total}
                     pageSizeOptions={[5, 10, 20]}
@@ -155,12 +168,19 @@ export default function Index({
                     }}
                 />
             </CardProj>
-            {openDialog && (
+            {openDialogDelete && (
                 <DialogDelete
-                    open={openDialog}
-                    onClose={() => setOpenDialog(false)}
+                    open={openDialogDelete}
+                    onClose={() => setOpenDialogDelete(false)}
                     patientId={selectedPatientId}
                     onDelete={handleDeletePatient}
+                />
+            )}
+            {openDialogView && (
+                <DialogView
+                    open={openDialogView}
+                    onClose={() => setOpenDialogView(false)}
+                    patientId={selectedPatientId}
                 />
             )}
         </AuthenticatedLayout>

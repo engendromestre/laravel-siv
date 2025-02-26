@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/patient', [PatientController::class, 'index'])->name('patient.index');
     Route::get('/patient/create', [PatientController::class, 'create'])->name('patient.create');
     Route::get('/patient/edit/{id}', [PatientController::class, 'edit'])->name('patient.edit');
+    Route::get('/patients/{id}', [PatientController::class, 'show'])->name('patient.show');
 
     Route::post('/patient/uploadPhoto', [PatientController::class, 'uploadPhoto'])->name('patient.uploadPhoto');
     Route::post('/patient', [PatientController::class, 'store'])->name('patient.store');

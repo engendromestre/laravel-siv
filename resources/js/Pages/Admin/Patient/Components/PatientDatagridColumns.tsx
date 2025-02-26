@@ -8,12 +8,14 @@ import PatientStatusCell from './PatientStatusDatagrid';
 
 interface PatientColumnProps {
     setSelectedPatientId: (id: number) => void;
-    setOpenDialog: (open: boolean) => void;
+    setOpenDialogDelete: (open: boolean) => void;
+    setOpenDialogView: (open: boolean) => void;
 }
 
 const patientColumns = ({
     setSelectedPatientId,
-    setOpenDialog,
+    setOpenDialogDelete,
+    setOpenDialogView,
 }: PatientColumnProps): GridColDef[] => [
     { field: 'id', headerName: 'ID', flex: 0.1 },
     {
@@ -48,12 +50,8 @@ const patientColumns = ({
         field: 'birthDate',
         headerName: 'Nascimento',
         flex: 1,
-        valueFormatter: (params: GridRenderCellParams) => {
-            // Se params.value for uma string, você precisa garantir que é um formato de data válido.
-            const birthDate = dayjs(params.value);
-
-            // Formatar a data com dayjs
-            return birthDate.isValid() ? birthDate.format('DD/MM/YYYY') : '-'; // Retorna '-' se a data não for válida
+        renderCell: (params: GridRenderCellParams) => {
+            return dayjs(params.value).format('DD/MM/YYYY');
         },
     },
     {
@@ -79,7 +77,8 @@ const patientColumns = ({
             <ActionsMenu
                 rowId={params.row.id}
                 onView={() => {
-                    console.log('view', params.row.id);
+                    setSelectedPatientId(params.row.id); // Passando o ID para o setSelectedPatientId
+                    setOpenDialogView(true); // Abre o diálogo
                 }}
                 onEdit={() => {
                     const patientId = params.row.id;
@@ -88,7 +87,7 @@ const patientColumns = ({
                 }}
                 onDelete={() => {
                     setSelectedPatientId(params.row.id); // Passando o ID para o setSelectedPatientId
-                    setOpenDialog(true); // Abre o diálogo de confirmação
+                    setOpenDialogDelete(true); // Abre o diálogo
                 }}
             />
         ),

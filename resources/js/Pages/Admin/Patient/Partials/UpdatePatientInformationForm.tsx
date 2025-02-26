@@ -98,12 +98,9 @@ export default function CreatePatientInformationForm({
                     <RadioGroup
                         row
                         aria-labelledby="gender-radio-buttons-group-label"
-                        defaultValue="f"
                         name="gender"
                         value={data.gender}
-                        onChange={(e) =>
-                            setData('gender', e.target.value as 'm' | 'f')
-                        }
+                        onChange={(e) => setData('gender', e.target.value)}
                     >
                         <FormControlLabel
                             value="f"
