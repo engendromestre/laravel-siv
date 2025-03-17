@@ -1,4 +1,3 @@
-import { usePage } from '@inertiajs/react';
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -8,7 +7,7 @@ import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { CAISIcon } from './CustonIcons';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
@@ -37,8 +36,16 @@ const Drawer = styled(MuiDrawer, {
     },
 }));
 
-export default function SideMenu() {
-    const user = usePage().props.auth.user;
+interface User {
+    name: string;
+    email: string;
+}
+
+interface SideMenuProps {
+    user: User;
+}
+
+export function SideMenu({ user }: SideMenuProps) {
     const [open, setOpen] = useState(true);
 
     const toggleDrawer = () => {
@@ -142,3 +149,5 @@ export default function SideMenu() {
         </Drawer>
     );
 }
+
+export default React.memo(SideMenu);

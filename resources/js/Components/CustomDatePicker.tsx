@@ -1,84 +1,31 @@
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import Button from '@mui/material/Button';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { UseDateFieldProps } from '@mui/x-date-pickers/DateField';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { ptBR } from '@mui/x-date-pickers/locales';
-import {
-    BaseSingleInputFieldProps,
-    DateValidationError,
-    FieldSection,
-} from '@mui/x-date-pickers/models';
-import dayjs, { Dayjs } from 'dayjs';
-import { useState } from 'react';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br'; // Importa a localização
 
-interface ButtonFieldProps
-    extends UseDateFieldProps<Dayjs, false>,
-        BaseSingleInputFieldProps<
-            Dayjs | null,
-            Dayjs,
-            FieldSection,
-            false,
-            DateValidationError
-        > {
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+interface CustomDatePickerProps {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    error?: boolean;
 }
 
-function ButtonField(props: ButtonFieldProps) {
-    const {
-        setOpen,
-        label,
-        id,
-        disabled,
-        InputProps: { ref } = {},
-        inputProps: { 'aria-label': ariaLabel } = {},
-    } = props;
-
+export function CustomDatePicker({
+    label,
+    value,
+    onChange,
+    error,
+}: CustomDatePickerProps) {
     return (
-        <Button
-            variant="outlined"
-            id={id}
-            disabled={disabled}
-            ref={ref}
-            aria-label={ariaLabel}
-            size="small"
-            onClick={() => setOpen?.((prev) => !prev)}
-            startIcon={<CalendarTodayRoundedIcon fontSize="small" />}
-            sx={{ minWidth: 'fit-content' }}
-        >
-            {label ? `${label}` : 'Escolha uma data'}
-        </Button>
-    );
-}
-
-export default function CustomDatePicker() {
-    const [value, setValue] = useState<Dayjs | null>(dayjs());
-    const [open, setOpen] = useState(false);
-
-    return (
-        <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale="pt-br"
-            localeText={
-                ptBR.components.MuiLocalizationProvider.defaultProps.localeText
-            }
-        >
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
             <DatePicker
-                value={value}
-                label={value == null ? null : value.format('DD MMM, YYYY')}
-                onChange={(newValue) => setValue(newValue)}
-                slots={{ field: ButtonField }}
-                slotProps={{
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    field: { setOpen } as any,
-                    nextIconButton: { size: 'small' },
-                    previousIconButton: { size: 'small' },
-                }}
-                open={open}
-                onClose={() => setOpen(false)}
-                onOpen={() => setOpen(true)}
-                views={['day', 'month', 'year']}
+                label={label}
+                value={value ? dayjs(value) : null}
+                onChange={(date) =>
+                    onChange(date ? date.format('YYYY-MM-DD') : '')
+                }
+                slotProps={{ textField: { error, helperText: 'DD/MM/YYYY' } }}
+                format="DD/MM/YYYY"
             />
         </LocalizationProvider>
     );

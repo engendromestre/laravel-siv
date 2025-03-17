@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('birth_date');
             $table->string('mother_name');
-            $table->enum('status', ['a', 'i'])->default('a');
+            $table->enum('status', ['a', 'i'])->default('i');
             $table->string('photo')->nullable();
             $table->softDeletes();
             $table->timestamps();

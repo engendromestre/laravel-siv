@@ -3,6 +3,7 @@ import AppNavbar from '@/Components/AppNavBar';
 import Header from '@/Components/Header';
 import SideMenu from '@/Components/SideMenu';
 import IdleWarning from '@/Internals/Components/IdleWarning';
+import { usePage } from '@inertiajs/react';
 import { alpha, Box, Stack } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { PropsWithChildren } from 'react';
@@ -12,6 +13,8 @@ export default function AuthenticatedLayout({
     header = [],
     children,
 }: PropsWithChildren<{ header?: Array<Record<string, unknown>> }>) {
+    const { auth } = usePage().props;
+
     return (
         <SnackbarProvider
             autoHideDuration={2000}
@@ -20,7 +23,7 @@ export default function AuthenticatedLayout({
         >
             <Layout>
                 <Box sx={{ display: 'flex' }}>
-                    <SideMenu />
+                    <SideMenu user={auth.user} />
                     <AppNavbar />
                     <Box
                         component="main"

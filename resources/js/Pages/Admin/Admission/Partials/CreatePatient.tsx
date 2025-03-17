@@ -1,20 +1,24 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import { FormEventHandler, useEffect, useState } from 'react';
-import CreatePatientForm from './Partials/CreatePatientForm';
+import CreatePatientForm from '../../Patient/Partials/CreatePatientForm';
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
-    { label: 'Paciente', icon: PeopleIcon, href: 'patient.index' },
+    {
+        label: 'Admimitir Paciente',
+        icon: SupervisorAccountIcon,
+        href: 'admission.index',
+    },
     { label: 'Novo Paciente', icon: PersonAddIcon },
 ];
 
-export default function Create() {
+export default function CreatePatient() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, post, errors, processing } = useForm({
         register: '',
@@ -58,14 +62,16 @@ export default function Create() {
 
             data.photo = photoPath;
             data.photoFile = null;
-            post(route('patient.store'), {
+            post(route('admission.patient.store'), {
                 onSuccess: () => {
                     data.photoFile = null;
                     enqueueSnackbar('Paciente cadastrado com sucesso!', {
                         variant: 'success',
                         autoHideDuration: 1500,
                         onExited: () => {
-                            router.get(route('patient.index'));
+                            router.get(route('admission.index'), {
+                                patientId: data.register,
+                            });
                         },
                     });
                 },
@@ -83,6 +89,7 @@ export default function Create() {
             });
         }
     };
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Inserir Pacientes" />

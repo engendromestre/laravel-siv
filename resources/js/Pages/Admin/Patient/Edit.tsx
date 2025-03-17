@@ -78,7 +78,6 @@ export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
             put(route('patient.update', data.id), {
                 onSuccess: () => {
                     data.photoFile = null;
-                    console.log(data);
                     enqueueSnackbar('Paciente atualizado com sucesso!', {
                         variant: 'success',
                         autoHideDuration: 1500,

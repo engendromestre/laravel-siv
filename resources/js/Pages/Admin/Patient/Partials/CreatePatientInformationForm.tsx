@@ -11,10 +11,8 @@ import {
     useTheme,
 } from '@mui/material';
 
+import { CustomDatePicker } from '@/Components/CustomDatePicker';
 import { Patient } from '@/types/Patients';
-import 'dayjs/locale/pt-br'; // Importa a localização
-import { CustomBirthDatePicker } from '../Components/PatientCustomBirthDatePicker';
-import { ControlledCheckbox } from '../Components/PatientCustomControlledCheckbox';
 
 type FormErrors = Partial<Record<keyof Patient, string | string[]>>;
 type SetDataFunction = (field: keyof Patient, value: string) => void;
@@ -132,7 +130,8 @@ export default function CreatePatientInformationForm({
                 </FormControl>
 
                 <FormControl>
-                    <CustomBirthDatePicker
+                    <CustomDatePicker
+                        label="Data de Nascimento"
                         value={data.birth_date}
                         onChange={(value) => setData('birth_date', value)}
                         error={!!errors.birth_date}
@@ -148,29 +147,29 @@ export default function CreatePatientInformationForm({
                         name="mother_name"
                         placeholder="Nome da Mãe"
                         value={data.mother_name}
+                        onChange={(e) => setData('mother_name', e.target.value)}
                         className="mt-1 block w-full"
                         autoComplete="off"
                         required
                         fullWidth
                         variant="outlined"
-                        onChange={(e) => setData('mother_name', e.target.value)}
                         color={errors.mother_name ? 'error' : 'primary'}
                     />
                 </FormControl>
 
-                <FormControl>
+                {/* <FormControl>
                     <FormControlLabel
-                        label="Ativo"
+                        label="Admitido"
                         control={
                             <ControlledCheckbox
-                                checked={data.status === 'a'}
+                                checked={data.status === 'i'}
                                 onChange={(checked) =>
                                     setData('status', checked ? 'a' : 'i')
                                 }
                             />
                         }
                     />
-                </FormControl>
+                </FormControl> */}
             </Box>
         </Box>
     );

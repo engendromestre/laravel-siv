@@ -11,10 +11,8 @@ import {
     useTheme,
 } from '@mui/material';
 
+import { CustomDatePicker } from '@/Components/CustomDatePicker';
 import { Patient } from '@/types/Patients';
-import 'dayjs/locale/pt-br'; // Importa a localização
-import { CustomBirthDatePicker } from '../Components/PatientCustomBirthDatePicker';
-import { ControlledCheckbox } from '../Components/PatientCustomControlledCheckbox';
 
 type FormErrors = Partial<Record<keyof Patient, string | string[]>>;
 type SetDataFunction = (field: keyof Patient, value: string) => void;
@@ -119,7 +117,8 @@ export default function CreatePatientInformationForm({
                 </FormControl>
 
                 <FormControl>
-                    <CustomBirthDatePicker
+                    <CustomDatePicker
+                        label="Data de Nascimento"
                         value={data.birth_date}
                         onChange={(value) => setData('birth_date', value)}
                         error={!!errors.birth_date}
@@ -145,9 +144,9 @@ export default function CreatePatientInformationForm({
                     />
                 </FormControl>
 
-                <FormControl>
+                {/* <FormControl>
                     <FormControlLabel
-                        label="Ativo"
+                        label="Admitido"
                         control={
                             <ControlledCheckbox
                                 checked={data.status === 'a'}
@@ -157,7 +156,7 @@ export default function CreatePatientInformationForm({
                             />
                         }
                     />
-                </FormControl>
+                </FormControl> */}
             </Box>
         </Box>
     );

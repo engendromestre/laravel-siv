@@ -29,7 +29,7 @@ class PatientFactory extends Factory
             'gender' => $gender,
             'birth_date' => $this->faker->date('Y-m-d', '2016-12-31'),
             'mother_name' => $this->faker->name('female'),
-            'status' => $this->faker->randomElement(['a', 'i']),
+            'status' => 'i',
             'photo' => $photoUrl
         ];
     }

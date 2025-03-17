@@ -17,15 +17,15 @@ const PatientStatusCell: React.FC<StatusCellProps> = ({ status }) => {
                 height: '100%',
             }}
         >
-            {status === 'a' ? (
+            {status === 'i' ? (
                 <>
-                    <CheckCircle sx={{ color: 'green', marginRight: 1 }} />
-                    <Typography variant="body2">Não Internado</Typography>
+                    <Cancel sx={{ color: 'red', marginRight: 1 }} />
+                    <Typography variant="body2">Não Admitido</Typography>
                 </>
             ) : (
                 <>
-                    <Cancel sx={{ color: 'red', marginRight: 1 }} />
-                    <Typography variant="body2">Internado</Typography>
+                    <CheckCircle sx={{ color: 'green', marginRight: 1 }} />
+                    <Typography variant="body2">Admitido</Typography>
                 </>
             )}
         </Box>

@@ -47,6 +47,27 @@ class PatientService
         return $query->paginate($filters['perPage'] ?? 5);
     }
 
+    public function getPatientsByStatusInactive(array $filters)
+    {
+        $query = Patient::where('status', 'i');
+
+        // Ordenação
+        if (isset($filters['sortField']) && isset($filters['sortOrder'])) {
+            $query->orderBy($filters['sortField'], $filters['sortOrder']);
+        }
+
+        // Filtragem por nome ou registro
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('register', 'like', "%$search%");
+            });
+        }
+
+        return $query->paginate($filters['perPage'] ?? 10);
+    }
+
     /**
      * @return Patient
      * @throws \Exception

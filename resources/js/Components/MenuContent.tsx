@@ -1,8 +1,9 @@
 import { Link as InertiaLink, usePage } from '@inertiajs/react';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
+import RecentActorsIcon from '@mui/icons-material/RecentActors';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -18,11 +19,20 @@ const mainListItems = [
         link: route('dashboard'),
     },
     {
-        text: 'Pacientes',
+        text: 'Admitir Pacientes',
+        icon: SupervisorAccountIcon,
+        link: route('admission.index'),
+    },
+    {
+        text: 'Listar Admitidos',
+        icon: RecentActorsIcon,
+        link: route('admissions.list'),
+    },
+    {
+        text: 'Cadastrar Pacientes',
         icon: PeopleRoundedIcon,
         link: route('patient.index'),
     },
-    { text: 'Tasks', icon: AssignmentRoundedIcon },
 ];
 
 const secondaryListItems = [

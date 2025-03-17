@@ -31,9 +31,21 @@ class PatientController extends Controller
         ]);
     }
 
-    public function create()
+    public function show(Request $request): JsonResponse
+    {
+        $patient = $this->patientRepository->findPatientById($request->route('id'));
+        return response()->json($patient);
+    }
+
+    public function create(): Response
     {
         return Inertia::render('Admin/Patient/Create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $this->patientService->createPatient($request);
+        return Redirect::route('patient.create');
     }
 
     public function edit(Request $request): Response
@@ -42,19 +54,6 @@ class PatientController extends Controller
         return Inertia::render('Admin/Patient/Edit', [
             'patient' => $patient,
         ]);
-    }
-
-    public function show(Request $request): JsonResponse
-    {
-        $patient = $this->patientRepository->findPatientById($request->route('id'));
-        return response()->json($patient);
-    }
-
-
-    public function store(Request $request)
-    {
-        $this->patientService->createPatient($request);
-        return Redirect::route('patient.create');
     }
 
     public function update(Request $request, $id): RedirectResponse
@@ -80,5 +79,25 @@ class PatientController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erro ao salvar a imagem'], 500);
         }
+    }
+
+    // Método para buscar pacientes com filtros
+    public function search(Request $request): JsonResponse
+    {
+        // Obtém os filtros da requisição, incluindo 'search' (query de pesquisa), 'sortField', 'sortOrder', 'perPage'
+        $filters = $request->only(['search', 'sortField', 'sortOrder', 'perPage']);
+
+        // Chama o método getPatients do PatientService
+        $patients = $this->patientService->getPatients($filters);
+
+        // Retorna os pacientes encontrados em formato JSON
+        return response()->json($patients);
+    }
+
+    public function searchByStatusInactive(Request $request): JsonResponse
+    {
+        $filters = $request->only(['search', 'sortField', 'sortOrder', 'perPage']);
+        $patientsInactives = $this->patientService->getPatientsByStatusInactive($filters);
+        return response()->json($patientsInactives);
     }
 }
