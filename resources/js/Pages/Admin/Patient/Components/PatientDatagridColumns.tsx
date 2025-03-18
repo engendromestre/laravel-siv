@@ -42,12 +42,12 @@ const patientColumns = ({
     },
 
     {
-        field: 'motherName',
+        field: 'mother_name',
         headerName: 'Mãe',
         flex: 1,
     },
     {
-        field: 'birthDate',
+        field: 'birth_date',
         headerName: 'Nascimento',
         flex: 1,
         renderCell: (params: GridRenderCellParams) => {

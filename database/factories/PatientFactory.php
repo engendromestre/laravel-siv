@@ -27,9 +27,9 @@ class PatientFactory extends Factory
             'register' => $this->faker->randomNumber(9),
             'name' => $name,
             'gender' => $gender,
-            'birthDate' => $this->faker->date('Y-m-d', '2016-12-31'),
-            'motherName' => $this->faker->name('female'),
-            'status' => $this->faker->randomElement(['a', 'i']),
+            'birth_date' => $this->faker->date('Y-m-d', '2016-12-31'),
+            'mother_name' => $this->faker->name('female'),
+            'status' => 'i',
             'photo' => $photoUrl
         ];
     }

@@ -28,7 +28,7 @@ const Toolbar = styled(MuiToolbar)({
     },
 });
 
-export default function AppNavbar() {
+function AppNavbar() {
     const [open, setOpen] = React.useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
@@ -82,6 +82,8 @@ export default function AppNavbar() {
         </AppBar>
     );
 }
+
+export default React.memo(AppNavbar);
 
 export function CustomIcon() {
     return (

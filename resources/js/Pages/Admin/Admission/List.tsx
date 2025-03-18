@@ -2,11 +2,11 @@ import CardProj from '@/Components/CardProj';
 import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Results } from '@/types/Patients';
+import { PatientAdmissions, Results } from '@/types/Admissions';
 import { Head, router } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
+import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import {
     DataGrid,
@@ -16,20 +16,19 @@ import {
 } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import dayjs from 'dayjs';
-import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
-import patientColumns from './Components/PatientDatagridColumns';
-import DialogDelete from './Components/PatientDialogDelete';
-import DialogView from './Components/PatientDialogView';
+import admissionColumns from './Components/AdmissionDataGridColumns';
+import AdmissionFormEdit from './Components/AdmissionFormEdit';
+import AdmissionsDrawer from './Components/AdmissionsDrawer';
 
 dayjs.locale('pt-br');
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
-    { label: 'Paciente', icon: PeopleIcon },
+    { label: 'Pacientes Admitidos', icon: RecentActorsIcon },
 ];
 
-export default function Index({
+export default function List({
     data,
 }: PageProps<{
     data: Results;
@@ -41,18 +40,11 @@ export default function Index({
             pageSize: data.per_page,
         },
     );
+
     const [, setSortModel] = useState<GridSortModel>([]);
     const [search, setSearch] = useState<string>(data?.search || '');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fetchData = (params: Record<string, any>) => {
-        router.get(route('patient.index'), params, {
-            preserveState: true,
-            replace: true,
-        });
-    };
-
-    // ✅ Captura a pesquisa do GridToolbarQuickFilter
+    // Captura a pesquisa do GridToolbarQuickFilter
     const handleSearchChange = (filterModel: GridFilterModel) => {
         const searchValue = filterModel.quickFilterValues?.[0] || '';
         setSearch(searchValue);
@@ -82,36 +74,51 @@ export default function Index({
         }
     };
 
-    const [openDialogDelete, setOpenDialogDelete] = useState(false);
-    const [openDialogView, setOpenDialogView] = useState(false);
-    const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
-        null,
-    );
-    const columns = patientColumns({
-        setSelectedPatientId,
-        setOpenDialogDelete,
-        setOpenDialogView,
-    });
-    const formattedData = data.data.map((p) => ({
-        ...p,
-        birth_date: dayjs(p.birth_date).startOf('day').toDate(),
-    }));
-    const handleDeletePatient = (patientId: number) => {
-        router.delete(route('patient.destroy', { id: patientId }), {
-            onSuccess: () => {
-                enqueueSnackbar('Paciente excluido com sucesso!', {
-                    variant: 'success',
-                });
-                setOpenDialogDelete(false); // Fecha o diálogo após a exclusão
-            },
-            onError: () => {
-                console.error('Erro ao excluir paciente');
-            },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fetchData = (params: Record<string, any>) => {
+        router.get(route('admissions.list'), params, {
+            preserveState: true,
+            replace: true,
         });
     };
+
+    const formattedData = data.data.map((patient: PatientAdmissions) => ({
+        id: patient.id,
+        name: patient.name,
+        register: patient.register,
+        photo: patient.photo,
+        gender: patient.gender,
+        status: patient.status,
+        birth_date: dayjs(patient.birth_date).startOf('day').toDate(),
+        admissions: patient.admissions, // Lista de Admissões
+    }));
+
+    const [selectedPatient, setSelectedPatient] =
+        useState<PatientAdmissions | null>(null);
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+    // Função para abrir o Drawer ao clicar em um paciente
+    const handleRowClick = (patient: PatientAdmissions) => {
+        // passar somente o registro da última admissão
+        setSelectedPatient(patient);
+        setOpenDrawer(true);
+    };
+
+    // Função para fechar o Drawer
+    const handleCloseDrawer = () => {
+        setOpenDrawer(false);
+        setSelectedPatient(null);
+    };
+
+    const [openDialogEdit, setOpenDialogEdit] = useState(false);
+    const columns = admissionColumns({
+        setSelectedPatient,
+        setOpenDialogEdit,
+    });
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
-            <Head title="Listar Pacientes" />
+            <Head title="Listar Pacientes Admitidos" />
             <CardProj
                 variant="outlined"
                 sx={{
@@ -126,15 +133,15 @@ export default function Index({
                     sx={{ pb: 2 }}
                 >
                     <Typography component="h2" variant="h5" sx={{ mb: 0 }}>
-                        Listar Pacientes
+                        Listar Pacientes Admitidos
                     </Typography>
                     <Button
                         variant="contained"
-                        href={route('patient.create')}
+                        href={route('admission.index')}
                         startIcon={<AddCircle />}
                         sx={{ alignSelf: 'center' }}
                     >
-                        Novo Paciente
+                        Admitir Paciente
                     </Button>
                 </Stack>
                 <DataGrid
@@ -142,6 +149,7 @@ export default function Index({
                         ptBR.components.MuiDataGrid.defaultProps.localeText
                     }
                     rows={formattedData}
+                    onRowClick={(e) => handleRowClick(e.row)}
                     columns={columns}
                     rowCount={data.total}
                     pageSizeOptions={[5, 10, 20]}
@@ -150,10 +158,15 @@ export default function Index({
                     paginationModel={paginationModel}
                     onPaginationModelChange={handlePaginationChange}
                     onSortModelChange={handleSortChange}
-                    onFilterModelChange={handleSearchChange} // Captura a pesquisa do GridToolbarQuickFilter
+                    onFilterModelChange={handleSearchChange}
                     initialState={{ density: 'comfortable' }}
-                    slots={{ toolbar: DatagridCustomToolbar }}
+                    slots={{
+                        toolbar: DatagridCustomToolbar,
+                    }}
                     sx={{
+                        '& .MuiDataGrid-row': {
+                            cursor: 'pointer',
+                        },
                         '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
                             {
                                 outline: 'none',
@@ -168,19 +181,20 @@ export default function Index({
                     }}
                 />
             </CardProj>
-            {openDialogDelete && (
-                <DialogDelete
-                    open={openDialogDelete}
-                    onClose={() => setOpenDialogDelete(false)}
-                    patientId={selectedPatientId}
-                    onDelete={handleDeletePatient}
+            {/* Drawer na lateral direita */}
+            {selectedPatient && (
+                <AdmissionsDrawer
+                    open={openDrawer}
+                    onClose={handleCloseDrawer}
+                    selectedPatient={selectedPatient}
                 />
             )}
-            {openDialogView && (
-                <DialogView
-                    open={openDialogView}
-                    onClose={() => setOpenDialogView(false)}
-                    patientId={selectedPatientId}
+
+            {openDialogEdit && selectedPatient !== null && (
+                <AdmissionFormEdit
+                    open={openDialogEdit}
+                    onClose={() => setOpenDialogEdit(false)}
+                    patientAdmission={selectedPatient}
                 />
             )}
         </AuthenticatedLayout>

@@ -21,7 +21,7 @@ class PatientRepository
             $query->where(function ($q) use ($search) {
                 $q->where('register', 'like', "%$search%")
                     ->orWhere('name', 'like', "%$search%")
-                    ->orWhere('motherName', 'like', "%$search%")
+                    ->orWhere('mother_name', 'like', "%$search%")
                     ->orWhere('status', 'like', "%$search%");
             });
         }

@@ -39,12 +39,33 @@ class PatientService
             $query->where(function ($q) use ($search) {
                 $q->where('register', 'like', "%$search%")
                     ->orWhere('name', 'like', "%$search%")
-                    ->orWhere('motherName', 'like', "%$search%")
+                    ->orWhere('mother_name', 'like', "%$search%")
                     ->orWhere('status', 'like', "%$search%");
             });
         }
 
         return $query->paginate($filters['perPage'] ?? 5);
+    }
+
+    public function getPatientsByStatusInactive(array $filters)
+    {
+        $query = Patient::where('status', 'i');
+
+        // Ordenação
+        if (isset($filters['sortField']) && isset($filters['sortOrder'])) {
+            $query->orderBy($filters['sortField'], $filters['sortOrder']);
+        }
+
+        // Filtragem por nome ou registro
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('register', 'like', "%$search%");
+            });
+        }
+
+        return $query->paginate($filters['perPage'] ?? 10);
     }
 
     /**
@@ -56,8 +77,8 @@ class PatientService
         $validated = $request->validate([
             'register'   => 'required|string|max:9|unique:patients,register',
             'name'       => 'required|string|max:255',
-            'birthDate'  => 'required|date',
-            'motherName' => 'required|string|max:255',
+            'birth_date'  => 'required|date',
+            'mother_name' => 'required|string|max:255',
             'gender'     => 'required|in:m,f',
             'status'     => 'required|in:a,i',
             'photo'      => 'nullable|string',
@@ -91,8 +112,8 @@ class PatientService
                 Rule::unique('patients', 'register')->ignore($id),
             ],
             'name'       => 'required|string|max:255',
-            'birthDate'  => 'required|date',
-            'motherName' => 'required|string|max:255',
+            'birth_date'  => 'required|date',
+            'mother_name' => 'required|string|max:255',
             'gender'     => 'required|in:m,f',
             'status'     => 'required|in:a,i',
             'photo'      => 'required|string',

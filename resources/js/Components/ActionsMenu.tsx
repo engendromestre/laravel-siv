@@ -7,9 +7,9 @@ import { MouseEvent, useState } from 'react';
 
 type ActionsMenuProps = {
     rowId: string | number;
-    onView: (id: string | number) => void;
-    onEdit: (id: string | number) => void;
-    onDelete: (id: string | number) => void;
+    onView?: (id: string | number) => void;
+    onEdit?: (id: string | number) => void;
+    onDelete?: (id: string | number) => void;
 };
 
 export function ActionsMenu({
@@ -33,15 +33,21 @@ export function ActionsMenu({
                 <MoreVertIcon />
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                <MenuItem onClick={() => onView(rowId)}>
-                    <VisibilityIcon sx={{ mr: 1 }} /> Visualizar
-                </MenuItem>
-                <MenuItem onClick={() => onEdit(rowId)}>
-                    <EditIcon sx={{ mr: 1 }} /> Editar
-                </MenuItem>
-                <MenuItem onClick={() => onDelete(rowId)}>
-                    <DeleteIcon sx={{ mr: 1 }} /> Apagar
-                </MenuItem>
+                {onView && (
+                    <MenuItem onClick={() => onView(rowId)}>
+                        <VisibilityIcon sx={{ mr: 1 }} /> Visualizar
+                    </MenuItem>
+                )}
+                {onEdit && (
+                    <MenuItem onClick={() => onEdit(rowId)}>
+                        <EditIcon sx={{ mr: 1 }} /> Editar
+                    </MenuItem>
+                )}
+                {onDelete && (
+                    <MenuItem onClick={() => onDelete(rowId)}>
+                        <DeleteIcon sx={{ mr: 1 }} /> Apagar
+                    </MenuItem>
+                )}
             </Menu>
         </Box>
     );

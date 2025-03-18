@@ -27,8 +27,8 @@ export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
         register: patient.register,
         name: patient.name,
         gender: patient.gender as 'm' | 'f',
-        motherName: patient.motherName,
-        birthDate: patient.birthDate,
+        mother_name: patient.mother_name,
+        birth_date: patient.birth_date,
         status: patient.status as 'a' | 'i',
         photoFile: null as File | null,
         photo: patient.photo,
@@ -78,7 +78,6 @@ export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
             put(route('patient.update', data.id), {
                 onSuccess: () => {
                     data.photoFile = null;
-                    console.log(data);
                     enqueueSnackbar('Paciente atualizado com sucesso!', {
                         variant: 'success',
                         autoHideDuration: 1500,

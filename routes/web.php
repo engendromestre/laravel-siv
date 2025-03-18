@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Admin\{PatientController};
+use App\Http\Controllers\Admin\{AdmissionController};
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -39,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/patient', [PatientController::class, 'index'])->name('patient.index');
+    Route::get('/patients', [PatientController::class, 'search'])->name('patients.search');
+    Route::get('/patients/non-admitted', [PatientController::class, 'searchByStatusInactive'])->name('patients.non-admitted');
     Route::get('/patient/create', [PatientController::class, 'create'])->name('patient.create');
     Route::get('/patient/edit/{id}', [PatientController::class, 'edit'])->name('patient.edit');
     Route::get('/patients/{id}', [PatientController::class, 'show'])->name('patient.show');
@@ -47,6 +50,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/patient', [PatientController::class, 'store'])->name('patient.store');
     Route::put('/patient/{id}', [PatientController::class, 'update'])->name('patient.update');
     Route::delete('/patient/{id}', [PatientController::class, 'destroy'])->name('patient.destroy');
+
+    Route::get('/admission', [AdmissionController::class, 'index'])->name('admission.index');
+    Route::get('/admissions', [AdmissionController::class, 'list'])->name('admissions.list');
+    Route::get('/admission/create', [AdmissionController::class, 'create'])->name('admission.create');
+    Route::get('/admission/patient/create', [AdmissionController::class, 'createPatient'])->name('admission.patient.create');
+    Route::get('/admission/edit/{id}', [AdmissionController::class, 'edit'])->name('admission.edit');
+    Route::get('/admissions/{id}', [AdmissionController::class, 'show'])->name('admission.show');
+
+    // Criação do paciente durante o processo de admissão
+    Route::post('/admission/patient/store', [AdmissionController::class, 'storePatient'])->name('admission.patient.store');
+    Route::post('/admission', [AdmissionController::class, 'store'])->name('admission.store');
+    Route::patch('/admission', [AdmissionController::class, 'update'])->name('admission.update');
+    Route::delete('/admission/{id}', [AdmissionController::class, 'destroy'])->name('admission.destroy');
 });
 
 Route::post('/keep-alive', function () {

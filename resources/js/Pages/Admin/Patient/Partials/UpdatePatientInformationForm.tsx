@@ -11,10 +11,8 @@ import {
     useTheme,
 } from '@mui/material';
 
+import { CustomDatePicker } from '@/Components/CustomDatePicker';
 import { Patient } from '@/types/Patients';
-import 'dayjs/locale/pt-br'; // Importa a localização
-import { CustomBirthDatePicker } from '../Components/PatientCustomBirthDatePicker';
-import { ControlledCheckbox } from '../Components/PatientCustomControlledCheckbox';
 
 type FormErrors = Partial<Record<keyof Patient, string | string[]>>;
 type SetDataFunction = (field: keyof Patient, value: string) => void;
@@ -119,35 +117,36 @@ export default function CreatePatientInformationForm({
                 </FormControl>
 
                 <FormControl>
-                    <CustomBirthDatePicker
-                        value={data.birthDate}
-                        onChange={(value) => setData('birthDate', value)}
-                        error={!!errors.birthDate}
+                    <CustomDatePicker
+                        label="Data de Nascimento"
+                        value={data.birth_date}
+                        onChange={(value) => setData('birth_date', value)}
+                        error={!!errors.birth_date}
                     />
                 </FormControl>
 
                 <FormControl>
                     <TextField
                         label="Nome da Mãe"
-                        error={!!errors.motherName}
-                        helperText={errors.motherName}
-                        id="motherName"
-                        name="motherName"
+                        error={!!errors.mother_name}
+                        helperText={errors.mother_name}
+                        id="mother_name"
+                        name="mother_name"
                         placeholder="Nome da Mãe"
-                        value={data.motherName}
+                        value={data.mother_name}
                         className="mt-1 block w-full"
                         autoComplete="off"
                         required
                         fullWidth
                         variant="outlined"
-                        onChange={(e) => setData('motherName', e.target.value)}
-                        color={errors.motherName ? 'error' : 'primary'}
+                        onChange={(e) => setData('mother_name', e.target.value)}
+                        color={errors.mother_name ? 'error' : 'primary'}
                     />
                 </FormControl>
 
-                <FormControl>
+                {/* <FormControl>
                     <FormControlLabel
-                        label="Ativo"
+                        label="Admitido"
                         control={
                             <ControlledCheckbox
                                 checked={data.status === 'a'}
@@ -157,7 +156,7 @@ export default function CreatePatientInformationForm({
                             />
                         }
                     />
-                </FormControl>
+                </FormControl> */}
             </Box>
         </Box>
     );
