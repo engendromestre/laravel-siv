@@ -11,6 +11,8 @@ interface CustomDatePickerProps {
     value: string;
     onChange: (value: string) => void;
     error?: boolean;
+    minDateTime?: string; // Agora aceita um valor mínimo opcional
+    maxDateTime?: string; // Agora aceita um valor máximo opcional
 }
 
 export function CustomDateTimePicker({
@@ -18,6 +20,8 @@ export function CustomDateTimePicker({
     value,
     onChange,
     error,
+    minDateTime,
+    maxDateTime,
 }: CustomDatePickerProps) {
     const [internalValue, setInternalValue] = useState(dayjs(value || dayjs()));
     useEffect(() => {
@@ -55,8 +59,8 @@ export function CustomDateTimePicker({
                         minutes: renderTimeViewClock,
                     }}
                     format="DD/MM/YYYY HH:mm"
-                    minDate={dayjs()} // Impede a seleção de datas passadas
-                    minTime={dayjs().hour(0).minute(0).second(0)} // Impede a seleção de horas passadas
+                    minDateTime={minDateTime ? dayjs(minDateTime) : undefined}
+                    maxDateTime={maxDateTime ? dayjs(maxDateTime) : undefined}
                 />
             </DemoContainer>
         </LocalizationProvider>

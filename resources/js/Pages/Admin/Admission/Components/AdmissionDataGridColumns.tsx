@@ -80,9 +80,24 @@ const admissionColumns = ({
                 <ActionsMenu
                     rowId={params.row.id}
                     onEdit={() => {
-                        // alta do paciente
-                        setSelectedPatient(params.row); // Passando o ID para o setSelectedPatientId
-                        setOpenDialogEdit(true); // Abre o diálogo
+                        if (
+                            !params.row.admissions ||
+                            params.row.admissions.length === 0
+                        )
+                            return;
+
+                        // Pegando a última admissão (assumindo que o array já está ordenado)
+                        const lastAdmission = params.row.admissions[0];
+
+                        // Criando um novo objeto apenas com a última admissão
+                        const updatedPatient = {
+                            ...params.row,
+                            admissions: [lastAdmission],
+                        };
+
+                        // Atualizando o estado com o novo objeto
+                        setSelectedPatient(updatedPatient);
+                        setOpenDialogEdit(true);
                     }}
                 />
             </div>

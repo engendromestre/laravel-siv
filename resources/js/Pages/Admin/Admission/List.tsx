@@ -99,6 +99,7 @@ export default function List({
 
     // Função para abrir o Drawer ao clicar em um paciente
     const handleRowClick = (patient: PatientAdmissions) => {
+        // passar somente o registro da última admissão
         setSelectedPatient(patient);
         setOpenDrawer(true);
     };

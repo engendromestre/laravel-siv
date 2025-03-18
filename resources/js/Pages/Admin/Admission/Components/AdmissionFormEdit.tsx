@@ -14,9 +14,11 @@ import {
     useTheme,
 } from '@mui/material';
 import dayjs from 'dayjs';
+import minMax from 'dayjs/plugin/minMax';
 import { enqueueSnackbar } from 'notistack';
 import React, { FormEventHandler, useEffect } from 'react';
 
+dayjs.extend(minMax);
 interface AdmissionDialogProps {
     open: boolean;
     onClose: () => void;
@@ -31,7 +33,6 @@ const AdmissionDialog: React.FC<AdmissionDialogProps> = ({
 }) => {
     const theme = useTheme();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, patch, errors, processing } = useForm({
         patient_status: patientAdmission.status as 'a' | 'i',
         patient_id: patientAdmission.id,
@@ -64,6 +65,17 @@ const AdmissionDialog: React.FC<AdmissionDialogProps> = ({
         });
     };
 
+    const admissionDateTime = patientAdmission.admissions[0].admission_datetime;
+    // Calcula os limites baseado no mês atual
+    const startOfMonth = dayjs().startOf('month'); // Primeiro dia do mês
+    const endOfMonth = dayjs().endOf('month'); // Último dia do mês
+    // minDateTime = Maior entre a data de admissão e o primeiro dia do mês
+    const minDateTime = dayjs
+        .max(dayjs(admissionDateTime), startOfMonth)
+        .format('YYYY-MM-DD HH:mm');
+
+    // maxDateTime = Último dia do mês
+    const maxDateTime = endOfMonth.format('YYYY-MM-DD HH:mm');
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>Registrar Alta </DialogTitle>
@@ -107,6 +119,8 @@ const AdmissionDialog: React.FC<AdmissionDialogProps> = ({
                                     setData('discharge_datetime', value)
                                 }
                                 error={!!errors.discharge_datetime}
+                                minDateTime={minDateTime}
+                                maxDateTime={maxDateTime}
                             />
                         </FormControl>
                         <FormControl>
