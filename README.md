@@ -28,3 +28,5 @@ Se um paciente tiver muitas admissões, podemos:
 Adicionar Paginação (retornar o paciente com as primeiras 10 amissões e depois ir paginando)
 Limitar a Altura da Lista com Scroll
 Implementar Busca/Filtro
+
+Implementar Authorization

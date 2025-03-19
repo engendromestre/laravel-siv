@@ -1,8 +1,10 @@
 import CardProj from '@/Components/CardProj';
 import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
-import Layout from '@/Layouts/Layout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, useForm } from '@inertiajs/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import HomeIcon from '@mui/icons-material/Home';
+import PeopleIcon from '@mui/icons-material/People';
 import {
     Box,
     FormControl,
@@ -13,12 +15,18 @@ import {
     OutlinedInput,
     TextField,
     Typography,
+    useTheme,
 } from '@mui/material';
 import React, { FormEventHandler } from 'react';
 
-import { Theme } from '@mui/material/styles';
+const breadcrumb = [
+    { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
+    { label: 'Usuário', icon: PeopleIcon },
+];
 
-export default function Register({ theme }: { theme: Theme }) {
+export default function Register() {
+    const theme = useTheme();
+
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -51,8 +59,8 @@ export default function Register({ theme }: { theme: Theme }) {
     };
 
     return (
-        <Layout>
-            <Head title="Register" />
+        <AuthenticatedLayout header={breadcrumb}>
+            <Head title="Registrar Usuário" />
 
             <CardProj
                 variant="outlined"
@@ -62,7 +70,7 @@ export default function Register({ theme }: { theme: Theme }) {
                 }}
             >
                 <Typography
-                    variant="h4"
+                    variant="h5"
                     gutterBottom
                     sx={{
                         mb: 4,
@@ -70,9 +78,8 @@ export default function Register({ theme }: { theme: Theme }) {
                         color: theme.palette.primary.main,
                     }}
                 >
-                    Registro
+                    Registrar Usuário
                 </Typography>
-
                 <Box
                     component="form"
                     onSubmit={submit}
@@ -86,12 +93,13 @@ export default function Register({ theme }: { theme: Theme }) {
                 >
                     <FormControl>
                         <TextField
+                            autoFocus
                             label="Nome Completo"
                             error={!!errors.name}
                             helperText={errors.name}
                             id="name"
                             name="name"
-                            placeholder="Seu Nome"
+                            placeholder="Seu Nome Completo"
                             value={data.name}
                             className="mt-1 block w-full"
                             autoComplete="username"
@@ -224,17 +232,6 @@ export default function Register({ theme }: { theme: Theme }) {
                             alignItems: 'center',
                         }}
                     >
-                        <Link
-                            href={route('login')}
-                            style={{
-                                textDecoration: 'none',
-                                color: theme.palette.text.secondary,
-                                marginRight: '16px',
-                            }}
-                        >
-                            Já registrado?
-                        </Link>
-
                         <Box
                             component="button"
                             disabled={processing}
@@ -258,6 +255,6 @@ export default function Register({ theme }: { theme: Theme }) {
                     </Box>
                 </Box>
             </CardProj>
-        </Layout>
+        </AuthenticatedLayout>
     );
 }
