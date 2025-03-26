@@ -12,14 +12,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class RegisteredUserController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display the registration view.
      */
     public function create(): Response
     {
+        $this->authorize('admin users:read', User::class);
         return Inertia::render('Auth/Register');
     }
 
@@ -32,7 +36,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 

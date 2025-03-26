@@ -2,8 +2,8 @@ import CardProj from '@/Components/CardProj';
 import Layout from '@/Layouts/Layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Alert, Box, Typography } from '@mui/material';
-import { FormEventHandler } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { FormEventHandler } from 'react';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     const { post, processing } = useForm({});
@@ -64,7 +64,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
                                 marginRight: '16px',
                             }}
                         >
-                           Sair
+                            Sair
                         </Link>
 
                         <Box

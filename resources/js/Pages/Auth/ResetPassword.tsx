@@ -27,7 +27,7 @@ export default function ResetPassword({
     token: string;
     email: string;
 }) {
-   const currentTheme = useTheme();
+    const currentTheme = useTheme();
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
         email: email,

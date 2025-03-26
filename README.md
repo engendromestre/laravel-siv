@@ -30,3 +30,12 @@ Limitar a Altura da Lista com Scroll
 Implementar Busca/Filtro
 
 Implementar Authorization
+https://www.itsolutionstuff.com/post/laravel-11-user-roles-and-permissions-tutorialexample.html
+
+- php artisan make:seeder BasicAdminPermissionSeeder
+- php artisan make:policy UserPolicy --model=User
+    - php artisan db:seed --class=BasicAdminPermissionSeeder
+
+As autorizações serão criadas via seeder
+
+- php artisan db:seed --class=OthersAdminPermissionSeeder

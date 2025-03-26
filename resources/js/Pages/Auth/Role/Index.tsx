@@ -2,12 +2,12 @@ import CardProj from '@/Components/CardProj';
 import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Results } from '@/types/Patients';
+import { Permission, Role } from '@/types/Auth';
+import { Results } from '@/types/Roles';
 import { Head, router } from '@inertiajs/react';
-import { AddCircle } from '@mui/icons-material';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Grid2 as Grid, Typography, useTheme } from '@mui/material';
 import {
     DataGrid,
     GridFilterModel,
@@ -15,23 +15,25 @@ import {
     GridSortModel,
 } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import dayjs from 'dayjs';
-import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
-import patientColumns from './Components/PatientDatagridColumns';
-import DialogDelete from './Components/PatientDialogDelete';
-import DialogView from './Components/PatientDialogView';
-
-dayjs.locale('pt-br');
+import { DialogCreateRole } from './Components/DialogCreate';
+import { RoleCard } from './Components/RoleCard';
+import { RoleCardCreate } from './Components/RoleCardCreate';
+import { roleColumns } from './Components/RoleDatagridColumns';
+import { RoleDialogView } from './Components/RoleDialogView';
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
-    { label: 'Paciente', icon: PeopleIcon },
+    { label: 'Papel do Usuário', icon: AssignmentIndIcon },
 ];
 
 export default function Index({
+    roles,
+    permissions,
     data,
 }: PageProps<{
+    roles: Role[];
+    permissions: Permission[];
     data: Results;
 }>) {
     const theme = useTheme();
@@ -46,7 +48,7 @@ export default function Index({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fetchData = (params: Record<string, any>) => {
-        router.get(route('patient.index'), params, {
+        router.get(route('role.index'), params, {
             preserveState: true,
             replace: true,
         });
@@ -82,67 +84,83 @@ export default function Index({
         }
     };
 
+    const rows = data.data;
+
     const [openDialogDelete, setOpenDialogDelete] = useState(false);
     const [openDialogView, setOpenDialogView] = useState(false);
-    const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
-        null,
-    );
+    const [openDialogEdit, setOpenDialogEdit] = useState(false);
+    const [openDialogCreate, setOpenDialogCreate] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
-    const columns = patientColumns({
-        setSelectedPatientId,
+    const columns = roleColumns({
+        setSelectedUserId,
         setOpenDialogDelete,
         setOpenDialogView,
+        setOpenDialogEdit,
     });
-    const formattedData = data.data.map((p) => ({
-        ...p,
-        birth_date: dayjs(p.birth_date).startOf('day').toDate(),
-    }));
-    const handleDeletePatient = (patientId: number) => {
-        router.delete(route('patient.destroy', { id: patientId }), {
-            onSuccess: () => {
-                enqueueSnackbar('Paciente excluido com sucesso!', {
-                    variant: 'success',
-                });
-                setOpenDialogDelete(false); // Fecha o diálogo após a exclusão
-            },
-            onError: () => {
-                console.error('Erro ao excluir paciente');
-            },
-        });
-    };
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
-            <Head title="Listar Pacientes" />
+            <Head title="Registrar Papel do Usuário" />
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                    mb: 4,
+                    fontWeight: 'bold',
+                    color: theme.palette.primary.main,
+                }}
+            >
+                Lista de Papéis
+            </Typography>
+            {/* CRIAR DOIS COMPOENTES POIS PRECISARÁ FAZER 2 BUSCAS, 1 PARA ROLES E OUTRAS PARA USERS */}
+            <Box sx={{ padding: 2 }}>
+                <Grid container spacing={2}>
+                    {roles.map((role) => (
+                        <Grid key={role.id} sx={{ xs: 12, sm: 6, md: 3 }}>
+                            <RoleCard
+                                users={role.users}
+                                role={role.name}
+                                handleRole={() =>
+                                    console.log(`Editar função de ${role.id}`)
+                                }
+                            />
+                        </Grid>
+                    ))}
+                    <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+                        <RoleCardCreate
+                            setOpenDialogCreate={setOpenDialogCreate}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                    mb: 4,
+                    fontWeight: 'bold',
+                    color: theme.palette.primary.main,
+                }}
+            >
+                Total de Usuários com seus Papéis
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2 }}>
+                Encontre todas as contas de usuário e seus papéis associados.
+            </Typography>
             <CardProj
                 variant="outlined"
                 sx={{
-                    maxWidth: '100%',
-                    [theme.breakpoints.up('sm')]: { maxWidth: '90%' },
+                    maxWidth: '95%',
+                    [theme.breakpoints.up('sm')]: { maxWidth: '95%' },
                 }}
             >
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    sx={{ pb: 2 }}
-                >
-                    <Typography component="h2" variant="h5" sx={{ mb: 0 }}>
-                        Listar Pacientes
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        href={route('patient.create')}
-                        startIcon={<AddCircle />}
-                        sx={{ alignSelf: 'center' }}
-                    >
-                        Novo Paciente
-                    </Button>
-                </Stack>
+                {' '}
                 <DataGrid
                     localeText={
                         ptBR.components.MuiDataGrid.defaultProps.localeText
                     }
-                    rows={formattedData}
+                    rows={rows}
                     columns={columns}
                     rowCount={data.total}
                     pageSizeOptions={[5, 10, 20]}
@@ -169,19 +187,20 @@ export default function Index({
                     }}
                 />
             </CardProj>
-            {openDialogDelete && (
-                <DialogDelete
-                    open={openDialogDelete}
-                    onClose={() => setOpenDialogDelete(false)}
-                    patientId={selectedPatientId}
-                    onDelete={handleDeletePatient}
-                />
-            )}
+            {openDialogDelete && <Typography>ToDo</Typography>}
+            {openDialogEdit && <Typography>ToDo</Typography>}
             {openDialogView && (
-                <DialogView
+                <RoleDialogView
                     open={openDialogView}
                     onClose={() => setOpenDialogView(false)}
-                    patientId={selectedPatientId}
+                    userId={selectedUserId}
+                />
+            )}
+            {openDialogCreate && (
+                <DialogCreateRole
+                    open={openDialogCreate}
+                    onClose={() => setOpenDialogCreate(false)}
+                    allPermissions={permissions}
                 />
             )}
         </AuthenticatedLayout>

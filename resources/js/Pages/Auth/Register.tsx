@@ -4,7 +4,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 import {
     Box,
     FormControl,
@@ -21,12 +22,11 @@ import React, { FormEventHandler } from 'react';
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
-    { label: 'Usuário', icon: PeopleIcon },
+    { label: 'Usuário', icon: PersonAddIcon },
 ];
 
 export default function Register() {
     const theme = useTheme();
-
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -61,7 +61,17 @@ export default function Register() {
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Registrar Usuário" />
-
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                    mb: 4,
+                    fontWeight: 'bold',
+                    color: theme.palette.primary.main,
+                }}
+            >
+                Registrar Usuário
+            </Typography>
             <CardProj
                 variant="outlined"
                 sx={{
@@ -69,17 +79,6 @@ export default function Register() {
                     [theme.breakpoints.up('sm')]: { maxWidth: '650px' },
                 }}
             >
-                <Typography
-                    variant="h5"
-                    gutterBottom
-                    sx={{
-                        mb: 4,
-                        fontWeight: 'bold',
-                        color: theme.palette.primary.main,
-                    }}
-                >
-                    Registrar Usuário
-                </Typography>
                 <Box
                     component="form"
                     onSubmit={submit}

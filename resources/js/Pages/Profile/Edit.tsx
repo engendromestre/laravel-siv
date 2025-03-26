@@ -2,7 +2,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { FaUserEdit } from 'react-icons/fa';
@@ -11,7 +10,6 @@ import UpdateProfileInformationForm from './Partials/UpdateProfileInformationFor
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
-    { label: 'Usuário', icon: PeopleIcon, href: 'patient.index' },
     { label: 'Editar Perfil', icon: FaUserEdit },
 ];
 

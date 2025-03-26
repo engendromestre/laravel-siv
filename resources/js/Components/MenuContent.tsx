@@ -1,10 +1,6 @@
+import { useMenuItems } from '@/Hooks/useMenuItems';
 import { Link as InertiaLink, usePage } from '@inertiajs/react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
-import RecentActorsIcon from '@mui/icons-material/RecentActors';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -14,43 +10,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
-
-const mainListItems = [
-    {
-        text: 'Início',
-        icon: HomeRoundedIcon,
-        link: route('dashboard'),
-    },
-    {
-        text: 'Admitir Pacientes',
-        icon: SupervisorAccountIcon,
-        link: route('admission.index'),
-    },
-    {
-        text: 'Listar Admitidos',
-        icon: RecentActorsIcon,
-        link: route('admissions.list'),
-    },
-    {
-        text: 'Cadastrar Pacientes',
-        icon: PeopleRoundedIcon,
-        link: route('patient.index'),
-    },
-];
-
-const secondaryListItems = [
-    {
-        text: 'Papéis e Permissões',
-        icon: VerifiedUserIcon,
-        subItems: [
-            {
-                text: 'Cadastrar Usuário',
-                icon: PeopleRoundedIcon,
-                link: route('register'),
-            },
-        ],
-    },
-];
 
 interface MenuContentProps {
     open: boolean;
@@ -86,6 +45,8 @@ export default function MenuContent({ open }: MenuContentProps) {
         (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpandedAccordion(isExpanded ? panel : false);
         };
+
+    const { mainListItems, secondaryListItems } = useMenuItems();
 
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
@@ -138,7 +99,10 @@ export default function MenuContent({ open }: MenuContentProps) {
                 {secondaryListItems.map((item, index) => {
                     const panelId = `accordion-panel-${index}`; // ID único para cada Accordion
                     const isExpandedByUrl = isAccordionExpanded(item.subItems); // Verifica se o Accordion deve estar aberto pela URL
-                    return (
+                    const showSubItems = item.subItems.some((subItem) =>
+                        subItem.roles?.includes('Administrator'),
+                    ); // Verifica se o item tem o papel de Administrador
+                    return showSubItems ? (
                         <Accordion
                             key={index}
                             disableGutters
@@ -280,7 +244,7 @@ export default function MenuContent({ open }: MenuContentProps) {
                                 </List>
                             </AccordionDetails>
                         </Accordion>
-                    );
+                    ) : null;
                 })}
             </List>
         </Stack>

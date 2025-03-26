@@ -30,9 +30,13 @@ Route::prefix('auth')->group(function () {
 
 Route::get('/password-rules', [PasswordController::class, 'getPasswordRules'])->name('password.rules');
 
+Route::get('/guest/pending', function () {
+    return Inertia::render('Auth/PendingRole');
+})->name('guest.page');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'has.role'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
