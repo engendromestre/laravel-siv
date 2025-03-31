@@ -18,12 +18,14 @@ interface UserProps {
 interface UserCardProps {
     users?: UserProps[];
     role: string;
-    handleRole: () => void;
+    handleRoleEdit?: () => void;
+    handleRoleDelete?: () => void;
 }
 export const RoleCard: React.FC<UserCardProps> = ({
     users,
     role,
-    handleRole,
+    handleRoleEdit,
+    handleRoleDelete,
 }) => {
     const theme = useTheme();
 
@@ -49,7 +51,9 @@ export const RoleCard: React.FC<UserCardProps> = ({
                             sx={{ mt: 1 }}
                         >
                             {users?.length} {}
-                            {users?.length === 1 ? 'Usuário' : 'Usuários'}
+                            {users && users?.length > 1
+                                ? 'Usuários'
+                                : 'Usuário'}
                         </Typography>
                     </Grid>
                     <Grid sx={{ xs: 6 }}>
@@ -67,12 +71,8 @@ export const RoleCard: React.FC<UserCardProps> = ({
                         </AvatarGroup>
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} sx={{ mt: 2 }}>
-                    <Grid
-                        container
-                        justifyContent="flex-start"
-                        sx={{ xs: 6, mt: 1 }}
-                    >
+                <Grid container columns={2} spacing={2} sx={{ mt: 1 }}>
+                    <Grid sx={{ xs: 6, mt: 3 }}>
                         <Typography
                             gutterBottom
                             variant="h6"
@@ -85,19 +85,29 @@ export const RoleCard: React.FC<UserCardProps> = ({
                             {role}
                         </Typography>
                     </Grid>
-                    <Grid
-                        container
-                        justifyContent="flex-end"
-                        sx={{ xs: 6, mt: 1 }}
-                    >
-                        <Link
-                            onClick={handleRole}
-                            underline="none"
-                            color="primary"
-                            component="button"
-                        >
-                            Editar Papel
-                        </Link>
+                    <Grid sx={{ xs: 6, mt: 2 }}>
+                        <Grid container direction="column" spacing={1}>
+                            <Grid>
+                                <Link
+                                    onClick={handleRoleEdit}
+                                    underline="none"
+                                    color="primary"
+                                    component="button"
+                                >
+                                    Editar Papel
+                                </Link>
+                            </Grid>
+                            <Grid>
+                                <Link
+                                    onClick={handleRoleDelete}
+                                    underline="none"
+                                    color="error.main"
+                                    component="button"
+                                >
+                                    Excluir Papel
+                                </Link>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>

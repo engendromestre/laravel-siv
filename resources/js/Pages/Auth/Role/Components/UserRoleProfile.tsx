@@ -1,4 +1,4 @@
-import { User } from '@/types/Auth';
+import { IUser } from '@/types/Auth';
 import {
     Avatar,
     Card,
@@ -12,12 +12,11 @@ import {
 import React from 'react';
 
 interface UserProfileProps {
-    user: User;
+    user: IUser;
 }
 
 const UserRoleProfile: React.FC<UserProfileProps> = ({ user }) => {
     const { name, email, roles } = user;
-    console.log(user);
 
     return (
         <Card sx={{ maxWidth: 700, margin: 'auto', marginTop: 5 }}>

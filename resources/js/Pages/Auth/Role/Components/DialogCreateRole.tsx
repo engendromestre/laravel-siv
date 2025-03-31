@@ -1,5 +1,6 @@
-import { Permission } from '@/types/Auth';
-import { useForm, usePage } from '@inertiajs/react';
+import { IAutoCompleteProjOption } from '@/Components/AutoCompleteProj';
+import { IPermission } from '@/types/Auth';
+import { router, useForm } from '@inertiajs/react';
 import {
     Box,
     Dialog,
@@ -7,30 +8,50 @@ import {
     DialogTitle,
     Typography,
 } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { FormEventHandler } from 'react';
 import { RoleForm } from './RoleForm';
 
 interface DialogCreateRoleProps {
     open: boolean;
     onClose: () => void;
-    allPermissions: Permission[];
+    allUsers: IAutoCompleteProjOption[];
+    allPermissions: IPermission[];
 }
 
 export const DialogCreateRole: React.FC<DialogCreateRoleProps> = ({
     open,
     onClose,
+    allUsers,
     allPermissions,
 }) => {
-    const userId = usePage().props.auth.user.id;
+    // const userId = usePage().props.auth.user.id;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, post, errors, processing } = useForm({
-        userId: userId,
-        roleName: '',
-        permissions: [],
+        name: '', //Role Name
+        users_ids: [],
+        permissions_ids: [],
     });
+
     const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-        console.log(data);
+        post(route('role.store'), {
+            onSuccess: () => {
+                enqueueSnackbar('Papel cadastrado com sucesso!', {
+                    variant: 'success',
+                    autoHideDuration: 1500,
+                    onExited: () => {
+                        router.get(route('role.index'));
+                    },
+                });
+            },
+            onError: () => {
+                enqueueSnackbar('Erro ao cadastrar papel!', {
+                    variant: 'error',
+                    autoHideDuration: 1500,
+                });
+            },
+        });
     };
 
     return (
@@ -47,6 +68,7 @@ export const DialogCreateRole: React.FC<DialogCreateRoleProps> = ({
             </DialogTitle>
             <DialogContent>
                 <RoleForm
+                    allUsers={allUsers}
                     allPermissions={allPermissions}
                     onClose={onClose}
                     data={data}

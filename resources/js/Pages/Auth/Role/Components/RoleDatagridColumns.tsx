@@ -9,16 +9,16 @@ interface Role {
 
 interface UsersRoleColumnProps {
     setSelectedUserId: (id: number) => void;
-    setOpenDialogDelete: (open: boolean) => void;
-    setOpenDialogView: (open: boolean) => void;
-    setOpenDialogEdit: (open: boolean) => void;
+    setOpenDialogDeleteUser: (open: boolean) => void;
+    setOpenDialogViewUser: (open: boolean) => void;
+    setOpenDialogEditUser: (open: boolean) => void;
 }
 
 export const roleColumns = ({
     setSelectedUserId,
-    setOpenDialogDelete,
-    setOpenDialogView,
-    setOpenDialogEdit,
+    setOpenDialogDeleteUser,
+    setOpenDialogViewUser,
+    setOpenDialogEditUser,
 }: UsersRoleColumnProps): GridColDef[] => [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Nome', flex: 1, minWidth: 150 },
@@ -47,15 +47,15 @@ export const roleColumns = ({
                 rowId={params.row.id}
                 onView={() => {
                     setSelectedUserId(params.row.id);
-                    setOpenDialogView(true);
+                    setOpenDialogViewUser(true);
                 }}
                 onEdit={() => {
                     setSelectedUserId(params.row.id);
-                    setOpenDialogEdit(true);
+                    setOpenDialogEditUser(true);
                 }}
                 onDelete={() => {
                     setSelectedUserId(params.row.id);
-                    setOpenDialogDelete(true);
+                    setOpenDialogDeleteUser(true);
                 }}
             />
         ),

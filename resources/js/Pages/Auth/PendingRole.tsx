@@ -80,7 +80,10 @@ export default function PendingRole() {
                                 <UserIcon className="mr-2 h-5 w-5" />
                                 <Typography variant="body2">
                                     Dúvidas? Entre em contato com o
-                                    administrador do sistema
+                                    administrador do sistema via e-mail:&nbsp;
+                                    <span className="font-bold">
+                                        cantidio-informatica@saude.sp.gov.br
+                                    </span>
                                 </Typography>
                             </Box>
 

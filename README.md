@@ -36,6 +36,8 @@ https://www.itsolutionstuff.com/post/laravel-11-user-roles-and-permissions-tutor
 - php artisan make:policy UserPolicy --model=User
     - php artisan db:seed --class=BasicAdminPermissionSeeder
 
-As autorizações serão criadas via seeder
+As permissões serão criadas via seeder
 
 - php artisan db:seed --class=OthersAdminPermissionSeeder
+
+Criar feature RoleDestroy

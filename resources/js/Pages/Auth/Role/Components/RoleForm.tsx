@@ -1,21 +1,25 @@
-import { Permission } from '@/types/Auth';
+import AutocompleteProj, {
+    IAutoCompleteProjOption,
+} from '@/Components/AutoCompleteProj';
+import { IPermission } from '@/types/Auth';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import {
     Box,
     Button,
-    Checkbox,
-    FormControlLabel,
+    FormControl,
+    FormHelperText,
     Grid2 as Grid,
     TextField,
     Typography,
-    useTheme,
 } from '@mui/material';
 import React from 'react';
+import { PermissionGroup } from './PermissionGroup';
+import { SelectAllPermissions } from './SelectAllPermissions';
 
 interface RoleCreate {
-    userId: number;
-    roleName: string;
-    permissions: number[];
+    users_ids: number[];
+    name: string;
+    permissions_ids: number[];
 }
 
 type SetDataFunction = (
@@ -24,7 +28,8 @@ type SetDataFunction = (
 ) => void;
 
 interface RoleFormProps {
-    allPermissions: Permission[];
+    allUsers: IAutoCompleteProjOption[];
+    allPermissions: IPermission[];
     onClose: () => void;
     data: RoleCreate;
     setData: SetDataFunction;
@@ -34,6 +39,7 @@ interface RoleFormProps {
 }
 
 export const RoleForm: React.FC<RoleFormProps> = ({
+    allUsers,
     allPermissions,
     onClose,
     data,
@@ -42,26 +48,26 @@ export const RoleForm: React.FC<RoleFormProps> = ({
     processing,
     submit,
 }) => {
-    const theme = useTheme();
-
     // Função para alternar seleção de todas as permissões
-    const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSelectPermissionsAll = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         if (event.target.checked) {
             setData(
-                'permissions',
+                'permissions_ids',
                 allPermissions.map((p) => p.id),
             ); // Sempre um array de números
         } else {
-            setData('permissions', []);
+            setData('permissions_ids', []);
         }
     };
 
     const handlePermissionChange = (id: number) => {
-        const updatedPermissions = data.permissions.includes(id)
-            ? data.permissions.filter((permId) => permId !== id)
-            : [...data.permissions, id];
+        const updatedPermissionsIds = data.permissions_ids.includes(id)
+            ? data.permissions_ids.filter((permId) => permId !== id)
+            : [...data.permissions_ids, id];
 
-        setData('permissions', updatedPermissions);
+        setData('permissions_ids', updatedPermissionsIds);
     };
 
     // Agrupar permissões por entidade (ex: 'admin patients', 'admin admissions')
@@ -74,8 +80,19 @@ export const RoleForm: React.FC<RoleFormProps> = ({
             acc[group][action] = permission;
             return acc;
         },
-        {} as Record<string, Record<string, Permission>>,
+        {} as Record<string, Record<string, IPermission>>,
     );
+
+    const getSelectedUsers = () => {
+        return allUsers.filter((user) =>
+            data.users_ids.includes(Number(user.id)),
+        );
+    };
+
+    const handleUserChange = (selectedUsers: IAutoCompleteProjOption[]) => {
+        const updatedUserIds = selectedUsers.map((user) => Number(user.id));
+        setData('users_ids', updatedUserIds);
+    };
 
     return (
         <Box
@@ -89,9 +106,10 @@ export const RoleForm: React.FC<RoleFormProps> = ({
             }}
         >
             <TextField
-                error={!!errors.roleName}
-                value={data.roleName}
-                onChange={(e) => setData('roleName', e.target.value)}
+                error={!!errors.name}
+                helperText={errors.name}
+                value={data.name}
+                onChange={(e) => setData('name', e.target.value)}
                 fullWidth
                 label="Papel"
                 id="role"
@@ -108,81 +126,61 @@ export const RoleForm: React.FC<RoleFormProps> = ({
                     },
                 }}
             />
-            <Typography
-                variant="h5"
-                className="mb-2 font-semibold text-gray-600"
-                sx={{ marginTop: 5 }}
-            >
-                Permissões do Papel
-            </Typography>
-            <Grid container spacing={2} sx={{ marginTop: 2 }}>
-                <Grid size={6}>
-                    <Typography className="mb-2 font-semibold text-gray-600">
-                        Acesso de Administrador
-                    </Typography>
-                </Grid>
-                <Grid container justifyContent="flex-end" size={6}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={
-                                    data.permissions.length ===
-                                    allPermissions.length
-                                }
-                                onChange={handleSelectAll}
-                                color="primary"
-                                sx={{ marginLeft: 2 }}
-                            />
-                        }
-                        label="Selecionar Todos"
-                        className="mb-2 font-semibold text-gray-600"
-                    />
-                </Grid>
-            </Grid>
 
-            {Object.entries(groupedPermissions).map(([group, actions]) => (
-                <Grid
-                    size={6}
-                    key={group}
-                    container
-                    alignItems="center"
-                    spacing={2}
-                    sx={{
-                        borderBottom: `1px solid ${theme.palette.grey[200]}`,
-                    }}
+            <AutocompleteProj
+                otions={allUsers}
+                label="Usuários"
+                placeholder="Selecione o(s) usuário(s)"
+                values={getSelectedUsers()}
+                onChange={handleUserChange}
+                width="100%"
+                error={errors.users_ids}
+            />
+
+            <FormControl
+                error={!!errors.permissions_ids}
+                component="fieldset"
+                sx={{ width: '100%' }}
+            >
+                {' '}
+                <Typography
+                    variant="h5"
+                    className="mb-2 font-semibold text-gray-600"
+                    sx={{ marginTop: 5 }}
                 >
+                    Permissões do Papel
+                </Typography>
+                <Grid container spacing={2} sx={{ marginTop: 2 }}>
                     <Grid size={6}>
-                        <Typography>{group}</Typography>
+                        <Typography className="mb-2 font-semibold text-gray-600">
+                            Acesso de Administrador
+                        </Typography>
                     </Grid>
                     <Grid container justifyContent="flex-end" size={6}>
-                        {['create', 'read', 'write'].map((action) =>
-                            actions[action] ? (
-                                <FormControlLabel
-                                    key={actions[action].id}
-                                    control={
-                                        <Checkbox
-                                            color="primary"
-                                            value={actions[action].id}
-                                            checked={data.permissions.includes(
-                                                actions[action].id,
-                                            )}
-                                            onChange={() =>
-                                                handlePermissionChange(
-                                                    actions[action].id,
-                                                )
-                                            }
-                                        />
-                                    }
-                                    label={
-                                        action.charAt(0).toUpperCase() +
-                                        action.slice(1)
-                                    }
-                                />
-                            ) : null,
-                        )}
+                        <SelectAllPermissions
+                            allPermissions={allPermissions}
+                            selectedPermissions={data.permissions_ids}
+                            onSelectAll={handleSelectPermissionsAll}
+                        />
                     </Grid>
                 </Grid>
-            ))}
+                {Object.entries(groupedPermissions).map(([group, actions]) => (
+                    <PermissionGroup
+                        key={group}
+                        group={group}
+                        actions={actions}
+                        selectedPermissions={data.permissions_ids}
+                        handlePermissionChange={handlePermissionChange}
+                    />
+                ))}
+                {/* Exibir erro de permissões abaixo do grupo de checkboxes */}
+                {errors.permissions_ids && (
+                    <FormHelperText sx={{ mt: 1 }}>
+                        {errors.permissions_ids}
+                    </FormHelperText>
+                )}
+            </FormControl>
+
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                 <Button
                     type="submit"

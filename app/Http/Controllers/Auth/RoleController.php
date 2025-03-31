@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Auth\RoleService;
 use App\Services\Auth\UserService;
-use Spatie\Permission\Models\Role;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Spatie\Permission\Models\Permission;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 class RoleController extends Controller
 {
@@ -24,13 +26,36 @@ class RoleController extends Controller
 
     public function index(Request $request): Response
     {
+        $users = User::select('id', 'name')->get();
         $roles = $this->roleService->getRoles();
         $permissions = Permission::select('id', 'name')->get();
         $usersWithRoles = $this->userService->getUsersWithRoles($request->all());
         return Inertia::render('Auth/Role/Index', [
+            'users' => $users,
             'roles' => $roles,
             'permissions' =>  $permissions,
             'data' => $usersWithRoles,
         ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $this->roleService->createRole($request);
+        return Redirect::route('role.index');
+    }
+
+    public function update(Request $request): RedirectResponse
+    {
+        $this->roleService->updateRole($request);
+        return Redirect::route('role.index');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $this->roleService->deleteRole($request);
+        return Redirect::route('role.index');
     }
 }

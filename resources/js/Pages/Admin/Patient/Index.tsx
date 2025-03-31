@@ -1,5 +1,6 @@
 import CardProj from '@/Components/CardProj';
 import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
+import { DialogDelete } from '@/Components/DialogDelete';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Results } from '@/types/Patients';
@@ -19,7 +20,6 @@ import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import patientColumns from './Components/PatientDatagridColumns';
-import DialogDelete from './Components/PatientDialogDelete';
 import DialogView from './Components/PatientDialogView';
 
 dayjs.locale('pt-br');
@@ -173,7 +173,7 @@ export default function Index({
                 <DialogDelete
                     open={openDialogDelete}
                     onClose={() => setOpenDialogDelete(false)}
-                    patientId={selectedPatientId}
+                    id={selectedPatientId}
                     onDelete={handleDeletePatient}
                 />
             )}

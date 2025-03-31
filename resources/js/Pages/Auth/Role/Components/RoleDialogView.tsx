@@ -1,4 +1,4 @@
-import { User } from '@/types/Auth';
+import { IUser } from '@/types/Auth';
 import {
     Button,
     CircularProgress,
@@ -24,7 +24,7 @@ export const RoleDialogView: React.FC<RoleDialogViewProps> = ({
     userId,
 }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export const RoleDialogView: React.FC<RoleDialogViewProps> = ({
                     <UserRoleProfile user={user} />
                 ) : (
                     <Typography variant="body1" color="error">
-                        Paciente não encontrado.
+                        Usuário não encontrado.
                     </Typography>
                 )}
             </DialogContent>

@@ -1,8 +1,10 @@
+import { IAutoCompleteProjOption } from '@/Components/AutoCompleteProj';
 import CardProj from '@/Components/CardProj';
 import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
+import { DialogDelete } from '@/Components/DialogDelete';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Permission, Role } from '@/types/Auth';
+import { IPermission, IRole } from '@/types/Auth';
 import { Results } from '@/types/Roles';
 import { Head, router } from '@inertiajs/react';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
@@ -15,8 +17,10 @@ import {
     GridSortModel,
 } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
+import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
-import { DialogCreateRole } from './Components/DialogCreate';
+import { DialogCreateRole } from './Components/DialogCreateRole';
+import { DialogEditRole } from './Components/DialogEditRole';
 import { RoleCard } from './Components/RoleCard';
 import { RoleCardCreate } from './Components/RoleCardCreate';
 import { roleColumns } from './Components/RoleDatagridColumns';
@@ -28,12 +32,14 @@ const breadcrumb = [
 ];
 
 export default function Index({
+    users,
     roles,
     permissions,
     data,
 }: PageProps<{
-    roles: Role[];
-    permissions: Permission[];
+    users: IAutoCompleteProjOption[];
+    roles: IRole[];
+    permissions: IPermission[];
     data: Results;
 }>) {
     const theme = useTheme();
@@ -85,19 +91,37 @@ export default function Index({
     };
 
     const rows = data.data;
-
-    const [openDialogDelete, setOpenDialogDelete] = useState(false);
-    const [openDialogView, setOpenDialogView] = useState(false);
-    const [openDialogEdit, setOpenDialogEdit] = useState(false);
-    const [openDialogCreate, setOpenDialogCreate] = useState(false);
+    const [, setOpenDialogDeleteUser] = useState(false);
+    const [openDialogViewUser, setOpenDialogViewUser] = useState(false);
+    const [, setOpenDialogEditUser] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+
+    const [openDialogDeleteRole, setOpenDialogDeleteRole] = useState(false);
+    const [openDialogEditRole, setOpenDialogEditRole] = useState(false);
+    const [openDialogCreateRole, setOpenDialogCreateRole] = useState(false);
+    const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
+    const [openSelectedRole, setSelectedRole] = useState<IRole | null>(null);
 
     const columns = roleColumns({
         setSelectedUserId,
-        setOpenDialogDelete,
-        setOpenDialogView,
-        setOpenDialogEdit,
+        setOpenDialogDeleteUser,
+        setOpenDialogViewUser,
+        setOpenDialogEditUser,
     });
+
+    const handleDeleteRole = (role_id: number) => {
+        router.delete(route('role.destroy', { id: role_id }), {
+            onSuccess: () => {
+                enqueueSnackbar('Papel excluido com sucesso!', {
+                    variant: 'success',
+                });
+                setOpenDialogDeleteRole(false); // Fecha o diálogo após a exclusão
+            },
+            onError: (e) => {
+                console.error(e);
+            },
+        });
+    };
 
     return (
         <AuthenticatedLayout header={breadcrumb}>
@@ -121,15 +145,20 @@ export default function Index({
                             <RoleCard
                                 users={role.users}
                                 role={role.name}
-                                handleRole={() =>
-                                    console.log(`Editar função de ${role.id}`)
-                                }
+                                handleRoleEdit={() => {
+                                    setOpenDialogEditRole(true);
+                                    setSelectedRole(role);
+                                }}
+                                handleRoleDelete={() => {
+                                    setOpenDialogDeleteRole(true);
+                                    setSelectedRoleId(role.id);
+                                }}
                             />
                         </Grid>
                     ))}
                     <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
                         <RoleCardCreate
-                            setOpenDialogCreate={setOpenDialogCreate}
+                            setOpenDialogCreate={setOpenDialogCreateRole}
                         />
                     </Grid>
                 </Grid>
@@ -187,20 +216,39 @@ export default function Index({
                     }}
                 />
             </CardProj>
-            {openDialogDelete && <Typography>ToDo</Typography>}
-            {openDialogEdit && <Typography>ToDo</Typography>}
-            {openDialogView && (
-                <RoleDialogView
-                    open={openDialogView}
-                    onClose={() => setOpenDialogView(false)}
-                    userId={selectedUserId}
+            {openDialogCreateRole && (
+                <DialogCreateRole
+                    open={openDialogCreateRole}
+                    onClose={() => setOpenDialogCreateRole(false)}
+                    allUsers={users}
+                    allPermissions={permissions}
                 />
             )}
-            {openDialogCreate && (
-                <DialogCreateRole
-                    open={openDialogCreate}
-                    onClose={() => setOpenDialogCreate(false)}
+
+            {openDialogDeleteRole && (
+                <DialogDelete
+                    open={openDialogDeleteRole}
+                    onClose={() => setOpenDialogDeleteRole(false)}
+                    id={selectedRoleId}
+                    onDelete={handleDeleteRole}
+                />
+            )}
+
+            {openDialogEditRole && (
+                <DialogEditRole
+                    open={openDialogEditRole}
+                    onClose={() => setOpenDialogEditRole(false)}
+                    allUsers={users}
                     allPermissions={permissions}
+                    role={openSelectedRole}
+                />
+            )}
+
+            {openDialogViewUser && (
+                <RoleDialogView
+                    open={openDialogViewUser}
+                    onClose={() => setOpenDialogViewUser(false)}
+                    userId={selectedUserId}
                 />
             )}
         </AuthenticatedLayout>
