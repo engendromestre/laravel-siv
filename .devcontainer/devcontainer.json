@@ -9,6 +9,7 @@
             "extensions": [
                 // "mikestead.dotenv",
                 // "onecentlin.laravel-blade"
+                "ms-azuretools.vscode-docker",
                 "formulahendry.docker-explorer",
                 "m1guelpf.better-pest",
                 "naumovs.color-highlight",

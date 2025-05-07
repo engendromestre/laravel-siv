@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        $this->authorize('admin users:read', User::class);
+        // $this->authorize('admin users:read', User::class);
         return Inertia::render('Auth/Register');
     }
 

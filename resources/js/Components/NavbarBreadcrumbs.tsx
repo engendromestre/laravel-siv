@@ -16,7 +16,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     },
 }));
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
     label: string;
     icon?: SvgIconComponent;
     href?: string;

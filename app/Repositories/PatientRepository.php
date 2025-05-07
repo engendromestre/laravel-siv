@@ -31,7 +31,7 @@ class PatientRepository
 
     public function findPatientById($id)
     {
-        return Patient::findOrFail($id);
+        return Patient::with('admissions')->findOrFail($id);
     }
 
     public function create($data)

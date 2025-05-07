@@ -97,6 +97,7 @@ export default function Index({
         ...p,
         birth_date: dayjs(p.birth_date).startOf('day').toDate(),
     }));
+
     const handleDeletePatient = (patientId: number) => {
         router.delete(route('patient.destroy', { id: patientId }), {
             onSuccess: () => {
