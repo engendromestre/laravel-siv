@@ -8,8 +8,10 @@ use App\Services\Admin\AdmissionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Events\AdmissionCreated;
 
 class AdmissionController extends Controller
 {
@@ -66,7 +68,30 @@ class AdmissionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->admissionService->createAdmission($request);
+        // Simulando dados do paciente/admissão
+        $payload = [
+            'id' => 123,
+            'name' => 'João da Silva',
+            'admitted_at' => now()->toISOString(),
+        ];
+
+        // Envia para o canal Redis
+        Redis::publish('admission:new', json_encode($payload));
         return Redirect::route('admission.index');
+    }
+
+    public function storeEvent(Request $request): RedirectResponse
+    {
+        $patient = [
+            'id' => 1,
+            'name' => 'João da Silva',
+            'gender' => 'male',
+            'admitted_at' => now(),
+        ];
+
+        event(new AdmissionCreated($patient));
+
+        return response()->json(['message' => 'Admissão registrada!']);
     }
 
     /**
@@ -77,6 +102,7 @@ class AdmissionController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $this->admissionService->updateAdmission($request);
+        Redis::publish('admission:discharged', json_encode(['id' => 123]));
         return Redirect::route('admissions.list');
     }
 }
