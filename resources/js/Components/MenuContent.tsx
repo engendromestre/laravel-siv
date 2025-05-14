@@ -100,7 +100,7 @@ export default function MenuContent({ open }: MenuContentProps) {
                     const panelId = `accordion-panel-${index}`; // ID único para cada Accordion
                     const isExpandedByUrl = isAccordionExpanded(item.subItems); // Verifica se o Accordion deve estar aberto pela URL
                     const showSubItems = item.subItems.some((subItem) =>
-                        subItem.roles?.includes('Administrator'),
+                        subItem.roles?.includes('Administrador'),
                     ); // Verifica se o item tem o papel de Administrador
                     return showSubItems ? (
                         <Accordion

@@ -39,3 +39,9 @@
 5.  **Atualização da UI:** Com base na mensagem recebida, o Next.js atualiza a interface do usuário para refletir a mudança (adicionar ou remover um paciente da exibição).
 
 Este conjunto de requisitos e considerações servirá como base para a escolha da melhor abordagem e para o desenvolvimento da solução de comunicação em tempo real.
+
+
+# Comandos
+ - php artisan permission:manage create "admin users:create"
+ - php artisan permission:manage delete "admin users:create"
+
