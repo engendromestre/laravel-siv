@@ -16,7 +16,7 @@ interface MenuContentProps {
 }
 
 export default function MenuContent({ open }: MenuContentProps) {
-    const { url } = usePage();
+    const { url, props } = usePage();
     const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
         false,
     ); // Estado para controle manual
@@ -99,9 +99,10 @@ export default function MenuContent({ open }: MenuContentProps) {
                 {secondaryListItems.map((item, index) => {
                     const panelId = `accordion-panel-${index}`; // ID único para cada Accordion
                     const isExpandedByUrl = isAccordionExpanded(item.subItems); // Verifica se o Accordion deve estar aberto pela URL
-                    const showSubItems = item.subItems.some((subItem) =>
-                        subItem.roles?.includes('Administrador'),
-                    ); // Verifica se o item tem o papel de Administrador
+                    const showSubItems =
+                        props.auth.user.permissions.includes(
+                            'admin roles:read',
+                        );
                     return showSubItems ? (
                         <Accordion
                             key={index}

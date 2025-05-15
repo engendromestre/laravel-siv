@@ -42,7 +42,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('admin users:create');
+        return $user->hasPermissionTo('admin users:create');
     }
 
     /**

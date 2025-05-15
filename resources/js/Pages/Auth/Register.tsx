@@ -1,24 +1,17 @@
 import CardProj from '@/Components/CardProj';
-import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import {
     Box,
     FormControl,
-    FormHelperText,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
     TextField,
     Typography,
     useTheme,
 } from '@mui/material';
-import React, { FormEventHandler } from 'react';
+import { FormEventHandler } from 'react';
 
 const breadcrumb = [
     { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
@@ -27,35 +20,15 @@ const breadcrumb = [
 
 export default function Register() {
     const theme = useTheme();
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
-        password: '',
-        password_confirmation: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
-    };
-
-    const [showPassword, setShowPassword] = React.useState(false);
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-    const handleMouseDownPassword = (
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-        event.preventDefault();
-    };
-
-    const handleMouseUpPassword = (
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-        event.preventDefault();
+        post(route('register'));
     };
 
     return (
@@ -93,7 +66,7 @@ export default function Register() {
                     <FormControl>
                         <TextField
                             autoFocus
-                            label="Nome Completo"
+                            label="Nome Completo do Usuário"
                             error={!!errors.name}
                             helperText={errors.name}
                             id="name"
@@ -111,7 +84,7 @@ export default function Register() {
                     </FormControl>
                     <FormControl>
                         <TextField
-                            label="E-mail"
+                            label="E-mail do Usuário"
                             error={!!errors.email}
                             helperText={errors.email}
                             id="email"
@@ -127,100 +100,6 @@ export default function Register() {
                             onChange={(e) => setData('email', e.target.value)}
                             color={errors.email ? 'error' : 'primary'}
                         />
-                    </FormControl>
-
-                    <FormControl
-                        variant="outlined"
-                        error={!!errors.password}
-                        fullWidth
-                    >
-                        <InputLabel htmlFor="password">Senha *</InputLabel>
-                        <OutlinedInput
-                            id="password"
-                            name="password"
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="********"
-                            value={data.password}
-                            required
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label={
-                                            showPassword
-                                                ? 'hide the password'
-                                                : 'display the password'
-                                        }
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        onMouseUp={handleMouseUpPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? (
-                                            <VisibilityOff />
-                                        ) : (
-                                            <Visibility />
-                                        )}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            label="Senha"
-                        />
-                        {errors.password && (
-                            <FormHelperText>{errors.password}</FormHelperText>
-                        )}
-                    </FormControl>
-
-                    <PasswordStrengthMeter password={data.password} />
-
-                    <FormControl
-                        variant="outlined"
-                        error={!!errors.password_confirmation}
-                        fullWidth
-                    >
-                        <InputLabel htmlFor="password">
-                            Confirmar Senha *
-                        </InputLabel>
-                        <OutlinedInput
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="********"
-                            value={data.password_confirmation}
-                            required
-                            onChange={(e) =>
-                                setData('password_confirmation', e.target.value)
-                            }
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label={
-                                            showPassword
-                                                ? 'hide the password confirmation'
-                                                : 'display the password confirmation'
-                                        }
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        onMouseUp={handleMouseUpPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? (
-                                            <VisibilityOff />
-                                        ) : (
-                                            <Visibility />
-                                        )}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            label="Confirmação de Senha"
-                        />
-                        {errors.password_confirmation && (
-                            <FormHelperText>
-                                {errors.password_confirmation}
-                            </FormHelperText>
-                        )}
                     </FormControl>
 
                     <Box

@@ -14,6 +14,12 @@ use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Auth\UserController;
 
 Route::middleware('guest')->group(function () {
+    Route::get('/register/{user}', [RegisteredUserController::class, 'complete'])
+        ->name('register.complete');
+    
+    Route::put('/register/{user}', [RegisteredUserController::class, 'update'])
+        ->name('register.complete.update');
+
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 

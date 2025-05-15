@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { IPermission, IRole } from '@/types/Auth';
 import { Results } from '@/types/Roles';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import HomeIcon from '@mui/icons-material/Home';
 import { Box, Grid2 as Grid, Typography, useTheme } from '@mui/material';
@@ -42,6 +42,11 @@ export default function Index({
     permissions: IPermission[];
     data: Results;
 }>) {
+    const { props } = usePage<PageProps>();
+    const userPermissions = props.auth.user.permissions;
+    const canCreate = userPermissions.includes('admin roles:create');
+    const canWrite = userPermissions.includes('admin roles:write');
+
     const theme = useTheme();
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>(
         {
@@ -145,21 +150,31 @@ export default function Index({
                             <RoleCard
                                 users={role.users}
                                 role={role.name}
-                                handleRoleEdit={() => {
-                                    setOpenDialogEditRole(true);
-                                    setSelectedRole(role);
-                                }}
-                                handleRoleDelete={() => {
-                                    setOpenDialogDeleteRole(true);
-                                    setSelectedRoleId(role.id);
-                                }}
+                                handleRoleEdit={
+                                    canWrite
+                                        ? () => {
+                                              setOpenDialogEditRole(true);
+                                              setSelectedRole(role);
+                                          }
+                                        : undefined
+                                }
+                                handleRoleDelete={
+                                    canWrite
+                                        ? () => {
+                                              setOpenDialogDeleteRole(true);
+                                              setSelectedRoleId(role.id);
+                                          }
+                                        : undefined
+                                }
                             />
                         </Grid>
                     ))}
                     <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-                        <RoleCardCreate
-                            setOpenDialogCreate={setOpenDialogCreateRole}
-                        />
+                        {canCreate && (
+                            <RoleCardCreate
+                                setOpenDialogCreate={setOpenDialogCreateRole}
+                            />
+                        )}
                     </Grid>
                 </Grid>
             </Box>

@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\{PatientController};
 use App\Http\Controllers\Admin\{AdmissionController};
 
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),

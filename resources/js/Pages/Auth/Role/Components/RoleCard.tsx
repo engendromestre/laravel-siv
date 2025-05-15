@@ -28,7 +28,7 @@ export const RoleCard: React.FC<UserCardProps> = ({
     handleRoleDelete,
 }) => {
     const theme = useTheme();
-
+    console.log(handleRoleEdit);
     return (
         <Card
             sx={{
@@ -85,30 +85,37 @@ export const RoleCard: React.FC<UserCardProps> = ({
                             {role}
                         </Typography>
                     </Grid>
-                    <Grid sx={{ xs: 6, mt: 2 }}>
-                        <Grid container direction="column" spacing={1}>
-                            <Grid>
-                                <Link
-                                    onClick={handleRoleEdit}
-                                    underline="none"
-                                    color="primary"
-                                    component="button"
-                                >
-                                    Editar Papel
-                                </Link>
-                            </Grid>
-                            <Grid>
-                                <Link
-                                    onClick={handleRoleDelete}
-                                    underline="none"
-                                    color="error.main"
-                                    component="button"
-                                >
-                                    Excluir Papel
-                                </Link>
+                    {handleRoleEdit !== undefined ||
+                    handleRoleDelete !== undefined ? (
+                        <Grid sx={{ xs: 6, mt: 2 }}>
+                            <Grid container direction="column" spacing={1}>
+                                {handleRoleEdit !== undefined && (
+                                    <Grid>
+                                        <Link
+                                            onClick={handleRoleEdit}
+                                            underline="none"
+                                            color="primary"
+                                            component="button"
+                                        >
+                                            Editar Papel
+                                        </Link>
+                                    </Grid>
+                                )}
+                                {handleRoleDelete !== undefined && (
+                                    <Grid>
+                                        <Link
+                                            onClick={handleRoleDelete}
+                                            underline="none"
+                                            color="error.main"
+                                            component="button"
+                                        >
+                                            Excluir Papel
+                                        </Link>
+                                    </Grid>
+                                )}
                             </Grid>
                         </Grid>
-                    </Grid>
+                    ) : null}
                 </Grid>
             </CardContent>
         </Card>
