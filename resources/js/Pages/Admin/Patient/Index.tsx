@@ -1,5 +1,6 @@
 import CardProj from '@/Components/CardProj';
 import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
+import { DialogDelete } from '@/Components/DialogDelete';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Results } from '@/types/Patients';
@@ -7,7 +8,7 @@ import { Head, router } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import { Alert, Button, Stack, Typography, useTheme } from '@mui/material';
 import {
     DataGrid,
     GridFilterModel,
@@ -19,7 +20,6 @@ import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import patientColumns from './Components/PatientDatagridColumns';
-import DialogDelete from './Components/PatientDialogDelete';
 import DialogView from './Components/PatientDialogView';
 
 dayjs.locale('pt-br');
@@ -87,6 +87,7 @@ export default function Index({
     const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
         null,
     );
+
     const columns = patientColumns({
         setSelectedPatientId,
         setOpenDialogDelete,
@@ -96,6 +97,7 @@ export default function Index({
         ...p,
         birth_date: dayjs(p.birth_date).startOf('day').toDate(),
     }));
+
     const handleDeletePatient = (patientId: number) => {
         router.delete(route('patient.destroy', { id: patientId }), {
             onSuccess: () => {
@@ -109,6 +111,7 @@ export default function Index({
             },
         });
     };
+    console.log(formattedData.length);
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Listar Pacientes" />
@@ -137,42 +140,50 @@ export default function Index({
                         Novo Paciente
                     </Button>
                 </Stack>
-                <DataGrid
-                    localeText={
-                        ptBR.components.MuiDataGrid.defaultProps.localeText
-                    }
-                    rows={formattedData}
-                    columns={columns}
-                    rowCount={data.total}
-                    pageSizeOptions={[5, 10, 20]}
-                    paginationMode="server"
-                    sortingMode="server"
-                    paginationModel={paginationModel}
-                    onPaginationModelChange={handlePaginationChange}
-                    onSortModelChange={handleSortChange}
-                    onFilterModelChange={handleSearchChange} // Captura a pesquisa do GridToolbarQuickFilter
-                    initialState={{ density: 'comfortable' }}
-                    slots={{ toolbar: DatagridCustomToolbar }}
-                    sx={{
-                        '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
-                            {
-                                outline: 'none',
+                {formattedData.length === 0 ? (
+                    <Stack sx={{ width: '100%' }} spacing={2}>
+                        <Alert severity="info">
+                            Nenhum registro encontrado.
+                        </Alert>
+                    </Stack>
+                ) : (
+                    <DataGrid
+                        localeText={
+                            ptBR.components.MuiDataGrid.defaultProps.localeText
+                        }
+                        rows={formattedData}
+                        columns={columns}
+                        rowCount={data.total}
+                        pageSizeOptions={[5, 10, 20]}
+                        paginationMode="server"
+                        sortingMode="server"
+                        paginationModel={paginationModel}
+                        onPaginationModelChange={handlePaginationChange}
+                        onSortModelChange={handleSortChange}
+                        onFilterModelChange={handleSearchChange} // Captura a pesquisa do GridToolbarQuickFilter
+                        initialState={{ density: 'comfortable' }}
+                        slots={{ toolbar: DatagridCustomToolbar }}
+                        sx={{
+                            '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
+                                {
+                                    outline: 'none',
+                                },
+                            '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
+                                {
+                                    outline: 'none',
+                                },
+                            '& .Mui-selected': {
+                                outline: 'none !important',
                             },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
-                            {
-                                outline: 'none',
-                            },
-                        '& .Mui-selected': {
-                            outline: 'none !important',
-                        },
-                    }}
-                />
+                        }}
+                    />
+                )}
             </CardProj>
             {openDialogDelete && (
                 <DialogDelete
                     open={openDialogDelete}
                     onClose={() => setOpenDialogDelete(false)}
-                    patientId={selectedPatientId}
+                    id={selectedPatientId}
                     onDelete={handleDeletePatient}
                 />
             )}

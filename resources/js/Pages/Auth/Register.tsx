@@ -1,59 +1,50 @@
 import CardProj from '@/Components/CardProj';
-import PasswordStrengthMeter from '@/Components/PasswordStrenghMeter';
-import Layout from '@/Layouts/Layout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, useForm } from '@inertiajs/react';
+import HomeIcon from '@mui/icons-material/Home';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 import {
     Box,
     FormControl,
-    FormHelperText,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
     TextField,
     Typography,
+    useTheme,
 } from '@mui/material';
-import React, { FormEventHandler } from 'react';
+import { FormEventHandler } from 'react';
 
-import { Theme } from '@mui/material/styles';
+const breadcrumb = [
+    { label: 'Dashboard', icon: HomeIcon, href: 'dashboard' },
+    { label: 'Usuário', icon: PersonAddIcon },
+];
 
-export default function Register({ theme }: { theme: Theme }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function Register() {
+    const theme = useTheme();
+    const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
-        password: '',
-        password_confirmation: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
-    };
-
-    const [showPassword, setShowPassword] = React.useState(false);
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-    const handleMouseDownPassword = (
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-        event.preventDefault();
-    };
-
-    const handleMouseUpPassword = (
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-        event.preventDefault();
+        post(route('register'));
     };
 
     return (
-        <Layout>
-            <Head title="Register" />
-
+        <AuthenticatedLayout header={breadcrumb}>
+            <Head title="Registrar Usuário" />
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                    mb: 4,
+                    fontWeight: 'bold',
+                    color: theme.palette.primary.main,
+                }}
+            >
+                Registrar Usuário
+            </Typography>
             <CardProj
                 variant="outlined"
                 sx={{
@@ -61,18 +52,6 @@ export default function Register({ theme }: { theme: Theme }) {
                     [theme.breakpoints.up('sm')]: { maxWidth: '650px' },
                 }}
             >
-                <Typography
-                    variant="h4"
-                    gutterBottom
-                    sx={{
-                        mb: 4,
-                        fontWeight: 'bold',
-                        color: theme.palette.primary.main,
-                    }}
-                >
-                    Registro
-                </Typography>
-
                 <Box
                     component="form"
                     onSubmit={submit}
@@ -86,12 +65,13 @@ export default function Register({ theme }: { theme: Theme }) {
                 >
                     <FormControl>
                         <TextField
-                            label="Nome Completo"
+                            autoFocus
+                            label="Nome Completo do Usuário"
                             error={!!errors.name}
                             helperText={errors.name}
                             id="name"
                             name="name"
-                            placeholder="Seu Nome"
+                            placeholder="Seu Nome Completo"
                             value={data.name}
                             className="mt-1 block w-full"
                             autoComplete="username"
@@ -104,7 +84,7 @@ export default function Register({ theme }: { theme: Theme }) {
                     </FormControl>
                     <FormControl>
                         <TextField
-                            label="E-mail"
+                            label="E-mail do Usuário"
                             error={!!errors.email}
                             helperText={errors.email}
                             id="email"
@@ -122,100 +102,6 @@ export default function Register({ theme }: { theme: Theme }) {
                         />
                     </FormControl>
 
-                    <FormControl
-                        variant="outlined"
-                        error={!!errors.password}
-                        fullWidth
-                    >
-                        <InputLabel htmlFor="password">Senha *</InputLabel>
-                        <OutlinedInput
-                            id="password"
-                            name="password"
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="********"
-                            value={data.password}
-                            required
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label={
-                                            showPassword
-                                                ? 'hide the password'
-                                                : 'display the password'
-                                        }
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        onMouseUp={handleMouseUpPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? (
-                                            <VisibilityOff />
-                                        ) : (
-                                            <Visibility />
-                                        )}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            label="Senha"
-                        />
-                        {errors.password && (
-                            <FormHelperText>{errors.password}</FormHelperText>
-                        )}
-                    </FormControl>
-
-                    <PasswordStrengthMeter password={data.password} />
-
-                    <FormControl
-                        variant="outlined"
-                        error={!!errors.password_confirmation}
-                        fullWidth
-                    >
-                        <InputLabel htmlFor="password">
-                            Confirmar Senha *
-                        </InputLabel>
-                        <OutlinedInput
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="********"
-                            value={data.password_confirmation}
-                            required
-                            onChange={(e) =>
-                                setData('password_confirmation', e.target.value)
-                            }
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label={
-                                            showPassword
-                                                ? 'hide the password confirmation'
-                                                : 'display the password confirmation'
-                                        }
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        onMouseUp={handleMouseUpPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? (
-                                            <VisibilityOff />
-                                        ) : (
-                                            <Visibility />
-                                        )}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            label="Confirmação de Senha"
-                        />
-                        {errors.password_confirmation && (
-                            <FormHelperText>
-                                {errors.password_confirmation}
-                            </FormHelperText>
-                        )}
-                    </FormControl>
-
                     <Box
                         sx={{
                             mt: 4,
@@ -224,17 +110,6 @@ export default function Register({ theme }: { theme: Theme }) {
                             alignItems: 'center',
                         }}
                     >
-                        <Link
-                            href={route('login')}
-                            style={{
-                                textDecoration: 'none',
-                                color: theme.palette.text.secondary,
-                                marginRight: '16px',
-                            }}
-                        >
-                            Já registrado?
-                        </Link>
-
                         <Box
                             component="button"
                             disabled={processing}
@@ -258,6 +133,6 @@ export default function Register({ theme }: { theme: Theme }) {
                     </Box>
                 </Box>
             </CardProj>
-        </Layout>
+        </AuthenticatedLayout>
     );
 }

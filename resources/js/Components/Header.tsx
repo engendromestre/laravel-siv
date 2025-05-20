@@ -1,10 +1,7 @@
 import ColorModeIconDropdown from '@/theme/ColorModelIconDropdown';
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import Stack from '@mui/material/Stack';
 import { PropsWithChildren } from 'react';
-import MenuButton from './MenuButton';
-import NavbarBreadcrumbs from './NavbarBreadcrumbs';
-import Search from './Search';
+import NavbarBreadcrumbs, { BreadcrumbItem } from './NavbarBreadcrumbs';
 
 export default function Header({
     header,
@@ -24,13 +21,15 @@ export default function Header({
             }}
             spacing={2}
         >
-            <NavbarBreadcrumbs header={header} />
+            <NavbarBreadcrumbs
+                header={header as BreadcrumbItem[] | undefined}
+            />
             <Stack direction="row" sx={{ gap: 1 }}>
-                <Search />
+                {/* <Search /> */}
                 {/* <CustomDatePicker /> */}
-                <MenuButton showBadge aria-label="Open notifications">
+                {/* <MenuButton showBadge aria-label="Open notifications">
                     <NotificationsRoundedIcon />
-                </MenuButton>
+                </MenuButton> */}
                 <ColorModeIconDropdown />
             </Stack>
         </Stack>

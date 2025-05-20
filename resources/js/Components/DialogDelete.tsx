@@ -10,19 +10,19 @@ import React from 'react';
 interface DialogDeleteProps {
     open: boolean;
     onClose: () => void;
-    patientId: number | null;
+    id: number | null;
     onDelete: (id: number) => void;
 }
 
-const DialogDelete: React.FC<DialogDeleteProps> = ({
+export const DialogDelete: React.FC<DialogDeleteProps> = ({
     open,
     onClose,
-    patientId,
+    id,
     onDelete,
 }) => {
     const handleDelete = () => {
-        if (patientId !== null) {
-            onDelete(patientId);
+        if (id !== null) {
+            onDelete(id);
             onClose(); // Fecha o diálogo após a exclusão
         }
     };
@@ -44,5 +44,3 @@ const DialogDelete: React.FC<DialogDeleteProps> = ({
         </Dialog>
     );
 };
-
-export default DialogDelete;

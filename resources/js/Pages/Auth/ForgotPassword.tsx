@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { FormEventHandler } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm({
         email: '',

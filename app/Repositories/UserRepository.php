@@ -21,6 +21,19 @@ class UserRepository
     }
 
     /**
+     * Busca um usuário pelo ID.
+     *
+     * @param int $id
+     * @return User
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function findById(int $id): User
+    {
+        $user = User::with(['roles.permissions', 'permissions'])->findOrFail($id);
+        return $user;
+    }
+
+    /**
      * Busca um usuário pelo provedor de autenticação e ID do provedor.
      *
      * @param string $provider

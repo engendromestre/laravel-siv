@@ -1,3 +1,5 @@
+import { Admission } from './Admissions';
+
 export interface Patient {
     id?: number;
     register: string;
@@ -7,6 +9,7 @@ export interface Patient {
     birth_date: string;
     status: 'a' | 'i';
     photo: string | File | null;
+    admissions?: Admission[];
 }
 
 export interface Results {

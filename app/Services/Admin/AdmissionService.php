@@ -14,6 +14,9 @@ class AdmissionService
     {
         $query = Patient::query();
 
+        // Filtrar apenas pacientes admistidos
+        $query->where('status', 'a');
+
         // Ordenação
         if (isset($filters['sortField']) && isset($filters['sortOrder'])) {
             $query->orderBy($filters['sortField'], $filters['sortOrder']);

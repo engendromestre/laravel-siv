@@ -7,7 +7,7 @@ import { Head, router } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import RecentActorsIcon from '@mui/icons-material/RecentActors';
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import { Alert, Button, Stack, Typography, useTheme } from '@mui/material';
 import {
     DataGrid,
     GridFilterModel,
@@ -144,42 +144,50 @@ export default function List({
                         Admitir Paciente
                     </Button>
                 </Stack>
-                <DataGrid
-                    localeText={
-                        ptBR.components.MuiDataGrid.defaultProps.localeText
-                    }
-                    rows={formattedData}
-                    onRowClick={(e) => handleRowClick(e.row)}
-                    columns={columns}
-                    rowCount={data.total}
-                    pageSizeOptions={[5, 10, 20]}
-                    paginationMode="server"
-                    sortingMode="server"
-                    paginationModel={paginationModel}
-                    onPaginationModelChange={handlePaginationChange}
-                    onSortModelChange={handleSortChange}
-                    onFilterModelChange={handleSearchChange}
-                    initialState={{ density: 'comfortable' }}
-                    slots={{
-                        toolbar: DatagridCustomToolbar,
-                    }}
-                    sx={{
-                        '& .MuiDataGrid-row': {
-                            cursor: 'pointer',
-                        },
-                        '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
-                            {
-                                outline: 'none',
+                {formattedData.length > 0 ? (
+                    <DataGrid
+                        localeText={
+                            ptBR.components.MuiDataGrid.defaultProps.localeText
+                        }
+                        rows={formattedData}
+                        onRowClick={(e) => handleRowClick(e.row)}
+                        columns={columns}
+                        rowCount={data.total}
+                        pageSizeOptions={[5, 10, 20]}
+                        paginationMode="server"
+                        sortingMode="server"
+                        paginationModel={paginationModel}
+                        onPaginationModelChange={handlePaginationChange}
+                        onSortModelChange={handleSortChange}
+                        onFilterModelChange={handleSearchChange}
+                        initialState={{ density: 'comfortable' }}
+                        slots={{
+                            toolbar: DatagridCustomToolbar,
+                        }}
+                        sx={{
+                            '& .MuiDataGrid-row': {
+                                cursor: 'pointer',
                             },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
-                            {
-                                outline: 'none',
+                            '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
+                                {
+                                    outline: 'none',
+                                },
+                            '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
+                                {
+                                    outline: 'none',
+                                },
+                            '& .Mui-selected': {
+                                outline: 'none !important',
                             },
-                        '& .Mui-selected': {
-                            outline: 'none !important',
-                        },
-                    }}
-                />
+                        }}
+                    />
+                ) : (
+                    <Stack sx={{ width: '100%' }} spacing={2}>
+                        <Alert severity="info">
+                            Nenhum registro encontrado.
+                        </Alert>
+                    </Stack>
+                )}
             </CardProj>
             {/* Drawer na lateral direita */}
             {selectedPatient && (

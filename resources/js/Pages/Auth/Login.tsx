@@ -20,6 +20,7 @@ import { FormEventHandler } from 'react';
 
 export default function Login({
     status,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     canResetPassword,
 }: {
     status?: string;

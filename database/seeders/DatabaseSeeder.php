@@ -15,24 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-        $patients = Patient::factory()->count(10)->create(); // Cria 10 pacientes aleatórios
+        // $patients = Patient::factory()->count(10)->create(); // Cria 10 pacientes aleatórios
 
-        // Criar 20 admissões, com alguns pacientes repetidos
-        Admission::factory()->count(20)->create([
-            'user_id' => 1,    // Usar um ID específico de usuário
-        ])->each(function ($admission) use ($patients) {
-            // Selecione aleatoriamente um paciente já existente
-            $randomPatient = $patients->random();
+        // // Criar 20 admissões, com alguns pacientes repetidos
+        // Admission::factory()->count(20)->create([
+        //     'user_id' => 1,    // Usar um ID específico de usuário
+        // ])->each(function ($admission) use ($patients) {
+        //     // Selecione aleatoriamente um paciente já existente
+        //     $randomPatient = $patients->random();
 
-            // Atribua o paciente aleatório à admissão
-            $admission->update([
-                'patient_id' => $randomPatient->id,
-            ]);
-        });
+        //     // Atribua o paciente aleatório à admissão
+        //     $admission->update([
+        //         'patient_id' => $randomPatient->id,
+        //     ]);
+        // });
+        // Chama a seeder que cria permissões de admin
+        $this->call(BasicAdminPermissionSeeder::class);
     }
 }

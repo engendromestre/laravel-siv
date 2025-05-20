@@ -77,8 +77,8 @@ const patientColumns = ({
             <ActionsMenu
                 rowId={params.row.id}
                 onView={() => {
-                    setSelectedPatientId(params.row.id); // Passando o ID para o setSelectedPatientId
-                    setOpenDialogView(true); // Abre o diálogo
+                    setSelectedPatientId(params.row.id);
+                    setOpenDialogView(true);
                 }}
                 onEdit={() => {
                     const patientId = params.row.id;
@@ -86,8 +86,8 @@ const patientColumns = ({
                     router.get(editUrl);
                 }}
                 onDelete={() => {
-                    setSelectedPatientId(params.row.id); // Passando o ID para o setSelectedPatientId
-                    setOpenDialogDelete(true); // Abre o diálogo
+                    setSelectedPatientId(params.row.id);
+                    setOpenDialogDelete(true);
                 }}
             />
         ),

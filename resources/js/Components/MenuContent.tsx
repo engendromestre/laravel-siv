@@ -1,9 +1,7 @@
+import { useMenuItems } from '@/Hooks/useMenuItems';
 import { Link as InertiaLink, usePage } from '@inertiajs/react';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
-import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
-import RecentActorsIcon from '@mui/icons-material/RecentActors';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -11,42 +9,17 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-
-const mainListItems = [
-    {
-        text: 'Início',
-        icon: HomeRoundedIcon,
-        link: route('dashboard'),
-    },
-    {
-        text: 'Admitir Pacientes',
-        icon: SupervisorAccountIcon,
-        link: route('admission.index'),
-    },
-    {
-        text: 'Listar Admitidos',
-        icon: RecentActorsIcon,
-        link: route('admissions.list'),
-    },
-    {
-        text: 'Cadastrar Pacientes',
-        icon: PeopleRoundedIcon,
-        link: route('patient.index'),
-    },
-];
-
-const secondaryListItems = [
-    // { text: 'Configurações', icon: SettingsRoundedIcon },
-    { text: 'Sobre', icon: InfoRoundedIcon },
-    // { text: 'Feedback', icon: HelpRoundedIcon },
-];
+import { useState } from 'react';
 
 interface MenuContentProps {
     open: boolean;
 }
 
 export default function MenuContent({ open }: MenuContentProps) {
-    const { url } = usePage();
+    const { url, props } = usePage();
+    const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
+        false,
+    ); // Estado para controle manual
 
     const getPathFromUrl = (link: string | undefined) => {
         if (!link) return ''; // Retorna uma string vazia se o link for undefined
@@ -57,6 +30,23 @@ export default function MenuContent({ open }: MenuContentProps) {
             return link;
         }
     };
+
+    // Função para verificar se o Accordion deve estar aberto com base na URL atual
+    // Função para verificar se o Accordion deve estar aberto com base na URL atual
+    const isAccordionExpanded = (subItems: { link: string }[]) => {
+        return subItems.some(
+            (subItem) => getPathFromUrl(url) === getPathFromUrl(subItem.link),
+        );
+    };
+
+    // Função para lidar com a expansão manual do Accordion
+    const handleAccordionChange =
+        (panel: string) =>
+        (event: React.SyntheticEvent, isExpanded: boolean) => {
+            setExpandedAccordion(isExpanded ? panel : false);
+        };
+
+    const { mainListItems, secondaryListItems } = useMenuItems();
 
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
@@ -106,39 +96,157 @@ export default function MenuContent({ open }: MenuContentProps) {
                 ))}
             </List>
             <List dense>
-                {secondaryListItems.map((item, index) => (
-                    <ListItem
-                        key={index}
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <Tooltip
-                            title={!open ? item.text : ''}
-                            placement="right"
+                {secondaryListItems.map((item, index) => {
+                    const panelId = `accordion-panel-${index}`; // ID único para cada Accordion
+                    const isExpandedByUrl = isAccordionExpanded(item.subItems); // Verifica se o Accordion deve estar aberto pela URL
+                    const showSubItems =
+                        props.auth.user.permissions.includes(
+                            'admin roles:read',
+                        );
+                    return showSubItems ? (
+                        <Accordion
+                            key={index}
+                            disableGutters
+                            elevation={0}
+                            expanded={
+                                isExpandedByUrl || expandedAccordion === panelId
+                            } // Controla a expansão manual e pela URL
+                            onChange={handleAccordionChange(panelId)} // Atualiza o estado manual
+                            sx={{
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                boxShadow: 'none',
+                            }}
                         >
-                            <ListItemButton
+                            <AccordionSummary
+                                expandIcon={open ? <ExpandMoreIcon /> : null}
                                 sx={{
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: open ? 2.5 : 1.5,
-                                    transition: 'all 0.3s ease',
+                                    padding: 0,
+                                    minHeight: 'auto !important',
+                                    '& .MuiAccordionSummary-content': {
+                                        margin: 0,
+                                    },
                                 }}
                             >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        justifyContent: 'center',
-                                        transition: 'all 0.3s ease',
-                                    }}
+                                <ListItem
+                                    key={index}
+                                    disablePadding
+                                    sx={{ display: 'block' }}
                                 >
-                                    <item.icon
-                                        sx={{ fontSize: open ? 24 : 36 }}
-                                    />
-                                </ListItemIcon>
-                                {open && <ListItemText primary={item.text} />}
-                            </ListItemButton>
-                        </Tooltip>
-                    </ListItem>
-                ))}
+                                    <Tooltip
+                                        title={!open ? item.text : ''}
+                                        placement="right"
+                                    >
+                                        <ListItemButton
+                                            sx={{
+                                                justifyContent: open
+                                                    ? 'initial'
+                                                    : 'center',
+                                                px: open ? 2.5 : 1.5,
+                                                transition: 'all 0.3s ease',
+                                            }}
+                                        >
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    justifyContent: 'center',
+                                                    transition: 'all 0.3s ease',
+                                                }}
+                                            >
+                                                <item.icon
+                                                    sx={{
+                                                        fontSize: open
+                                                            ? 24
+                                                            : 36,
+                                                    }}
+                                                />
+                                            </ListItemIcon>
+                                            {open && (
+                                                <ListItemText
+                                                    primary={item.text}
+                                                />
+                                            )}
+                                        </ListItemButton>
+                                    </Tooltip>
+                                </ListItem>
+                            </AccordionSummary>
+                            <AccordionDetails
+                                sx={{
+                                    padding: 0,
+                                    margin: 0,
+                                }}
+                            >
+                                <List dense>
+                                    {item.subItems.map((subItem, subIndex) => (
+                                        <ListItem
+                                            key={subIndex}
+                                            disablePadding
+                                            sx={{ display: 'block' }}
+                                        >
+                                            <Tooltip
+                                                title={
+                                                    !open ? subItem.text : ''
+                                                }
+                                                placement="right"
+                                            >
+                                                <InertiaLink
+                                                    href={subItem.link || '#'}
+                                                >
+                                                    <ListItemButton
+                                                        selected={
+                                                            getPathFromUrl(
+                                                                url,
+                                                            ) ===
+                                                            getPathFromUrl(
+                                                                subItem.link,
+                                                            )
+                                                        }
+                                                        sx={{
+                                                            justifyContent: open
+                                                                ? 'initial'
+                                                                : 'center',
+                                                            px: open
+                                                                ? 4.5
+                                                                : 1.5,
+                                                            transition:
+                                                                'all 0.3s ease',
+                                                        }}
+                                                    >
+                                                        <ListItemIcon
+                                                            sx={{
+                                                                minWidth: 0,
+                                                                justifyContent:
+                                                                    'center',
+                                                                transition:
+                                                                    'all 0.3s ease',
+                                                            }}
+                                                        >
+                                                            <subItem.icon
+                                                                sx={{
+                                                                    fontSize:
+                                                                        open
+                                                                            ? 20
+                                                                            : 30,
+                                                                }}
+                                                            />
+                                                        </ListItemIcon>
+                                                        {open && (
+                                                            <ListItemText
+                                                                primary={
+                                                                    subItem.text
+                                                                }
+                                                            />
+                                                        )}
+                                                    </ListItemButton>
+                                                </InertiaLink>
+                                            </Tooltip>
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </AccordionDetails>
+                        </Accordion>
+                    ) : null;
+                })}
             </List>
         </Stack>
     );
