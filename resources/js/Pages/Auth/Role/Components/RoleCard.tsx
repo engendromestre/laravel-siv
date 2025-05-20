@@ -28,7 +28,6 @@ export const RoleCard: React.FC<UserCardProps> = ({
     handleRoleDelete,
 }) => {
     const theme = useTheme();
-    console.log(handleRoleEdit);
     return (
         <Card
             sx={{
@@ -85,8 +84,9 @@ export const RoleCard: React.FC<UserCardProps> = ({
                             {role}
                         </Typography>
                     </Grid>
-                    {handleRoleEdit !== undefined ||
-                    handleRoleDelete !== undefined ? (
+                    {role !== 'Administrador' &&
+                    (handleRoleEdit !== undefined ||
+                        handleRoleDelete !== undefined) ? (
                         <Grid sx={{ xs: 6, mt: 2 }}>
                             <Grid container direction="column" spacing={1}>
                                 {handleRoleEdit !== undefined && (

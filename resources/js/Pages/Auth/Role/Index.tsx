@@ -1,11 +1,10 @@
-import { IAutoCompleteProjOption } from '@/Components/AutoCompleteProj';
+// import { IAutoCompleteProjOption } from '@/Components/AutoCompleteProj';
 import CardProj from '@/Components/CardProj';
 import { DatagridCustomToolbar } from '@/Components/DatagridCustomToolbar';
 import { DialogDelete } from '@/Components/DialogDelete';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { IPermission, IRole } from '@/types/Auth';
-import { Results } from '@/types/Roles';
+import { IPermission, IRole, ResultsUser } from '@/types/Auth';
 import { Head, router, usePage } from '@inertiajs/react';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import HomeIcon from '@mui/icons-material/Home';
@@ -20,6 +19,7 @@ import { ptBR } from '@mui/x-data-grid/locales';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import { DialogCreateRole } from './Components/DialogCreateRole';
+import { DialogEditPermssions } from './Components/DialogEditPermissions';
 import { DialogEditRole } from './Components/DialogEditRole';
 import { RoleCard } from './Components/RoleCard';
 import { RoleCardCreate } from './Components/RoleCardCreate';
@@ -32,15 +32,13 @@ const breadcrumb = [
 ];
 
 export default function Index({
-    users,
     roles,
     permissions,
     data,
 }: PageProps<{
-    users: IAutoCompleteProjOption[];
     roles: IRole[];
     permissions: IPermission[];
-    data: Results;
+    data: ResultsUser;
 }>) {
     const { props } = usePage<PageProps>();
     const userPermissions = props.auth.user.permissions;
@@ -98,7 +96,8 @@ export default function Index({
     const rows = data.data;
     const [, setOpenDialogDeleteUser] = useState(false);
     const [openDialogViewUser, setOpenDialogViewUser] = useState(false);
-    const [, setOpenDialogEditUser] = useState(false);
+    const [openDialogEditUserPermissions, setOpenDialogEditUserPermissions] =
+        useState(false);
     const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
     const [openDialogDeleteRole, setOpenDialogDeleteRole] = useState(false);
@@ -111,7 +110,7 @@ export default function Index({
         setSelectedUserId,
         setOpenDialogDeleteUser,
         setOpenDialogViewUser,
-        setOpenDialogEditUser,
+        setOpenDialogEditUserPermissions,
     });
 
     const handleDeleteRole = (role_id: number) => {
@@ -142,7 +141,6 @@ export default function Index({
             >
                 Lista de Papéis
             </Typography>
-            {/* CRIAR DOIS COMPOENTES POIS PRECISARÁ FAZER 2 BUSCAS, 1 PARA ROLES E OUTRAS PARA USERS */}
             <Box sx={{ padding: 2 }}>
                 <Grid container spacing={2}>
                     {roles.map((role) => (
@@ -235,7 +233,10 @@ export default function Index({
                 <DialogCreateRole
                     open={openDialogCreateRole}
                     onClose={() => setOpenDialogCreateRole(false)}
-                    allUsers={users}
+                    allUsers={data.data.map((item) => ({
+                        id: item.id,
+                        name: item.name,
+                    }))}
                     allPermissions={permissions}
                 />
             )}
@@ -253,7 +254,10 @@ export default function Index({
                 <DialogEditRole
                     open={openDialogEditRole}
                     onClose={() => setOpenDialogEditRole(false)}
-                    allUsers={users}
+                    allUsers={data.data.map((item) => ({
+                        id: item.id,
+                        name: item.name,
+                    }))}
                     allPermissions={permissions}
                     role={openSelectedRole}
                 />
@@ -263,6 +267,15 @@ export default function Index({
                 <RoleDialogView
                     open={openDialogViewUser}
                     onClose={() => setOpenDialogViewUser(false)}
+                    userId={selectedUserId}
+                />
+            )}
+
+            {openDialogEditUserPermissions && (
+                <DialogEditPermssions
+                    open={openDialogEditUserPermissions}
+                    onClose={() => setOpenDialogEditUserPermissions(false)}
+                    allPermissions={permissions}
                     userId={selectedUserId}
                 />
             )}

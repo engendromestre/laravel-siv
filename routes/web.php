@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\SocialiteProviderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/admission', [AdmissionController::class, 'store'])->name('admission.store');
     Route::patch('/admission', [AdmissionController::class, 'update'])->name('admission.update');
     Route::delete('/admission/{id}', [AdmissionController::class, 'destroy'])->name('admission.destroy');
+
+    //Roles
+    Route::get('role', [RoleController::class, 'index'])->name('role.index');
+    Route::post('role', [RoleController::class, 'store'])->name('role.store');
+    Route::put('role', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('role', [RoleController::class, 'destroy'])->name('role.destroy');
 });
 
 Route::post('/keep-alive', function () {

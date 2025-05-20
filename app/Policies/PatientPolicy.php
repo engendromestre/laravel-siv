@@ -2,26 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\Admission;
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class AdmissionPolicy
+class PatientPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('admin admissions:read');
+        return $user->hasPermissionTo('admin patients:read');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Admission $admission): bool
+    public function view(User $user, Patient $patient): bool
     {
-        return $user->hasPermissionTo('admin admissions:read');
+        return $user->hasPermissionTo('admin patients:read');
     }
 
     /**
@@ -29,29 +29,29 @@ class AdmissionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('admin admissions:create');
+        return $user->hasPermissionTo('admin patients:create');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Admission $admission): bool
+    public function update(User $user, Patient $patient): bool
     {
-        return $user->hasPermissionTo('admin admissions:write');
+        return $user->hasPermissionTo('admin patients:write');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Admission $admission): bool
+    public function delete(User $user, Patient $patient): bool
     {
-        return $user->hasPermissionTo('admin admissions:write');
+        return $user->hasPermissionTo('admin patients:write');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Admission $admission): bool
+    public function restore(User $user, Patient $patient): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class AdmissionPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Admission $admission): bool
+    public function forceDelete(User $user, Patient $patient): bool
     {
         return false;
     }

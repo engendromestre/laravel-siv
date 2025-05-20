@@ -23,7 +23,6 @@ export const RoleDialogView: React.FC<RoleDialogViewProps> = ({
     onClose,
     userId,
 }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 

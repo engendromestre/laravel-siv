@@ -7,10 +7,15 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\Auth\UserService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     private $userService;
     private $userRepository;
 
@@ -75,6 +80,20 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         //
+    }
+
+    public function updatePermissions(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('admin users:write', User::class);
+
+        $validated = $request->validate([
+            'permissions_ids' => 'array',
+            'permissions_ids.*' => 'integer|exists:permissions,id',
+        ]);
+
+        $user->syncPermissions($validated['permissions_ids'] ?? []);
+
+        return redirect()->route('role.index');
     }
 
     /**

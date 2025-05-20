@@ -8,7 +8,7 @@ import { Head, router } from '@inertiajs/react';
 import { AddCircle } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import { Alert, Button, Stack, Typography, useTheme } from '@mui/material';
 import {
     DataGrid,
     GridFilterModel,
@@ -111,6 +111,7 @@ export default function Index({
             },
         });
     };
+    console.log(formattedData.length);
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Listar Pacientes" />
@@ -139,36 +140,44 @@ export default function Index({
                         Novo Paciente
                     </Button>
                 </Stack>
-                <DataGrid
-                    localeText={
-                        ptBR.components.MuiDataGrid.defaultProps.localeText
-                    }
-                    rows={formattedData}
-                    columns={columns}
-                    rowCount={data.total}
-                    pageSizeOptions={[5, 10, 20]}
-                    paginationMode="server"
-                    sortingMode="server"
-                    paginationModel={paginationModel}
-                    onPaginationModelChange={handlePaginationChange}
-                    onSortModelChange={handleSortChange}
-                    onFilterModelChange={handleSearchChange} // Captura a pesquisa do GridToolbarQuickFilter
-                    initialState={{ density: 'comfortable' }}
-                    slots={{ toolbar: DatagridCustomToolbar }}
-                    sx={{
-                        '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
-                            {
-                                outline: 'none',
+                {formattedData.length === 0 ? (
+                    <Stack sx={{ width: '100%' }} spacing={2}>
+                        <Alert severity="info">
+                            Nenhum registro encontrado.
+                        </Alert>
+                    </Stack>
+                ) : (
+                    <DataGrid
+                        localeText={
+                            ptBR.components.MuiDataGrid.defaultProps.localeText
+                        }
+                        rows={formattedData}
+                        columns={columns}
+                        rowCount={data.total}
+                        pageSizeOptions={[5, 10, 20]}
+                        paginationMode="server"
+                        sortingMode="server"
+                        paginationModel={paginationModel}
+                        onPaginationModelChange={handlePaginationChange}
+                        onSortModelChange={handleSortChange}
+                        onFilterModelChange={handleSearchChange} // Captura a pesquisa do GridToolbarQuickFilter
+                        initialState={{ density: 'comfortable' }}
+                        slots={{ toolbar: DatagridCustomToolbar }}
+                        sx={{
+                            '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within':
+                                {
+                                    outline: 'none',
+                                },
+                            '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
+                                {
+                                    outline: 'none',
+                                },
+                            '& .Mui-selected': {
+                                outline: 'none !important',
                             },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
-                            {
-                                outline: 'none',
-                            },
-                        '& .Mui-selected': {
-                            outline: 'none !important',
-                        },
-                    }}
-                />
+                        }}
+                    />
+                )}
             </CardProj>
             {openDialogDelete && (
                 <DialogDelete

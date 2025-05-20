@@ -14,7 +14,7 @@ export interface IAutoCompleteProjOption {
 }
 
 interface AutocompleteProjProps {
-    otions: IAutoCompleteProjOption[];
+    options: IAutoCompleteProjOption[];
     label?: string;
     placeholder?: string;
     values: IAutoCompleteProjOption[];
@@ -24,7 +24,7 @@ interface AutocompleteProjProps {
 }
 
 export default function AutocompleteProj({
-    otions,
+    options,
     label = 'Selecione',
     placeholder = 'Opções',
     values,
@@ -36,7 +36,7 @@ export default function AutocompleteProj({
         <Autocomplete
             multiple
             id="checkboxes-tags-siv"
-            options={otions}
+            options={options}
             disableCloseOnSelect
             getOptionLabel={(option) => option.name}
             value={values}

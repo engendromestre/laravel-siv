@@ -21,6 +21,9 @@ class BasicAdminPermissionSeeder extends Seeder
             'admin users:read',
             'admin users:write',
             'admin users:create',
+            'admin roles:read',
+            'admin roles:write',
+            'admin roles:create',
         ];
 
         foreach ($permissions as $permission) {
@@ -28,7 +31,7 @@ class BasicAdminPermissionSeeder extends Seeder
         }
 
         // Criar papéis e associar permissões
-        $adminRole = Role::firstOrCreate(['name' => 'Administrator']);
+        $adminRole = Role::firstOrCreate(['name' => 'Administrador']);
         $adminRole->givePermissionTo($permissions);
 
         $user = \App\Models\User::factory()->create([

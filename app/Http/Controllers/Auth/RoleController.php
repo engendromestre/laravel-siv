@@ -28,18 +28,27 @@ class RoleController extends Controller
         $this->userService = $userService;
     }
 
+    /**
+     * Display a listing of roles, permissions, and users with their permissions.
+     *
+     * This method authorizes the user to read roles, retrieves all users with their
+     * permissions, fetches all roles and permissions, and returns a response to render
+     * the 'Auth/Role/Index' page with the retrieved data.
+     *
+     * @param Request $request
+     * @return Response
+     */
+
     public function index(Request $request): Response
     {
-        $this->authorize('admin roles:read', Role::class);
-        $users = User::select('id', 'name')->get();
+        $this->authorize('admin roles:read', Role::class);            
         $roles = $this->roleService->getRoles();
         $permissions = Permission::select('id', 'name')->get();
-        $usersWithRoles = $this->userService->getUsersWithRoles($request->all());
+        $usersWithPermissions = $this->userService->getUsersWithPermissions($request->all());
         return Inertia::render('Auth/Role/Index', [
-            'users' => $users,
             'roles' => $roles,
             'permissions' =>  $permissions,
-            'data' => $usersWithRoles,
+            'data' => $usersWithPermissions,
         ]);
     }
 

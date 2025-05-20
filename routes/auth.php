@@ -10,7 +10,6 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Auth\UserController;
 
 Route::middleware('guest')->group(function () {
@@ -66,9 +65,6 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 
     Route::get('user/{id}', [UserController::class, 'show'])->name('user.show');
-
-    Route::get('role', [RoleController::class, 'index'])->name('role.index');
-    Route::post('role', [RoleController::class, 'store'])->name('role.store');
-    Route::put('role', [RoleController::class, 'update'])->name('role.update');
-    Route::delete('role', [RoleController::class, 'destroy'])->name('role.destroy');
+    //Permissions
+    Route::put('/users/{user}/permissions', [UserController::class, 'updatePermissions'])->name('user.permissions.update');
 });

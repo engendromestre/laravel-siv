@@ -50,6 +50,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             # 'password' => Hash::make($request->password),
             'password' => null,
+            'created_by' => Auth::id(),
         ]);
 
         // Gera o link assinado válido por 60 minutos

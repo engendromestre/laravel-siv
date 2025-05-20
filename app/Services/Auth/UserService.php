@@ -4,6 +4,7 @@ namespace App\Services\Auth;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 /**
  * Class UserService
@@ -60,6 +61,67 @@ class UserService
 
         $users->getCollection()->transform(function ($user) {
             $user->permissions = $user->getAllPermissions()->pluck('name', 'id');
+            return $user;
+        });
+
+        return $users;
+    }
+
+    public function getUsersWithPermissions(array $filters)
+    {
+        $query = User::query()
+            ->with(['roles.permissions:id,name', 'permissions:id,name']); // Carrega relações necessárias
+
+        // Filtro de busca
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Ordenação
+        if (!empty($filters['sortField']) && !empty($filters['sortOrder'])) {
+            switch ($filters['sortField']) {
+                case 'permissions':
+                    // Ordenação por contagem de permissões diretas (solução simplificada)
+                    $query->withCount('permissions')
+                        ->orderBy('permissions_count', $filters['sortOrder']);
+                    break;
+                case 'roles':
+                    // Ordenação por contagem de roles
+                    $query->withCount('roles')
+                        ->orderBy('roles_count', $filters['sortOrder']);
+                    break;
+                case in_array($filters['sortField'], ['id', 'name', 'email']):
+                    $query->orderBy($filters['sortField'], $filters['sortOrder']);
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Paginação
+        $perPage = $filters['perPage'] ?? self::DEFAULT_PER_PAGE;
+        $users = $query->paginate($perPage);
+
+        // Transformar os resultados para incluir todas as permissões formatadas
+        $users->getCollection()->transform(function ($user) {
+            $user->all_permissions = $user->getAllPermissions()
+                ->mapWithKeys(fn ($permission) => [$permission->id => $permission->name])
+                ->toArray();
+            
+            $user->direct_permissions = $user->permissions
+                ->mapWithKeys(fn ($permission) => [$permission->id => $permission->name])
+                ->toArray();
+                
+            $user->role_permissions = $user->getPermissionsViaRoles()
+                ->mapWithKeys(fn ($permission) => [$permission->id => $permission->name])
+                ->toArray();
+                
             return $user;
         });
 

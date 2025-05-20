@@ -29,7 +29,7 @@ class UserRepository
      */
     public function findById(int $id): User
     {
-        $user = User::with(['roles.permissions'])->findOrFail($id);
+        $user = User::with(['roles.permissions', 'permissions'])->findOrFail($id);
         return $user;
     }
 

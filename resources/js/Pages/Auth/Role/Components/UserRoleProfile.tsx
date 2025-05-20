@@ -16,7 +16,7 @@ interface UserProfileProps {
 }
 
 const UserRoleProfile: React.FC<UserProfileProps> = ({ user }) => {
-    const { name, email, roles } = user;
+    const { name, email, roles, permissions } = user;
 
     return (
         <Card sx={{ maxWidth: 700, margin: 'auto', marginTop: 5 }}>
@@ -44,16 +44,35 @@ const UserRoleProfile: React.FC<UserProfileProps> = ({ user }) => {
                 <Grid container spacing={2}>
                     <Grid sx={{ xs: 12, sm: 12 }}>
                         <List dense>
-                            {roles.map((role) => (
-                                <ListItem key={role.id}>
+                            {roles.length > 0 ? (
+                                roles.map((role) => (
+                                    <ListItem key={role.id}>
+                                        <ListItemText
+                                            primary={role.name}
+                                            secondary={
+                                                role.permissions.length > 0
+                                                    ? role.permissions
+                                                          .map((p) => p.name)
+                                                          .join(', ')
+                                                    : 'Nenhum registro!'
+                                            }
+                                        />
+                                    </ListItem>
+                                ))
+                            ) : permissions.length > 0 ? (
+                                <ListItem>
                                     <ListItemText
-                                        primary={role.name}
-                                        secondary={role.permissions
+                                        primary="Permissões"
+                                        secondary={permissions
                                             .map((p) => p.name)
                                             .join(', ')}
                                     />
                                 </ListItem>
-                            ))}
+                            ) : (
+                                <ListItem>
+                                    <ListItemText primary="Nenhum registro!" />
+                                </ListItem>
+                            )}
                         </List>
                     </Grid>
                 </Grid>

@@ -16,9 +16,8 @@ class EnsureUserHasRole
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
-
-        // Verifica se o usuário está autenticado e se não tem roles
-        if ($user && $user->roles->isEmpty()) {
+        // Verifica se o usuário está autenticado e se não tem permissões definidas
+        if ($user && ($user->permissions->isEmpty() && $user->roles->isEmpty())) {
             return Redirect::route('guest.page');
         }
 
