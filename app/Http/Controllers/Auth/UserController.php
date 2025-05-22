@@ -91,7 +91,7 @@ class UserController extends Controller
             'permissions_ids.*' => 'integer|exists:permissions,id',
         ]);
 
-        $user->syncPermissions($validated['permissions_ids'] ?? []);
+        $this->userService->updatePermissions($user, $validated['permissions_ids'] ?? []);
 
         return redirect()->route('role.index');
     }

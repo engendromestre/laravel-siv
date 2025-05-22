@@ -5,6 +5,8 @@ namespace App\Services\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Mail\UserPermissionsAssignedMail;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class UserService
@@ -127,4 +129,30 @@ class UserService
 
         return $users;
     }
+
+    /**
+     * Sincroniza as permissões de um usuário.
+     *
+     * @param User $user
+     * @param array $permissionsIds
+     * @return void
+     */
+    public function updatePermissions(User $user, array $permissionsIds = []): void
+    {
+        $user->syncPermissions($permissionsIds);
+
+        if (!empty($permissionsIds)) {
+            $this->notifyPermissionsAssigned($user);
+        }
+    }
+
+    public function notifyPermissionsAssigned(User $user): void
+    {
+        try {
+            Mail::to($user->email)->send(new UserPermissionsAssignedMail($user));
+        } catch (\Exception $e) {
+            \Log::error('Erro ao enviar e-mail para ' . $user->email . ': ' . $e->getMessage());
+        }
+    }
+
 }

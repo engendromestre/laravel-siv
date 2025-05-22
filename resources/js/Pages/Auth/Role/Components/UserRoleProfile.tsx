@@ -54,7 +54,7 @@ const UserRoleProfile: React.FC<UserProfileProps> = ({ user }) => {
                                                     ? role.permissions
                                                           .map((p) => p.name)
                                                           .join(', ')
-                                                    : 'Nenhum registro!'
+                                                    : ''
                                             }
                                         />
                                     </ListItem>
@@ -70,7 +70,10 @@ const UserRoleProfile: React.FC<UserProfileProps> = ({ user }) => {
                                 </ListItem>
                             ) : (
                                 <ListItem>
-                                    <ListItemText primary="Nenhum registro!" />
+                                    <ListItemText
+                                        primary="Nenhum papel ou permissão definida!"
+                                        sx={{ color: 'error.main' }}
+                                    />
                                 </ListItem>
                             )}
                         </List>

@@ -7,6 +7,7 @@
 
 namespace App\Services\Auth;
 
+use App\Services\Auth\UserService;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,14 @@ use Illuminate\Support\Facades\Auth;
  */
 class RoleService
 {
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+
     /**
      * Retorna todos os papeis com usu rios e permiss es relacionadas.
      *
@@ -128,6 +137,8 @@ class RoleService
                     $user = User::find($userId);
                     if ($user) {
                         $user->assignRole($role->name);
+                         // Notifica o usuário que ele agora tem permissões
+                        $this->userService->notifyPermissionsAssigned($user);
                     }
                 }
             }
