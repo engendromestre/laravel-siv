@@ -42,8 +42,8 @@ export default function Index({
 }>) {
     const { props } = usePage<PageProps>();
     const userPermissions = props.auth.user.permissions;
-    const canCreate = userPermissions.includes('admin roles:create');
-    const canWrite = userPermissions.includes('admin roles:write');
+    const canCreate = userPermissions.includes('auth roles:create');
+    const canWrite = userPermissions.includes('auth roles:write');
 
     const theme = useTheme();
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>(

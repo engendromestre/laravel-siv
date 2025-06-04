@@ -46,11 +46,16 @@ const AdmissionFormCreate: React.FC<AdmissionFormProps> = ({
     }, []);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, errors, processing } = useForm<{
+        admission_datetime: string;
+        reason_for_admission: string;
+        user_id: number;
+        patient_id: number;
+    }>({
         admission_datetime: currentDateTime, // Formato MySQL
         reason_for_admission: '',
-        user_id: user.id,
-        patient_id: selectedPatient.id,
+        user_id: user.id ?? 0,
+        patient_id: selectedPatient.id ?? 0,
     });
 
     const submit: FormEventHandler = async (e) => {

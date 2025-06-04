@@ -41,7 +41,7 @@ const admissionColumns = ({
         headerName: 'Gênero',
         flex: 0.5,
         renderCell: (params: GridRenderCellParams) => {
-            return params.value === 'M' ? (
+            return params.value === 'm' ? (
                 <Male color="primary" />
             ) : (
                 <Female color="secondary" />

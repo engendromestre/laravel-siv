@@ -13,6 +13,10 @@ use App\Http\Controllers\Admin\{PatientController};
 use App\Http\Controllers\Admin\{AdmissionController};
 
 
+Route::get('/tv/{gender}', function ($gender) {
+    return Inertia::render('TV/PatientTV', ['gender' => $gender]);
+})->name('tv.gender')->middleware('guest');
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),

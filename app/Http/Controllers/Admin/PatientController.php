@@ -100,4 +100,16 @@ class PatientController extends Controller
         $patientsInactives = $this->patientService->getPatientsByStatusInactive($filters);
         return response()->json($patientsInactives);
     }
+
+    /**
+     * Retorna os pacientes admitidos.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAdmittedPatients(Request $request)
+    {
+        $gender = $request->query('gender');
+        return response()->json($this->patientService->getAdmittedPatients($gender));
+    }
+
 }

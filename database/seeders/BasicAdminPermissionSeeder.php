@@ -18,12 +18,18 @@ class BasicAdminPermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            'admin users:read',
-            'admin users:write',
-            'admin users:create',
-            'admin roles:read',
-            'admin roles:write',
-            'admin roles:create',
+            'auth users:read',
+            'auth users:write',
+            'auth users:create',
+            'auth roles:read',
+            'auth roles:write',
+            'auth roles:create',
+            'admin patients:read',
+            'admin patients:write',
+            'admin patients:create',
+            'admin admissions:read',
+            'admin admissions:write',
+            'admin admissions:create',
         ];
 
         foreach ($permissions as $permission) {

@@ -41,7 +41,7 @@ class RoleController extends Controller
 
     public function index(Request $request): Response
     {
-        $this->authorize('admin roles:read', Role::class);            
+        $this->authorize('auth roles:read', Role::class);            
         $roles = $this->roleService->getRoles();
         $permissions = Permission::select('id', 'name')->get();
         $usersWithPermissions = $this->userService->getUsersWithPermissions($request->all());
@@ -54,14 +54,14 @@ class RoleController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('admin roles:create', Role::class);
+        $this->authorize('auth roles:create', Role::class);
         $this->roleService->createRole($request);
         return Redirect::route('role.index');
     }
 
     public function update(Request $request): RedirectResponse
     {
-        $this->authorize('admin roles:write', Role::class);
+        $this->authorize('auth roles:write', Role::class);
         $this->roleService->updateRole($request);
         return Redirect::route('role.index');
     }
@@ -71,7 +71,7 @@ class RoleController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $this->authorize('admin roles:write', Role::class);
+        $this->authorize('auth roles:write', Role::class);
         $this->roleService->deleteRole($request);
         return Redirect::route('role.index');
     }

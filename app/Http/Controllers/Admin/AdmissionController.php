@@ -77,30 +77,7 @@ class AdmissionController extends Controller
     {
         $this->authorize('admin admissions:create', Admission::class);
         $this->admissionService->createAdmission($request);
-        // Simulando dados do paciente/admissão
-        $payload = [
-            'id' => 123,
-            'name' => 'João da Silva',
-            'admitted_at' => now()->toISOString(),
-        ];
-
-        // Envia para o canal Redis
-        Redis::publish('admission:new', json_encode($payload));
         return Redirect::route('admission.index');
-    }
-
-    public function storeEvent(Request $request): RedirectResponse
-    {
-        $patient = [
-            'id' => 1,
-            'name' => 'João da Silva',
-            'gender' => 'male',
-            'admitted_at' => now(),
-        ];
-
-        event(new AdmissionCreated($patient));
-
-        return response()->json(['message' => 'Admissão registrada!']);
     }
 
     /**

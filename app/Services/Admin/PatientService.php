@@ -19,6 +19,26 @@ use Illuminate\Validation\Rule;
  */
 class PatientService
 {
+    public function getAdmittedPatients($gender = null)
+    {
+        $query = Patient::where('status', 'a');
+
+        // 🔹 Se um gênero for passado, aplica o filtro
+        if ($gender) {
+            $query->where('gender', $gender);
+        }
+
+        return $query->with(['admissions' => function ($query) {
+            $query->latest('admission_datetime')->limit(1); // Obtém a última admissão
+        }])
+        ->orderBy('name', 'asc')
+        ->get()
+        ->map(function ($patient) {
+            $patient->lastAdmission = $patient->admissions->first(); // Define a última admissão
+            return $patient;
+        });
+    }
+
     /**
      * @param array $filters
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator

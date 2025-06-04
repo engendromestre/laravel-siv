@@ -17,11 +17,13 @@ export default function UpdateProfileInformation({
     const theme = useTheme();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            name: user.name,
-            email: user.email,
-        });
+    const { data, setData, patch, errors, processing } = useForm<{
+        name: string;
+        email: string;
+    }>({
+        name: user.name,
+        email: user.email,
+    });
 
     const { enqueueSnackbar } = useSnackbar();
     const submit: FormEventHandler = (e) => {
@@ -82,7 +84,9 @@ export default function UpdateProfileInformation({
                         required
                         fullWidth
                         variant="outlined"
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e) =>
+                            setData('name', e.target.value as never)
+                        }
                         color={errors.name ? 'error' : 'primary'}
                     />
                 </FormControl>

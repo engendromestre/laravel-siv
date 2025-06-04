@@ -1,8 +1,8 @@
-import { Role } from './Auth';
+import { IRole } from './Auth';
 
 export interface Results {
     current_page: number;
-    data: Role[];
+    data: IRole[];
     first_page_url: string;
     from: number;
     last_page: number;

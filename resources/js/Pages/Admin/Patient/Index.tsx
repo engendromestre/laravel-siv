@@ -106,12 +106,13 @@ export default function Index({
                 });
                 setOpenDialogDelete(false); // Fecha o diálogo após a exclusão
             },
+
             onError: () => {
                 console.error('Erro ao excluir paciente');
             },
         });
     };
-    console.log(formattedData.length);
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Listar Pacientes" />

@@ -100,9 +100,7 @@ export default function MenuContent({ open }: MenuContentProps) {
                     const panelId = `accordion-panel-${index}`; // ID único para cada Accordion
                     const isExpandedByUrl = isAccordionExpanded(item.subItems); // Verifica se o Accordion deve estar aberto pela URL
                     const showSubItems =
-                        props.auth.user.permissions.includes(
-                            'admin roles:read',
-                        );
+                        props.auth.user.permissions.includes('auth roles:read');
                     return showSubItems ? (
                         <Accordion
                             key={index}

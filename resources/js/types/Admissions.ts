@@ -20,7 +20,8 @@ export interface PatientAdmissions {
     mother_name: string;
     photo: string;
     status: 'a' | 'i';
-    admissions: Admission[]; // Relacionamento 1 para muitos com Admission
+    admissions: Admission[];
+    lastAdmission?: Admission;
 }
 
 export interface Results {

@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\PatientAdmitted;
 use App\Models\Admission;
 use App\Models\Patient;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +59,6 @@ class AdmissionService
      */
     public function createAdmission(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'admission_datetime' => 'required|date_format:Y-m-d H:i:s', // Confirma que a data está correta
             'reason_for_admission' => 'nullable|string|max:255', // Permite que o campo seja nulo ou tenha no máximo 255 caracteres
@@ -68,21 +68,26 @@ class AdmissionService
 
         DB::beginTransaction();
         try {
+            $patient = Patient::findOrFail($validated['patient_id']);
+
             // Criar a admissão associada ao paciente
-            Patient::findOrFail($validated['patient_id']) // Buscar o paciente
-                ->admissions() // Relacionamento admissions
-                ->create([
-                    'admission_datetime' => Carbon::parse($validated['admission_datetime'])->format('Y-m-d H:i:s'),
-                    'reason_for_admission' => $validated['reason_for_admission'], // Definindo o motivo
-                    'user_id' => $validated['user_id'], // Definindo o usuário responsável pela admissão
-                ]);
+            $admission = $patient->admissions()->create([
+                'admission_datetime' => Carbon::parse($validated['admission_datetime'])->format('Y-m-d H:i:s'),
+                'reason_for_admission' => $validated['reason_for_admission'], // Definindo o motivo
+                'user_id' => $validated['user_id'], // Definindo o usuário responsável pela admissão
+            ]);
 
             // Atualizar o status do paciente para 'a'
-            Patient::where('id', $validated['patient_id'])
-                ->update(['status' => 'a']);
+            $patient->status = 'a';
+            $patient->save();
 
             DB::commit();
-            return;
+
+            DB::afterCommit(function() use ($patient, $admission) {
+                event(new PatientAdmitted($patient, $admission));
+            });
+
+            return $patient;
         } catch (\Exception $e) {
             DB::rollBack();
             throw new \Exception($e->getMessage());
@@ -91,7 +96,6 @@ class AdmissionService
 
     public function updateAdmission(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'discharge_datetime' => 'required|date_format:Y-m-d H:i', // Confirma que a datahora está correta
             'notes' => 'nullable|string|max:255', // Permite que o campo seja nulo ou tenha no máximo 255 caracteres
