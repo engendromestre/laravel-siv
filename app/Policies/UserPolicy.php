@@ -26,7 +26,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('admin users:read');
+        return $user->can('auth users:read');
     }
 
     /**
@@ -34,7 +34,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->can('admin users:read');
+        return $user->can('auth users:read');
     }
 
     /**
@@ -42,7 +42,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('admin users:create');
+        return $user->hasPermissionTo('auth users:create');
     }
 
     /**
@@ -50,7 +50,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->can('admin users:write');
+        return $user->can('auth users:write');
     }
 
     /**
@@ -58,7 +58,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->can('admin users:write');
+        return $user->can('auth users:write');
     }
 
     /**

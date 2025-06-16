@@ -42,8 +42,8 @@ class BasicAdminPermissionSeeder extends Seeder
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Super Admin',
-            'email' => env('APP_USER_ADMIN_EMAIL'),
-            'password' => env('APP_USER_ADMIN_PASS'),
+            'email' => config('admin.email'),
+            'password' => config('admin.password'),
         ]);
         $user->assignRole($adminRole);
     }

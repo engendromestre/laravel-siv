@@ -27,7 +27,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        $this->authorize('admin users:create', User::class);
+        $this->authorize('auth users:create', User::class);
         return Inertia::render('Auth/Register');
     }
 
@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('admin users:create', User::class);
+        $this->authorize('auth users:create', User::class);
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
