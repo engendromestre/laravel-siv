@@ -87,44 +87,52 @@ const PatientTV: React.FC = () => {
                 <main className="container mx-auto px-6 py-8">
                     <div
                         key={currentPage}
-                        className="animate-fadeIn grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3"
+                        className="grid animate-fadeIn grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3"
                     >
-                        {displayedPatients.map((patient) => (
-                            <motion.div
-                                layout
-                                key={patient.id}
-                                className="flex overflow-hidden rounded-lg bg-white shadow-xl transition-all duration-500 ease-in-out"
-                            >
-                                <div className="w-1/2">
-                                    <img
-                                        src={patient.photo}
-                                        alt={patient.name}
-                                        className="h-full w-full object-cover"
-                                    />
-                                </div>
-                                <div className="flex w-1/2 flex-col justify-center p-6 text-left">
-                                    <h2 className="text-3xl font-bold text-gray-800">
-                                        {patient.name}
-                                    </h2>
-                                    <p className="text-lg text-gray-600">
-                                        Mãe: {patient.mother_name}
-                                    </p>
-                                    <p className="text-lg text-gray-600">
-                                        Última Admissão:{' '}
-                                        {patient.lastAdmission
-                                            ?.admission_datetime
-                                            ? format(
-                                                  new Date(
-                                                      patient.lastAdmission.admission_datetime,
-                                                  ),
-                                                  'dd/MM/yyyy HH:mm',
-                                                  { locale: ptBR },
-                                              )
-                                            : 'Data não disponível'}
-                                    </p>
-                                </div>
-                            </motion.div>
-                        ))}
+                        {displayedPatients.map((patient) => {
+                            // Se o valor de patient.photo não começar com '/', prefixe com "/storage/"
+                            const photoUrl =
+                                patient.photo && patient.photo.startsWith('/')
+                                    ? patient.photo
+                                    : `/${patient.photo}`;
+
+                            return (
+                                <motion.div
+                                    layout
+                                    key={patient.id}
+                                    className="flex overflow-hidden rounded-lg bg-white shadow-xl transition-all duration-500 ease-in-out"
+                                >
+                                    <div className="w-1/2">
+                                        <img
+                                            src={photoUrl}
+                                            alt={patient.name}
+                                            className="h-full w-full object-cover"
+                                        />
+                                    </div>
+                                    <div className="flex w-1/2 flex-col justify-center p-6 text-left">
+                                        <h2 className="text-3xl font-bold text-gray-800">
+                                            {patient.name}
+                                        </h2>
+                                        <p className="text-lg text-gray-600">
+                                            Mãe: {patient.mother_name}
+                                        </p>
+                                        <p className="text-lg text-gray-600">
+                                            Última Admissão:{' '}
+                                            {patient.lastAdmission
+                                                ?.admission_datetime
+                                                ? format(
+                                                      new Date(
+                                                          patient.lastAdmission.admission_datetime,
+                                                      ),
+                                                      'dd/MM/yyyy HH:mm',
+                                                      { locale: ptBR },
+                                                  )
+                                                : 'Data não disponível'}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                     {Math.ceil(patients.length / cardsCount) > 1 && (
                         <div className="fixed bottom-4 left-0 right-0 flex justify-center">

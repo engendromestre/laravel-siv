@@ -1,0 +1,71 @@
+name: Deploy SIV to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and Deploy to Production
+    runs-on: self-hosted
+
+    # Removi o working-directory fixo para evitar erros no self-hosted runner
+    # Os comandos rodarão na raiz do repositório (checkout padrão)
+
+    steps:
+      - name: 📥 Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: 🧼 Derrubar containers antigos
+        run: |
+          docker compose -f docker-compose.prod.yml down
+
+      - name: 🛠️ Build do projeto Laravel + React
+        run: |
+          docker compose -f docker-compose.prod.yml build --no-cache
+
+      - name: 🚀 Subir containers
+        run: |
+          docker compose -f docker-compose.prod.yml up -d
+
+      - name: 🧩 Rodar comandos Laravel
+        run: |
+          docker compose -f docker-compose.prod.yml exec -T app.siv php artisan migrate --force
+          docker compose -f docker-compose.prod.yml exec -T app.siv php artisan config:cache
+          docker compose -f docker-compose.prod.yml exec -T app.siv php artisan route:cache
+          docker compose -f docker-compose.prod.yml exec -T app.siv php artisan view:cache
+
+      - name: ✅ Enviar notificação Telegram (sucesso)
+        if: success()
+        run: |
+          TEXT=$(cat <<EOF
+            ✅ *Deploy SIV finalizado com sucesso!*
+            Branch: \`main\`
+            Commit: [${GITHUB_SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA})
+            Autor: ${GITHUB_ACTOR}
+            Ambiente: *Produção*
+            Data: $(date -u)
+            EOF
+                    )
+                    curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+                        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+                        --data-urlencode text="$TEXT" \
+                        -d parse_mode=Markdown
+
+                - name: ❌ Enviar notificação Telegram (erro)
+                    if: failure()
+                    run: |
+                    TEXT=$(cat <<EOF
+            ❌ *Erro no deploy do SIV!*
+            Branch: \`main\`
+            Commit: [${GITHUB_SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA})
+            Autor: ${GITHUB_ACTOR}
+            Ambiente: *Produção*
+            Verifique os logs do GitHub Actions.
+            EOF
+                    )
+                    curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+                        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+                        --data-urlencode text="$TEXT" \
+                        -d parse_mode=Markdown

@@ -44,3 +44,6 @@ Este conjunto de requisitos e considerações servirá como base para a escolha 
 
 - php artisan permission:manage create "auth users:create"
 - php artisan permission:manage delete "auth users:create"
+
+http://localhost/tv/f?cards=3
+http://localhost/tv/m?cards=3
