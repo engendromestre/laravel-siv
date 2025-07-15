@@ -10,10 +10,6 @@ jobs:
     name: Build and Deploy to Production
     runs-on: self-hosted
 
-    defaults:
-      run:
-        working-directory: /home/prbo/projects/siv/laravel-siv
-
     steps:
       - name: 📥 Checkout repositório
         uses: actions/checkout@v4
