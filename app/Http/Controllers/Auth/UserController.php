@@ -84,7 +84,7 @@ class UserController extends Controller
 
     public function updatePermissions(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('admin users:write', User::class);
+        $this->authorize('auth users:write', User::class);
 
         $validated = $request->validate([
             'permissions_ids' => 'array',

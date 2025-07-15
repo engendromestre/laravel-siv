@@ -1,0 +1,26 @@
+name: 🔔 Teste de notificação Telegram
+
+on:
+  workflow_dispatch:  # Permite rodar manualmente pelo GitHub
+
+jobs:
+  notify:
+    name: Enviar notificação de teste
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Enviar mensagem via Telegram
+        run: |
+          TEXT=$(cat <<EOF
+            📣 *Teste de notificação do GitHub Actions*
+            Este é um teste manual de envio de mensagem via Telegram usando secrets.
+
+            Repositório: \`${GITHUB_REPOSITORY}\`
+            Autor: ${GITHUB_ACTOR}
+            Data: $(date -u)
+            EOF
+                    )
+                    curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+                        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+                        --data-urlencode text="$TEXT" \
+                        -d parse_mode=Markdown
