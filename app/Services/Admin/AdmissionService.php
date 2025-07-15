@@ -78,7 +78,7 @@ class AdmissionService
             ]);
 
             // Atualizar o status do paciente para 'a'
-            $patient->status = 'a';
+            $patient->status = 'a'; // 'a' para indicar que está admitido
             $patient->save();
 
             DB::commit();

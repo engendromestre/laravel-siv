@@ -7,11 +7,27 @@ use App\Http\Controllers\Auth\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Admin\{PatientController};
 use App\Http\Controllers\Admin\{AdmissionController};
 
+
+Route::get('/teste-email', function () {
+    \Illuminate\Support\Facades\Mail::raw('Teste simples', function ($message) {
+        $message->to('cantidio-informatica@saude.sp.gov.br')->subject('Teste SMTP');
+    });
+
+    return 'Enviado';
+});
+
+Route::get('/upload-limit', function () {
+    return response()->json([
+        'upload_max_filesize' => ini_get('upload_max_filesize'),
+        'post_max_size'      => ini_get('post_max_size'),
+    ]);
+});
 
 Route::get('/tv/{gender}', function ($gender) {
     return Inertia::render('TV/PatientTV', ['gender' => $gender]);

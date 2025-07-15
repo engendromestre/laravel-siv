@@ -22,7 +22,7 @@ export default function Create() {
         gender: '' as 'm' | 'f',
         mother_name: '',
         birth_date: '',
-        status: 'a' as 'a' | 'i',
+        status: 'i' as 'a' | 'i',
         photoFile: null as File | null,
         photo: '',
     });

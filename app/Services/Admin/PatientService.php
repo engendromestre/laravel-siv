@@ -100,13 +100,14 @@ class PatientService
             'birth_date'  => 'required|date',
             'mother_name' => 'required|string|max:255',
             'gender'     => 'required|in:m,f',
-            'status'     => 'required|in:a,i',
+            // 'status'     => 'required|in:a,i',
             'photo'      => 'nullable|string',
         ]);
 
         DB::beginTransaction();
         try {
-            Patient::create($validated);
+            $validated['status'] = 'i'; // Define status as 'i' (inactive) by default
+            Patient::create($validated);            
             DB::commit();
             return;
         } catch (\Exception $e) {
