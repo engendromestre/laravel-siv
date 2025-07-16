@@ -47,3 +47,4 @@ Este conjunto de requisitos e considerações servirá como base para a escolha 
 
 http://localhost/tv/f?cards=3
 http://localhost/tv/m?cards=3
+php artisan create:superadmin

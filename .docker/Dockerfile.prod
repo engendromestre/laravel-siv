@@ -31,8 +31,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./ 
 COPY tailwind.config.js postcss.config.js ./ 
 COPY .env.production .env 
-
-# Copia o ziggy.js gerado no backend
 COPY --from=backend-builder /app/public/js/ziggy.js ./public/js/ziggy.js
 
 RUN npm ci --silent
@@ -74,9 +72,6 @@ RUN mkdir -p /var/log/supervisor /var/run/php /var/lib/nginx/tmp /var/lib/nginx/
  && chown -R www-data:www-data /var/log/supervisor /var/run/php /var/lib/nginx \
  && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
  && chmod +x /usr/local/bin/start-container
-
-RUN chown -R www-data:www-data /var/www/html/storage \
- && chmod -R 775 /var/www/html/storage
 
 EXPOSE 80/tcp
 
