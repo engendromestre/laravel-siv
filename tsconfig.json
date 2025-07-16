@@ -11,9 +11,12 @@
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "noEmit": true,
+        "typeRoots": ["./resources/js/types", "./node_modules/@types"],
         "paths": {
             "@/*": ["./resources/js/*"],
-            "ziggy-js": ["./vendor/tightenco/ziggy"]
+            // "ziggy-js": ["./vendor/tightenco/ziggy"]
+            // "ziggy-js": ["./node_modules/ziggy-js/dist/index.js"],
+            // "@ziggy": ["./public/js/ziggy.js"]
         }
     },
     "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"]
