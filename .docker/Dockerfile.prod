@@ -69,9 +69,11 @@ COPY .docker/nginx.conf /etc/nginx/http.d/laravel.conf
 COPY .env.production .env
 
 RUN mkdir -p /var/log/supervisor /var/run/php /var/lib/nginx/tmp /var/lib/nginx/logs \
- && chown -R www-data:www-data /var/log/supervisor /var/run/php /var/lib/nginx \
- && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
- && chmod +x /usr/local/bin/start-container
+    /var/www/html/storage/app/public \
+    /var/www/html/storage/framework/{cache,sessions,testing,views} \
+     && chown -R www-data:www-data /var/log/supervisor /var/run/php /var/lib/nginx /var/www/html/storage \
+     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+     && chmod +x /usr/local/bin/start-container
 
 EXPOSE 80/tcp
 

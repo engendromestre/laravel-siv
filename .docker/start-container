@@ -18,5 +18,10 @@ if [ "$#" -gt 0 ]; then
         exec su-exec www-data "$@"
     fi
 else
+     # 🔗 Garante o symlink do storage (storage:link)
+    if [ ! -L /var/www/html/public/storage ]; then
+        echo "🔗 Criando symlink: public/storage → storage/app/public"
+        su-exec www-data php artisan storage:link
+    fi
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
