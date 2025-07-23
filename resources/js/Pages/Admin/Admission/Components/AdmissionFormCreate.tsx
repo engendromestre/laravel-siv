@@ -72,7 +72,7 @@ const AdmissionFormCreate: React.FC<AdmissionFormProps> = ({
                 });
             },
             onError: (error) => {
-                console.log(error);
+                console.error(error);
                 enqueueSnackbar('Erro ao admitir o paciente!', {
                     variant: 'error',
                 });
@@ -109,7 +109,7 @@ const AdmissionFormCreate: React.FC<AdmissionFormProps> = ({
                     <Grid size={{ xs: 6, sm: 6, lg: 6 }}>
                         <Avatar
                             alt={selectedPatient.name}
-                            src={selectedPatient.photo as string}
+                            src={selectedPatient.photo_url as string}
                             sx={{
                                 width: 150,
                                 height: 150,

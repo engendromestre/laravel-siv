@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 use App\Models\Patient;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -64,7 +65,16 @@ class PatientService
             });
         }
 
-        return $query->paginate($filters['perPage'] ?? 5);
+        $paginator = $query->paginate($filters['perPage'] ?? 5);
+        // Mapeia cada item da página para adicionar a URL da imagem
+        $paginator->getCollection()->transform(function ($patient) {
+            $patient->photo_url = $patient->photo
+                ? Storage::disk('s3')->url($patient->photo)
+                : null;
+            return $patient;
+        });
+
+        return $paginator;
     }
 
     public function getPatientsByStatusInactive(array $filters)
@@ -92,28 +102,21 @@ class PatientService
      * @return Patient
      * @throws \Exception
      */
-    public function createPatient(Request $request)
+    public function createPatient(array $data, UploadedFile $photoFile): Patient
     {
-        $validated = $request->validate([
-            'register'   => 'required|string|max:9|unique:patients,register',
-            'name'       => 'required|string|max:255',
-            'birth_date'  => 'required|date',
-            'mother_name' => 'required|string|max:255',
-            'gender'     => 'required|in:m,f',
-            // 'status'     => 'required|in:a,i',
-            'photo'      => 'nullable|string',
-        ]);
-
         DB::beginTransaction();
+        $photoPath = $photoFile->store('patients', 's3');
+        $data['photo'] = $photoPath;
+        $data['status'] = 'i'; // default inativo
         try {
-            $validated['status'] = 'i'; // Define status as 'i' (inactive) by default
-            Patient::create($validated);            
+            $patient = Patient::create($data);
             DB::commit();
-            return;
+            return $patient;
         } catch (\Exception $e) {
             DB::rollBack();
-            PatientService::deletePhoto($request->photoPath);
-            throw new \Exception('Erro ao criar paciente');
+             // remove o arquivo caso a criação falhe
+            Storage::disk('s3')->delete($photoPath);
+            throw new \Exception('Erro ao criar paciente: ' . $e->getMessage());
         }
     }
 
@@ -125,21 +128,7 @@ class PatientService
      */
     public function updatePatient(Request $request, $id)
     {
-        $validated = $request->validate([
-            'register'   => [
-                'required',
-                'string',
-                'max:9',
-                Rule::unique('patients', 'register')->ignore($id),
-            ],
-            'name'       => 'required|string|max:255',
-            'birth_date'  => 'required|date',
-            'mother_name' => 'required|string|max:255',
-            'gender'     => 'required|in:m,f',
-            'status'     => 'required|in:a,i',
-            'photo'      => 'required|string',
-        ]);
-
+        
         DB::beginTransaction();
         try {
             $patient = Patient::findOrFail($id);
@@ -147,7 +136,7 @@ class PatientService
             // Se foi enviada uma nova foto, removemos a antiga
             if ($request->photo !== $patient->photo) {
                 if ($patient->photo) {
-                    Storage::disk('public')->delete($patient->photo);
+                    Storage::disk('s3')->delete($patient->photo);
                 }
             }
 
@@ -169,7 +158,7 @@ class PatientService
         try {
             $patient = Patient::findOrFail($id);
 
-            if ($patient->photo && Storage::disk('public')->exists($patient->photo)) {
+            if ($patient->photo && Storage::disk('s3')->exists($patient->photo)) {
                 PatientService::deletePhoto($patient->photo);
             }
 
@@ -185,30 +174,21 @@ class PatientService
      * @return string|null
      * @throws \Exception
      */
-    public function uploadPhoto(Request $request): string
+     public function uploadPhoto(Request $request): array
     {
         $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:3072',
-            'id' => 'nullable|exists:patients,id', // O ID é opcional, mas se enviado, deve existir
+            'photo' => 'required|image|mimes:jpeg,jpg,png|max:3072',
         ]);
 
-        $photoPath = null;
         try {
-            if ($request->has('id')) {
-                $patient = Patient::findOrFail($request->id);
+            $photoPath = $request->file('photo')->store('patients', 's3');
 
-                if ($patient->photo) {
-                    PatientService::deletePhoto($patient->photo);
-                }
-            }
-
-            if ($request->hasFile('photo')) {
-                $photoPath = $request->file('photo')->store('patients', 'public');
-            }
-
-            return $photoPath;
+            return [
+                'photoRelativePath' => $photoPath,
+                'photoPath' => Storage::disk('s3')->url($photoPath),
+            ];
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao salvar a imagem');
+            throw new \Exception('Erro ao fazer upload da foto.');
         }
     }
 
@@ -217,7 +197,6 @@ class PatientService
      */
     public function deletePhoto(string $path): void
     {
-        $photoPath = str_replace('storage/', '', $path);
-        Storage::disk('public')->delete($photoPath);
+        Storage::disk('s3')->delete($photoPath);
     }
 }

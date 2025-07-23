@@ -19,6 +19,7 @@ export interface PatientAdmissions {
     deleted_at: string | null;
     mother_name: string;
     photo: string;
+    photo_url: string | null;
     status: 'a' | 'i';
     admissions: Admission[];
     lastAdmission?: Admission;

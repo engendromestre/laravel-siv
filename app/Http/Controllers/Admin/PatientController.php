@@ -42,9 +42,21 @@ class PatientController extends Controller
         return Inertia::render('Admin/Patient/Create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $this->patientService->createPatient($request);
+        $validated = $request->validate([
+            'register'      => 'required|string|max:9|unique:patients',
+            'name'          => 'required|string|max:255',
+            'birth_date'    => 'required|date',
+            'mother_name'   => 'required|string|max:255',
+            'gender'        => 'required|in:m,f',
+            'photo'         => 'required|image|mimes:jpeg,png,jpg|max:3072',
+
+        ]);
+        $validated['status'] = 'i'; // Define status as 'i' (inactive) by default
+
+        $this->patientService->createPatient($validated, $request->file('photo'));
+
         return Redirect::route('patient.create');
     }
 
@@ -58,7 +70,22 @@ class PatientController extends Controller
 
     public function update(Request $request, $id): RedirectResponse
     {
-        $this->patientService->updatePatient($request, $id);
+        $validated = $request->validate([
+            'register'   => [
+                'required',
+                'string',
+                'max:9',
+                Rule::unique('patients', 'register')->ignore($id),
+            ],
+            'name'          => 'required|string|max:255',
+            'birth_date'    => 'required|date',
+            'mother_name'   => 'required|string|max:255',
+            'gender'        => 'required|in:m,f',
+            'status'        => 'required|in:a,i',
+            'photo'         => 'required|image|mimes:jpeg,png,jpg|max:3072',
+        ]);
+
+        $this->patientService->updatePatient($validated, $id);
         return Redirect::route('patient.edit', ['id' => $id]);
     }
 
@@ -68,18 +95,12 @@ class PatientController extends Controller
         return Redirect::route('patient.index');
     }
 
-    public function uploadPhoto(Request $request): JsonResponse
+    public function uploadPhoto(Request $request)
     {
-        try {
-            $photoPath = $this->patientService->uploadPhoto($request);
-            return response()->json([
-                'photoPath' => asset("storage/" . $photoPath),
-                'photoRelativePath' => "storage/" . $photoPath,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao salvar a imagem'], 500);
-        }
+        $response = $this->patientService->uploadPhoto($request);
+        return response()->json($response);
     }
+
 
     // Método para buscar pacientes com filtros
     public function search(Request $request): JsonResponse

@@ -9,6 +9,7 @@ export interface Patient {
     birth_date: string;
     status: 'a' | 'i';
     photo: string | File | null;
+    photo_url?: string | null;
     admissions?: Admission[];
 }
 

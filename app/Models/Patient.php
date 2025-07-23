@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon;
 
 class Patient extends Model
 {
@@ -12,6 +14,7 @@ class Patient extends Model
 
     protected $dates = ['birth_date', 'deleted_at'];
     protected $fillable = ['register', 'name', 'birth_date', 'mother_name', 'gender', 'status', 'photo'];
+    protected $appends = ['photo_url'];
 
     public function admissions()
     {
@@ -31,4 +34,15 @@ class Patient extends Model
             });
         });
     }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (! $this->photo) {
+            return null;
+        }
+
+        // gera URL com validade de 10 minutos
+        return url("/images/{$this->photo}");
+    }
+
 }

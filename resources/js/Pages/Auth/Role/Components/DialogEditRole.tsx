@@ -62,7 +62,7 @@ export const DialogEditRole: React.FC<DialogEditRoleProps> = ({
                 });
             },
             onError: (error) => {
-                console.log(error);
+                console.error(error);
                 enqueueSnackbar('Erro ao atualizar o Papel do Usuário!', {
                     variant: 'error',
                 });

@@ -87,7 +87,7 @@ export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
                     });
                 },
                 onError: (error) => {
-                    console.log(error);
+                    console.error(error);
                     enqueueSnackbar('Erro ao atualizar o paciente!', {
                         variant: 'error',
                     });

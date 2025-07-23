@@ -13,14 +13,14 @@ interface CreatePatientFormProps {
     submit: (event: React.FormEvent<HTMLFormElement>) => void;
     processing: boolean;
     errors: Record<string, string>;
-    setPhotoFile: (file: File | null) => void;
+    setPhoto: (file: File | null) => void;
 }
 
 const CreatePatientForm = ({
     data,
     setData,
     errors,
-    setPhotoFile,
+    setPhoto,
     processing,
     submit,
 }: CreatePatientFormProps) => {
@@ -42,7 +42,7 @@ const CreatePatientForm = ({
                 alignItems="center" // Alinha verticalmente no centro
             >
                 <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
-                    <UploadPhoto onImageChange={setPhotoFile} errors={errors} />
+                    <UploadPhoto onImageChange={setPhoto} errors={errors} />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
                     <CardProj

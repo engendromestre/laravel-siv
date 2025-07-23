@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Admin\{PatientController};
@@ -76,7 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/patient', [PatientController::class, 'store'])->name('patient.store');
     Route::put('/patient/{id}', [PatientController::class, 'update'])->name('patient.update');
     Route::delete('/patient/{id}', [PatientController::class, 'destroy'])->name('patient.destroy');
-
+    
     Route::get('/admission', [AdmissionController::class, 'index'])->name('admission.index');
     Route::get('/admissions', [AdmissionController::class, 'list'])->name('admissions.list');
     Route::get('/admission/create', [AdmissionController::class, 'create'])->name('admission.create');
@@ -96,6 +97,18 @@ Route::middleware('auth')->group(function () {
     Route::put('role', [RoleController::class, 'update'])->name('role.update');
     Route::delete('role', [RoleController::class, 'destroy'])->name('role.destroy');
 });
+
+Route::get('images/{path}', function ($path) {
+    $disk = Storage::disk('s3');
+    abort_unless($disk->exists($path), 404);
+
+    return response()->stream(function () use ($disk, $path) {
+        fpassthru($disk->readStream($path));
+    }, 200, [
+        'Content-Type' => $disk->mimeType($path),
+        'Cache-Control'=> 'max-age=3600,public',
+    ]);
+})->where('path', '.*');
 
 Route::post('/keep-alive', function () {
     Session::put('last_activity', now()); // Atualiza a sessão

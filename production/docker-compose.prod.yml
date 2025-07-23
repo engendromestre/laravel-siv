@@ -1,15 +1,16 @@
 services:
   app.siv:
     build:
-      context: '.'
-      dockerfile: .docker/Dockerfile.prod
+      context: '..'
+      dockerfile: 'production/.docker/Dockerfile.prod'
       args:
         WWWGROUP: '82'
         WWWUSER: '82'
     env_file:
-      - .env.production
+      - .env
     depends_on:
       - redis
+      - minio
     restart: unless-stopped
     volumes:
       - storage_data:/var/www/html/storage
@@ -26,25 +27,41 @@ services:
       - siv-network
 
   redis:
-    image: 'redis:alpine'
+    image: redis:alpine
+    container_name: redis_prod
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
-      - 'redis_data:/data'
+      - redis_data:/data
     networks:
       - siv-network
     healthcheck:
-      test:
-        - CMD
-        - redis-cli
-        - ping
+      test: ['CMD', 'redis-cli', 'ping']
       retries: 3
       timeout: 5s
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio_storage_prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    command: server --console-address ":9001" /data
+    volumes:
+      - minio_data:/data
+    networks:
+      - siv-network
 
 volumes:
   storage_data:
     driver: local
-  uploads_data:
+  minio_data:
     driver: local
   redis_data:
     driver: local

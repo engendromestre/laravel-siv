@@ -3,9 +3,8 @@ import { Head, router, useForm } from '@inertiajs/react';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler } from 'react';
 import CreatePatientForm from './Partials/CreatePatientForm';
 
 const breadcrumb = [
@@ -23,66 +22,31 @@ export default function Create() {
         mother_name: '',
         birth_date: '',
         status: 'i' as 'a' | 'i',
-        photoFile: null as File | null,
-        photo: '',
+        photo: null as File | null,
     });
-
-    const [photoFile, setPhotoFile] = useState<File | null>(null);
-
-    useEffect(() => {
-        setData('photoFile', photoFile);
-    }, [photoFile, setData]);
 
     const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-
-        if (!data.photoFile) {
-            enqueueSnackbar('Selecione uma foto!', { variant: 'error' });
-            return;
-        }
-
-        // Criar FormData para upload da foto
-        const photoFormData = new FormData();
-        photoFormData.append('photo', data.photoFile);
-
-        try {
-            const previousPhotoFile = data.photoFile;
-            const uploadResponse = await axios.post(
-                route('patient.uploadPhoto'),
-                photoFormData,
-                {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                },
-            );
-            const photoPath = uploadResponse.data.photoRelativePath;
-
-            data.photo = photoPath;
-            data.photoFile = null;
-            post(route('patient.store'), {
-                onSuccess: () => {
-                    data.photoFile = null;
-                    enqueueSnackbar('Paciente cadastrado com sucesso!', {
-                        variant: 'success',
-                        autoHideDuration: 1500,
-                        onExited: () => {
-                            router.get(route('patient.index'));
-                        },
-                    });
-                },
-                onError: (error) => {
-                    console.log(error);
-                    enqueueSnackbar('Erro ao cadastrar paciente!', {
-                        variant: 'error',
-                    });
-                },
-            });
-            data.photoFile = previousPhotoFile;
-        } catch (error) {
-            enqueueSnackbar('Erro ao fazer upload da foto!', {
+        if (!data.photo) {
+            enqueueSnackbar('Selecione uma foto para o paciente!', {
                 variant: 'error',
             });
         }
+        post(route('patient.store'), {
+            onSuccess: () => {
+                enqueueSnackbar('Paciente criado com sucesso!', {
+                    variant: 'success',
+                });
+                router.get(route('patient.index'));
+            },
+            onError: () => {
+                enqueueSnackbar('Erro ao criar paciente!', {
+                    variant: 'error',
+                });
+            },
+        });
     };
+
     return (
         <AuthenticatedLayout header={breadcrumb}>
             <Head title="Inserir Pacientes" />
@@ -90,7 +54,7 @@ export default function Create() {
                 data={data}
                 setData={setData}
                 errors={errors}
-                setPhotoFile={setPhotoFile}
+                setPhoto={(file: File | null) => setData('photo', file)}
                 processing={processing}
                 submit={submit}
             />

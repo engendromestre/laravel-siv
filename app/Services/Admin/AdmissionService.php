@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Events\PatientAdmitted;
 use App\Models\Admission;
 use App\Models\Patient;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -50,6 +51,17 @@ class AdmissionService
             $query->orderBy('admission_datetime', 'desc');
         }])->paginate($filters['perPage'] ?? 5);
 
+        // Adicionando o photo_url
+        $patients->getCollection()->transform(function ($patient) {
+        $patient->photo_url = $patient->photo
+            ? Storage::disk('s3')
+                ->temporaryUrl(
+                $patient->photo,
+                Carbon::now()->addMinutes(10)
+                )
+            : null;
+            return $patient;
+        });
         return $patients;
     }
 

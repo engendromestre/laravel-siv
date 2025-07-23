@@ -69,8 +69,8 @@ const PatientList: React.FC<PatientListProps> = ({
                                 <Avatar
                                     alt={patient.name}
                                     src={
-                                        typeof patient.photo === 'string'
-                                            ? patient.photo
+                                        typeof patient.photo_url === 'string'
+                                            ? patient.photo_url
                                             : ''
                                     }
                                     sx={{ marginRight: 2 }}

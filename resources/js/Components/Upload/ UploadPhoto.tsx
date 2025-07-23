@@ -8,7 +8,7 @@ import AvatarUploader from './Partials/AvatarUploader';
 import PhotoCaptureDialog from './Partials/PhotoCaptureDialog';
 
 interface PatientFormData {
-    photoFile: string;
+    photo: string;
 }
 
 type FormErrors = Partial<Record<keyof PatientFormData, string | string[]>>;
@@ -115,12 +115,12 @@ const UploadPhoto: React.FC<{
             <AvatarUploader
                 selectedImage={selectedImage}
                 onImageChange={handleImageChange}
-                error={errors?.photoFile as string | undefined}
+                error={errors?.photo as string | undefined}
             />
 
-            {errors.photoFile && (
+            {errors.photo && (
                 <Typography variant="body2" color="error" textAlign="center">
-                    {errors.photoFile}
+                    {errors.photo}
                 </Typography>
             )}
 

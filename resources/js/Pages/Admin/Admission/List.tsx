@@ -87,6 +87,7 @@ export default function List({
         name: patient.name,
         register: patient.register,
         photo: patient.photo,
+        photo_url: patient.photo_url,
         gender: patient.gender,
         status: patient.status,
         birth_date: dayjs(patient.birth_date).startOf('day').toDate(),

@@ -18,7 +18,7 @@ const admissionColumns = ({
 }: PatientColumnProps): GridColDef[] => [
     { field: 'id', headerName: 'ID', flex: 0.2 },
     {
-        field: 'photo',
+        field: 'photo_url',
         headerName: 'Imagem',
         sortable: false,
         filterable: false,
@@ -28,7 +28,7 @@ const admissionColumns = ({
         renderCell: (params: GridRenderCellParams) => {
             return (
                 <PatientPhotoAvatar
-                    urlPhoto={params.row.photo}
+                    urlPhoto={params.row.photo_url}
                     name={params.row.name}
                 />
             );

@@ -90,11 +90,9 @@ const PatientTV: React.FC = () => {
                         className="grid animate-fadeIn grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3"
                     >
                         {displayedPatients.map((patient) => {
-                            // Se o valor de patient.photo não começar com '/', prefixe com "/storage/"
                             const photoUrl =
-                                patient.photo && patient.photo.startsWith('/')
-                                    ? patient.photo
-                                    : `/${patient.photo}`;
+                                patient.photo_url ??
+                                '/images/default-avatar.png';
 
                             return (
                                 <motion.div
