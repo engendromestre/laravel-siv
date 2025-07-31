@@ -23,5 +23,12 @@ else
         echo "🔗 Criando symlink: public/storage → storage/app/public"
         su-exec www-data php artisan storage:link
     fi
+    # Garante que o diretório de upload do nginx exista
+    if [ ! -d /var/lib/nginx/tmp/client_body ]; then
+        echo "📁 Criando /var/lib/nginx/tmp/client_body"
+        mkdir -p /var/lib/nginx/tmp/client_body
+        chown -R www-data:www-data /var/lib/nginx
+        chmod -R 700 /var/lib/nginx/tmp
+    fi
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
