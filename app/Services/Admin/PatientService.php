@@ -126,7 +126,7 @@ class PatientService
      * @return Patient
      * @throws \Exception
      */
-    public function updatePatient(Request $request, $id)
+    public function updatePatient($request, $id)
     {
         
         DB::beginTransaction();

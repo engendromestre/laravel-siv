@@ -6,7 +6,7 @@ import {
     DialogContent,
     Slider,
 } from '@mui/material';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 
 interface PhotoCaptureDialogProps {
@@ -23,39 +23,23 @@ const PhotoCaptureDialog: React.FC<PhotoCaptureDialogProps> = ({
     const webcamRef = useRef<Webcam>(null);
     const [zoom, setZoom] = useState(1.5);
     const [countdown, setCountdown] = useState(0);
+    const [isCameraReady, setIsCameraReady] = useState(false);
+
+    // 🚀 Reinicia o estado da câmera quando o modal abre
+    useEffect(() => {
+        if (open) {
+            setIsCameraReady(false);
+        }
+    }, [open]);
 
     const handleCapture = useCallback(() => {
-        if (webcamRef.current && webcamRef.current.video) {
-            const video = webcamRef.current.video;
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            // Define o canvas com base na resolução do vídeo e zoom
-            canvas.width = video.videoWidth / zoom;
-            canvas.height = video.videoHeight / zoom;
-
-            if (ctx) {
-                // Desenha a imagem, centralizando a captura
-                ctx.drawImage(
-                    video,
-                    (video.videoWidth - canvas.width) / 2,
-                    (video.videoHeight - canvas.height) / 2,
-                    canvas.width,
-                    canvas.height,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height,
-                );
-                // Converte para JPEG com qualidade 0.9
-                const imageSrc = canvas.toDataURL('image/jpeg', 0.9);
-                onCapture(imageSrc);
-            }
+        if (webcamRef.current) {
+            const imageSrc = webcamRef.current.getScreenshot();
+            if (imageSrc) onCapture(imageSrc);
         }
         onClose();
-    }, [onCapture, onClose, zoom]);
+    }, [onCapture, onClose]);
 
-    // Função para iniciar o countdown antes da captura
     const startCountdownAndCapture = useCallback(() => {
         setCountdown(3);
         const intervalId = setInterval(() => {
@@ -71,34 +55,53 @@ const PhotoCaptureDialog: React.FC<PhotoCaptureDialogProps> = ({
     }, [handleCapture]);
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="xs"
+            fullWidth
+            PaperProps={{
+                sx: { borderRadius: 3, p: 1, overflow: 'hidden' },
+            }}
+        >
             <DialogContent>
                 <Box
                     sx={{
-                        width: 300,
-                        height: 300,
+                        width: 320,
+                        height: 320,
                         overflow: 'hidden',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         position: 'relative',
+                        backgroundColor: '#000',
+                        borderRadius: '50%', // deixa o preview circular
                     }}
                 >
-                    <Webcam
-                        audio={false}
-                        ref={webcamRef}
-                        screenshotFormat="image/jpeg"
-                        videoConstraints={{
-                            width: { ideal: 1920, min: 1280, max: 1920 },
-                            height: { ideal: 1080, min: 720, max: 1080 },
-                            facingMode: 'user',
-                        }}
-                        style={{
-                            transform: `scale(${zoom})`,
-                            transformOrigin: 'center',
-                            position: 'absolute',
-                        }}
-                    />
+                    {/* 🟢 Só renderiza a webcam se o diálogo estiver aberto */}
+                    {open && (
+                        <Webcam
+                            audio={false}
+                            ref={webcamRef}
+                            screenshotFormat="image/jpeg"
+                            videoConstraints={{
+                                width: 1280,
+                                height: 720,
+                                facingMode: 'user',
+                            }}
+                            onUserMedia={() => setIsCameraReady(true)}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                transform: `scale(${zoom})`,
+                                transformOrigin: 'center',
+                                borderRadius: '50%',
+                            }}
+                        />
+                    )}
+
+                    {/* Exibe contador de 3 segundos */}
                     {countdown > 0 && (
                         <Box
                             sx={{
@@ -106,32 +109,56 @@ const PhotoCaptureDialog: React.FC<PhotoCaptureDialogProps> = ({
                                 fontSize: '4rem',
                                 fontWeight: 'bold',
                                 color: 'white',
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                backgroundColor: 'rgba(0,0,0,0.4)',
                                 width: '100%',
                                 height: '100%',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
+                                borderRadius: '50%',
                             }}
                         >
                             {countdown}
                         </Box>
                     )}
+
+                    {/* Mensagem se a câmera ainda não estiver pronta */}
+                    {!isCameraReady && (
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                color: 'white',
+                                fontSize: '1rem',
+                                textAlign: 'center',
+                            }}
+                        >
+                            Iniciando câmera...
+                        </Box>
+                    )}
                 </Box>
-                {/* Slider para ajuste dinâmico do zoom */}
+
+                {/* Slider de zoom */}
                 <Box sx={{ mt: 2 }}>
                     <Slider
                         value={zoom}
                         min={1}
                         max={3}
                         step={0.1}
-                        onChange={(e, newValue) => setZoom(newValue as number)}
+                        onChange={(_, newValue) => setZoom(newValue as number)}
                         valueLabelDisplay="auto"
                         aria-label="Zoom"
                     />
                 </Box>
             </DialogContent>
-            <DialogActions>
+
+            <DialogActions
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    px: 3,
+                    pb: 2,
+                }}
+            >
                 <Button onClick={onClose} color="secondary">
                     Cancelar
                 </Button>

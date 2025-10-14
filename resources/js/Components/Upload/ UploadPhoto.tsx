@@ -111,7 +111,18 @@ const UploadPhoto: React.FC<{
     };
 
     return (
-        <CardProj variant="outlined">
+        <CardProj
+            variant="outlined"
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                p: 3,
+                textAlign: 'center',
+                minHeight: 430,
+            }}
+        >
             <AvatarUploader
                 selectedImage={selectedImage}
                 onImageChange={handleImageChange}

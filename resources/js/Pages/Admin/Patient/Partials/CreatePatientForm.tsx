@@ -32,7 +32,7 @@ const CreatePatientForm = ({
             autoComplete="off"
             sx={{
                 width: '100%',
-                maxWidth: { sm: '100%', md: '1700px' },
+                maxWidth: { sm: '100%', md: '2000px' },
             }}
         >
             <Grid
