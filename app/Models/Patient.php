@@ -41,8 +41,7 @@ class Patient extends Model
             return null;
         }
 
-        // gera URL com validade de 10 minutos
-        return url("/images/{$this->photo}");
+        // Retorna a URL completa para a imagem no MinIO
+        return Storage::disk('s3')->url($this->photo);
     }
-
 }

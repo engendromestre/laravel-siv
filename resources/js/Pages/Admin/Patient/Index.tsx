@@ -52,7 +52,7 @@ export default function Index({
         });
     };
 
-    // ✅ Captura a pesquisa do GridToolbarQuickFilter
+    // Captura a pesquisa do GridToolbarQuickFilter
     const handleSearchChange = (filterModel: GridFilterModel) => {
         const searchValue = filterModel.quickFilterValues?.[0] || '';
         setSearch(searchValue);
@@ -60,7 +60,7 @@ export default function Index({
         fetchData({
             search: searchValue,
             perPage: paginationModel.pageSize,
-            page: 1, // Reiniciamos para a página 1 ao pesquisar
+            page: 1, // Reiniciar para a página 1 ao pesquisar
         });
     };
 

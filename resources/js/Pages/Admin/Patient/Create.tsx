@@ -33,11 +33,15 @@ export default function Create() {
             });
         }
         post(route('patient.store'), {
+            forceFormData: true,
             onSuccess: () => {
                 enqueueSnackbar('Paciente criado com sucesso!', {
                     variant: 'success',
+                    autoHideDuration: 2000,
+                    onClose: () => {
+                        router.get(route('patient.index'));
+                    },
                 });
-                router.get(route('patient.index'));
             },
             onError: () => {
                 enqueueSnackbar('Erro ao criar paciente!', {

@@ -18,8 +18,8 @@ interface PatientProfileCardInfoProps {
 const PatientProfileCardInfo: React.FC<PatientProfileCardInfoProps> = ({
     patient,
 }) => {
-    const { name, birth_date, gender, status, photo } = patient;
-    const photoPath = photo as string;
+    const { name, birth_date, gender, status, photo_url } = patient;
+    const photoPath = photo_url as string;
     const birthDateObj = new Date(birth_date);
 
     const today = new Date();
@@ -30,7 +30,6 @@ const PatientProfileCardInfo: React.FC<PatientProfileCardInfoProps> = ({
     if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
         age--;
     }
-
     return (
         <Card sx={{ maxWidth: 700, margin: 'auto', marginTop: 5 }}>
             <CardContent>

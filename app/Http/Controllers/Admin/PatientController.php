@@ -83,7 +83,7 @@ class PatientController extends Controller
             'mother_name'   => 'required|string|max:255',
             'gender'        => 'required|in:m,f',
             'status'        => 'required|in:a,i',
-            'photo'         => 'required|image|mimes:jpeg,png,jpg|max:3072',
+            'photo'         => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
         ]);
 
         $this->patientService->updatePatient($validated, $id);

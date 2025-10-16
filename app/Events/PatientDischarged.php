@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Patient;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -20,18 +21,31 @@ class PatientDischarged implements ShouldBroadcast, ShouldQueue
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Patient $patient)
     {
         $this->patient = $patient;
     }
 
     public function broadcastOn()
     {
-        return ['patients-channel'];
+        return new Channel('admissions');
     }
 
     public function broadcastAs()
     {
-        return 'PatientAdmitted';
+         return 'PatientDischarged';
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'id' => $this->patient->id,
+            'name' => $this->patient->name,
+            'mother_name' => $this->patient->mother_name,
+            'gender' => $this->patient->gender,
+            'photo' => $this->patient->photo,
+            'photo_url' => $this->patient->photo_url, 
+            // Não precisamos das admissões porque o paciente está sendo liberado
+        ];
     }
 }

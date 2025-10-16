@@ -51,6 +51,7 @@ class PatientAdmitted implements ShouldBroadcast, ShouldQueue
             'mother_name' => $this->patient->mother_name,
             'gender' => $this->patient->gender,
             'photo' => $this->patient->photo,
+            'photo_url' => $this->patient->photo_url, 
             'lastAdmission' => [
                 'admission_datetime' => $this->admission->admission_datetime,
             ],

@@ -49,15 +49,28 @@ const PatientTV: React.FC = () => {
     /** 🔹 WebSocket recebe apenas eventos do gênero correto */
     useEffect(() => {
         const channel = window.Echo.channel('admissions');
+
+        // Evento de admissão
         channel.listen('.PatientAdmitted', (e: PatientAdmissions) => {
             if (e.gender === gender) {
                 console.log('Evento PatientAdmitted recebido:', e);
                 setPatients((prev) => [...prev, e]);
             }
         });
+        // Evento de liberação
+        channel.listen('.PatientDischarged', (e: PatientAdmissions) => {
+            if (e.gender === gender) {
+                console.log('Evento PatientDischarged recebido:', e);
+                // Remove o paciente da lista
+                setPatients((prev) =>
+                    prev.filter((patient) => patient.id !== e.id),
+                );
+            }
+        });
 
         return () => {
             channel.stopListening('.PatientAdmitted');
+            channel.stopListening('.PatientDischarged');
         };
     }, [gender]);
 
@@ -90,9 +103,8 @@ const PatientTV: React.FC = () => {
                         className="grid animate-fadeIn grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3"
                     >
                         {displayedPatients.map((patient) => {
-                            const photoUrl =
-                                patient.photo_url ??
-                                '/images/default-avatar.png';
+                            console.log(patient);
+                            const photoUrl = patient.photo_url ?? '';
 
                             return (
                                 <motion.div

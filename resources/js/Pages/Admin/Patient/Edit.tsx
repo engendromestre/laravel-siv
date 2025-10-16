@@ -8,9 +8,8 @@ import { Head, router, useForm } from '@inertiajs/react';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import { Box, Grid2 as Grid } from '@mui/material';
-import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { LiaUserEditSolid } from 'react-icons/lia';
 import UpdatePatientInformationForm from './Partials/UpdatePatientInformationForm';
 
@@ -21,85 +20,59 @@ const breadcrumb = [
 ];
 
 export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, setData, put, errors, processing } = useForm({
-        id: patient.id,
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    const { data, setData, post, errors, processing, transform } = useForm({
         register: patient.register,
         name: patient.name,
         gender: patient.gender as 'm' | 'f',
         mother_name: patient.mother_name,
         birth_date: patient.birth_date,
         status: patient.status as 'a' | 'i',
-        photoFile: null as File | null,
-        photo: patient.photo,
+        photo: null as File | null,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [photoFile, setPhotoFile] = useState<File | null>(null);
-
-    useEffect(() => {
-        setData('photoFile', photoFile);
-    }, [photoFile, setData]);
-
-    const submit: FormEventHandler = async (e) => {
+    const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        if (!data.photoFile) {
-            enqueueSnackbar('Selecione uma foto!', { variant: 'error' });
-            return;
-        }
-
-        if (!data.id) {
-            enqueueSnackbar('Erro ao atualizar o paciente!', {
-                variant: 'error',
+        // Usar transform para converter para FormData quando houver arquivo
+        transform((data) => {
+            const formData = new FormData();
+            Object.keys(data).forEach((key) => {
+                if (key === 'photo') {
+                    // Se há uma nova imagem, adiciona ao FormData, senão não envia
+                    if (selectedImage) {
+                        formData.append(key, selectedImage);
+                    }
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    formData.append(key, data[key] as string);
+                }
             });
-            return;
-        }
+            formData.append('_method', 'PUT');
+            return formData;
+        });
 
-        // Criar FormData para upload da foto
-        const photoFormData = new FormData();
-        photoFormData.append('photo', data.photoFile);
-        photoFormData.append('id', data.id.toString());
-
-        try {
-            const previousPhotoFile = data.photoFile;
-            const uploadResponse = await axios.post(
-                route('patient.uploadPhoto'),
-                photoFormData,
-                {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                },
-            );
-            const photoPath = uploadResponse.data.photoRelativePath;
-
-            data.photo = photoPath;
-            data.photoFile = null;
-
-            put(route('patient.update', data.id), {
-                onSuccess: () => {
-                    data.photoFile = null;
-                    enqueueSnackbar('Paciente atualizado com sucesso!', {
-                        variant: 'success',
-                        autoHideDuration: 1500,
-                        onExited: () => {
-                            router.get(route('patient.index'));
-                        },
-                    });
-                },
-                onError: (error) => {
-                    console.error(error);
-                    enqueueSnackbar('Erro ao atualizar o paciente!', {
-                        variant: 'error',
-                    });
-                },
-            });
-            data.photoFile = previousPhotoFile;
-        } catch (error) {
-            console.error('Erro ao atualizar o paciente:', error);
-            enqueueSnackbar('Erro ao fazer upload da foto!', {
-                variant: 'error',
-            });
-        }
+        post(route('patient.update', patient.id), {
+            forceFormData: true, // Força o uso de FormData
+            onSuccess: () => {
+                setSelectedImage(null); // Limpa a imagem selecionada após sucesso
+                enqueueSnackbar('Paciente atualizado com sucesso!', {
+                    variant: 'success',
+                    autoHideDuration: 2000,
+                    onClose: () => {
+                        router.get(route('patient.index'));
+                    },
+                });
+            },
+            onError: (error) => {
+                console.error('Erro ao atualizar paciente:', error);
+                enqueueSnackbar('Erro ao atualizar o paciente!', {
+                    variant: 'error',
+                });
+            },
+        });
     };
 
     return (
@@ -118,14 +91,14 @@ export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
                 <Grid
                     container
                     spacing={1}
-                    justifyContent="center" // Centraliza os itens no Grid
-                    alignItems="center" // Alinha verticalmente no centro
+                    justifyContent="center"
+                    alignItems="center"
                 >
                     <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
                         <UploadPhoto
-                            onImageChange={setPhotoFile}
+                            onImageChange={setSelectedImage}
                             errors={errors}
-                            initialImage={patient.photo?.toString()}
+                            initialImage={patient.photo_url ?? ''}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
@@ -136,7 +109,7 @@ export default function Edit({ patient }: PageProps<{ patient: Patient }>) {
                                 setData={setData}
                             />
                             <ButtonForm disabled={processing}>
-                                Salvar
+                                {processing ? 'Salvando...' : 'Salvar'}
                             </ButtonForm>
                         </CardProj>
                     </Grid>

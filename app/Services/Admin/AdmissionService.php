@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Events\PatientAdmitted;
+use App\Events\PatientDischarged;
 use App\Models\Admission;
 use App\Models\Patient;
 use Illuminate\Support\Facades\Storage;
@@ -135,8 +136,14 @@ class AdmissionService
 
             // 🔄 Atualizar o status do paciente para "i" (inativo)
             Patient::where('id', $validated['patient_id'])->update(['status' => 'i']);
+            $patient = Patient::find($validated['patient_id']);
 
             DB::commit();
+
+            // Evento da Alta do Paciente
+            DB::afterCommit(function() use ($patient) {
+                event(new PatientDischarged($patient));
+            });
             return;
         } catch (\Exception $e) {
             DB::rollBack();

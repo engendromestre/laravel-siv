@@ -122,32 +122,41 @@ class PatientService
 
     /**
      * @param int $id
-     * @param array $data
+     * @param array $validated
      * @return Patient
      * @throws \Exception
      */
-    public function updatePatient($request, $id)
+   public function updatePatient(array $validated, $id)
     {
-        
         DB::beginTransaction();
+
         try {
             $patient = Patient::findOrFail($id);
 
-            // Se foi enviada uma nova foto, removemos a antiga
-            if ($request->photo !== $patient->photo) {
+            // Se uma nova foto foi enviada
+            if (isset($validated['photo']) && $validated['photo'] instanceof \Illuminate\Http\UploadedFile) {
+                // Remove foto antiga se existir
                 if ($patient->photo) {
                     Storage::disk('s3')->delete($patient->photo);
                 }
+                
+                // Faz upload da nova foto
+                $validated['photo'] = $validated['photo']->store('patients', 's3');
+            } else {
+                // Se não foi enviada nova foto, mantém a atual
+                unset($validated['photo']);
             }
 
             $patient->update($validated);
             DB::commit();
+
             return $patient;
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception('Erro ao atualizar paciente');
+            throw new \Exception('Erro ao atualizar paciente: ' . $e->getMessage());
         }
     }
+
 
     /**
      * @param int $id
@@ -158,14 +167,14 @@ class PatientService
         try {
             $patient = Patient::findOrFail($id);
 
-            if ($patient->photo && Storage::disk('s3')->exists($patient->photo)) {
-                PatientService::deletePhoto($patient->photo);
+            // Remove a foto se existir
+            if ($patient->photo) {
+                Storage::disk('s3')->delete($patient->photo);
             }
 
-            // Deleta o paciente usando o soft delete (vai marcar a data no campo deleted_at)
             $patient->delete();
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao deletar paciente');
+            throw new \Exception('Erro ao deletar paciente: ' . $e->getMessage());
         }
     }
 
@@ -174,7 +183,7 @@ class PatientService
      * @return string|null
      * @throws \Exception
      */
-     public function uploadPhoto(Request $request): array
+    public function uploadPhoto(Request $request): array
     {
         $request->validate([
             'photo' => 'required|image|mimes:jpeg,jpg,png|max:3072',
@@ -197,6 +206,6 @@ class PatientService
      */
     public function deletePhoto(string $path): void
     {
-        Storage::disk('s3')->delete($photoPath);
+        Storage::disk('s3')->delete($path);
     }
 }

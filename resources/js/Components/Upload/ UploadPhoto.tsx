@@ -19,6 +19,7 @@ const UploadPhoto: React.FC<{
     initialImage?: string;
 }> = ({ onImageChange, errors, initialImage }) => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [hasCamera, setHasCamera] = useState<boolean | null>(null);
     const [openCamera, setOpenCamera] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -49,33 +50,16 @@ const UploadPhoto: React.FC<{
     }, []);
 
     useEffect(() => {
-        const imageUrl = `/${initialImage}`;
+        // Define o preview da imagem inicial se existir
         if (initialImage) {
-            fetch(imageUrl)
-                .then((response) => {
-                    if (response.ok) {
-                        return response.blob();
-                    } else if (response.status === 403) {
-                        setSelectedImage(null);
-                        onImageChange(null);
-                        return null;
-                    } else {
-                        throw new Error(
-                            `Erro ao carregar a imagem: ${response.statusText}`,
-                        );
-                    }
-                })
-                .then((blob) => {
-                    if (blob) {
-                        const file = new File([blob], 'photo.jpg', {
-                            type: blob.type,
-                        });
-                        setSelectedImage(file);
-                        onImageChange(file);
-                    }
-                });
+            setImagePreview(initialImage);
+            // Não converte para File - apenas usa para preview
+            setSelectedImage(null);
+        } else {
+            setImagePreview(null);
+            setSelectedImage(null);
         }
-    }, [initialImage, onImageChange]);
+    }, [initialImage]);
 
     const gerarNomeUnico = () => {
         return `${uuidv4()}.jpg`;
@@ -83,32 +67,57 @@ const UploadPhoto: React.FC<{
 
     const handleImageChange = (image: File | string | null) => {
         if (typeof image === 'string') {
+            // É uma dataURL da câmera
             const nomeImagem = gerarNomeUnico();
-            const file = dataURLtoFile(image, `${nomeImagem}`);
-            setSelectedImage(file);
-            onImageChange(file);
-        } else {
+            const file = dataURLtoFile(image, nomeImagem);
+            if (file) {
+                setSelectedImage(file);
+                setImagePreview(image); // Preview da nova imagem
+                onImageChange(file);
+            }
+        } else if (image instanceof File) {
+            // É um arquivo selecionado
             setSelectedImage(image);
+            setImagePreview(URL.createObjectURL(image)); // Cria preview local
             onImageChange(image);
+        } else {
+            // null - limpar imagem
+            setSelectedImage(null);
+            setImagePreview(null);
+            onImageChange(null);
         }
     };
 
-    const dataURLtoFile = (dataUrl: string, filename: string) => {
-        const arr = dataUrl.split(',');
-        const mimeMatch = arr[0].match(/:(.*?);/);
-        if (!mimeMatch) return null;
+    const dataURLtoFile = (dataUrl: string, filename: string): File | null => {
+        try {
+            const arr = dataUrl.split(',');
+            const mimeMatch = arr[0].match(/:(.*?);/);
+            if (!mimeMatch) return null;
 
-        const mime = mimeMatch[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
+            const mime = mimeMatch[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
 
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+
+            return new File([u8arr], filename, { type: mime });
+        } catch (error) {
+            console.error('Erro ao converter DataURL para File:', error);
+            return null;
         }
-
-        return new File([u8arr], filename, { type: mime });
     };
+
+    // Cleanup do object URL quando o componente desmontar ou imagem mudar
+    useEffect(() => {
+        return () => {
+            if (imagePreview && imagePreview.startsWith('blob:')) {
+                URL.revokeObjectURL(imagePreview);
+            }
+        };
+    }, [imagePreview]);
 
     return (
         <CardProj
@@ -125,6 +134,7 @@ const UploadPhoto: React.FC<{
         >
             <AvatarUploader
                 selectedImage={selectedImage}
+                imagePreview={imagePreview}
                 onImageChange={handleImageChange}
                 error={errors?.photo as string | undefined}
             />
@@ -151,7 +161,7 @@ const UploadPhoto: React.FC<{
                     Tirar Foto
                 </Button>
 
-                {!hasCamera && (
+                {hasCamera === false && (
                     <Typography
                         variant="body2"
                         color="error"
@@ -168,7 +178,6 @@ const UploadPhoto: React.FC<{
                     startIcon={<RefreshIcon />}
                     onClick={checkCameraAvailability}
                     disabled={loading}
-                    sx={{ py: 4 }}
                 >
                     {loading ? 'Verificando...' : 'Reverificar Câmera'}
                 </Button>
