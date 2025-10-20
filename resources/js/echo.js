@@ -1,15 +1,15 @@
 import Echo from 'laravel-echo';
-
 import Pusher from 'pusher-js';
+
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: window.location.hostname, // Usa o host atual do navegador
+    broadcaster: 'pusher', // permanece 'pusher', mas vai para Reverb
+    key: import.meta.env.VITE_REVERB_APP_KEY, // qualquer chave local
+    wsHost: import.meta.env.VITE_REVERB_HOST || window.location.hostname,
     wsPort: import.meta.env.VITE_REVERB_PORT || 8080,
-    forceTLS: false, // Desativado para desenvolvimento local
-    enabledTransports: ['ws'], // Força usar apenas WS (não WSS)
+    forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
+    enabledTransports: ['ws'], // apenas WebSocket
     disableStats: true,
-    cluster: '', // Remove o cluster (não usado no Reverb)
+    cluster: '', // vazio, não usado pelo Reverb
 });

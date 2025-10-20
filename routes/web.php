@@ -14,6 +14,15 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\{PatientController};
 use App\Http\Controllers\Admin\{AdmissionController};
 
+Route::get('/secure-image/{filename}', function ($filename) {
+    $disk = Storage::disk('s3'); 
+    if (!$disk->exists("patients/{$filename}")) {
+        abort(404);
+    }
+    $tempFile = tempnam(sys_get_temp_dir(), 'img');
+    file_put_contents($tempFile, $disk->get("patients/{$filename}"));
+    return response()->file($tempFile)->deleteFileAfterSend(true);
+});
 
 Route::get('/teste-email', function () {
     \Illuminate\Support\Facades\Mail::raw('Teste simples', function ($message) {
